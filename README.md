@@ -1,9 +1,9 @@
-qtejdb
+qtejdb (Qt Wrapper for Json database EJDB)
 ======
 markus.marx@marxenter.de  
 Licence: LGPL v3
 
-Qt Wrapper for ejdb. (http://www.ejdb.org , http://www.qt-project.org)
+ see http://www.ejdb.org , http://www.qt-project.org
 
 
 
