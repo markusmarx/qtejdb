@@ -3,6 +3,7 @@
 
 #include <QObject>
 
+
 class Tst_Collection : public QObject
 {
     Q_OBJECT
@@ -11,9 +12,13 @@ public:
 
 signals:
 
-public slots:
-
+private slots:
+    void initTestCase();
     void tst_simpleCreate();
+    void cleanupTestCase();
+
+private:
+
 
 };
 

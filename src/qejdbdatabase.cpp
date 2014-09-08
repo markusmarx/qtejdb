@@ -1,34 +1,111 @@
 #include "qejdbdatabase.h"
 #include <QDebug>
 #include <QDir>
+#include <QReadLocker>
+#include <QReadWriteLock>
+#include <QAtomicInt>
 
-QEJDBDatabase::QEJDBDatabase(): m_db(0)
-{
-}
+#include "ejdb.h"
 
-QEJDBDatabase::~QEJDBDatabase()
-{
-    close();
-}
 
-bool QEJDBDatabase::open(QString path, QString databaseName, int mode)
+class QEjdbConnectionDict: public QHash<QString, QEjdbDatabase>
 {
-    m_dbPath = QDir(path);
-    m_dbName = databaseName;
+public:
+    inline bool contains_ts(const QString &key)
+    {
+        QReadLocker locker(&lock);
+        return contains(key);
+    }
+inline QStringList keys_ts() const
+    {
+        QReadLocker locker(&lock);
+        return keys();
+    }
+
+    mutable QReadWriteLock lock;
+};
+
+Q_GLOBAL_STATIC(QEjdbConnectionDict, ejdbDict)
+
+
+class QEjdbDatabasePrivate {
+
+public:
+
+    QAtomicInt ref;
+
+    QEjdbDatabasePrivate(QEjdbDatabase *d, QString path, QString database, int mode):
+        q(d), m_db(0), m_dbPath(QDir(path)), m_dbName(database), m_mode(mode){
+        ref = 1;
+    }
+
+    bool open();
+
+    bool close();
+
+    bool isOpen();
+
+    QEjdbCollection collection(QString collectionName);
+
+    QEjdbCollection storeCollection(EJCOLL *col, QString collectionName);
+
+    QEjdbCollection createCollection(QString collectionName);
+
+    bool containsCollection(QString collectionName);
+
+    static void removeDatabase(const QString &name);
+
+    static void addDatabase(const QEjdbDatabase &db, const QString &name);
+
+    static QEjdbDatabase database(const QString &name, bool open);
+
+private:
+
+    /**
+     * @brief q
+     */
+    QEjdbDatabase *q;
+
+    /**
+     * @brief m_dbPath contains the path to the db files.
+     */
+    QDir m_dbPath;
+
+    /**
+     * @brief m_dbName contains the db name.
+     */
+    QString m_dbName;
+
+    /**
+     * @brief m_db pointer to ejdb.
+     */
+    EJDB* m_db;
+
+    /**
+     * @brief m_mode database open mode
+     */
+    int m_mode;
+
+    /**
+     * @brief m_collections
+     */
+    QHash<QString, QSharedPointer<QEjdbCollection> > m_collections;
+
+};
+
+bool QEjdbDatabasePrivate::open() {
+
     if (isOpen()) close();
+
     m_db = ejdbnew();
 
-    bool res = ejdbopen(m_db, m_dbPath.absoluteFilePath(databaseName).toLatin1(), mode);
+    bool res = ejdbopen(m_db, m_dbPath.absoluteFilePath(m_dbName).toLatin1(), m_mode);
 
     if (!res) return false;
-
-    // load collections
-    loadCollections();
-
     return true;
 }
 
-bool QEJDBDatabase::close()
+bool QEjdbDatabasePrivate::close()
 {
     bool res;
 
@@ -40,20 +117,122 @@ bool QEJDBDatabase::close()
     return res;
 }
 
-bool QEJDBDatabase::isOpen()
+bool QEjdbDatabasePrivate::isOpen()
 {
     return m_db && ejdbisopen(m_db);
 }
 
-bool QEJDBDatabase::remove()
-{
 
-    close();
+bool QEjdbDatabasePrivate::containsCollection(QString collectionName)
+{
+    EJCOLL *col = ejdbgetcoll(m_db, collectionName.toLatin1());
+
+    return col != 0;
+}
+
+QEjdbCollection QEjdbDatabasePrivate::collection(QString collectionName)
+{
+    if (m_collections.contains(collectionName)) {
+        QSharedPointer<QEjdbCollection> ptr = m_collections.value(collectionName);
+        return *ptr;
+    }
+
+    EJCOLL *col = ejdbgetcoll(m_db, collectionName.toLatin1());
+
+    return storeCollection(col, collectionName);
+}
+
+QEjdbCollection QEjdbDatabasePrivate::createCollection(QString collectionName)
+{
+    EJCOLL *col = ejdbcreatecoll(m_db, collectionName.toLatin1(), NULL);
+    return storeCollection(col, collectionName);
+}
+
+QEjdbCollection QEjdbDatabasePrivate::storeCollection(EJCOLL *col, QString collectionName)
+{
+    QSharedPointer<QEjdbCollection> ptr;
+    if (m_collections.contains(collectionName)) {
+        //todo exception handling
+
+    } else{
+        ptr = QSharedPointer<QEjdbCollection>(new QEjdbCollection(m_db, col, collectionName));
+        m_collections.insert(collectionName, ptr);
+    }
+    return *ptr;
+}
+
+
+
+void QEjdbDatabasePrivate::removeDatabase(const QString &name)
+{
+    QEjdbConnectionDict *dict = ejdbDict();
+    Q_ASSERT(dict);
+    QWriteLocker locker(&dict->lock);
+
+    if (!dict->contains(name))
+        return;
+
+    dict->take(name).close();
+
+}
+
+void QEjdbDatabasePrivate::addDatabase(const QEjdbDatabase &db, const QString &name)
+{
+    QEjdbConnectionDict *dict = ejdbDict();
+    Q_ASSERT(dict);
+    QWriteLocker locker(&dict->lock);
+
+    if (dict->contains(name)) {
+        dict->take(name).close();
+
+    }
+    dict->insert(name, db);
+    //db.d->connName = name;
+}
+
+QEjdbDatabase QEjdbDatabasePrivate::database(const QString& name, bool open)
+{
+    const QEjdbConnectionDict *dict = ejdbDict();
+    Q_ASSERT(dict);
+
+    dict->lock.lockForRead();
+    QEjdbDatabase db = dict->value(name);
+    dict->lock.unlock();
+    if (!db.isOpen() && open) {
+        if (!db.open())
+            qWarning() << "QEjdbDatabasePrivate::database: unable to open database";
+
+    }
+    return db;
+}
+
+
+QT_STATIC_CONST_IMPL char *QEjdbDatabase::defaultConnection = "qejdb_default_connection";
+
+QEjdbDatabase::QEjdbDatabase(QString path, QString database, int mode):d(new QEjdbDatabasePrivate(this, path, database, mode))
+{
+}
+
+QEjdbDatabase QEjdbDatabase::addDatabase(QString path, QString database, int mode, QString connectionName)
+{
+    QEjdbDatabase db(path, database, mode);
+    QEjdbDatabasePrivate::addDatabase(db, connectionName);
+    return db;
+}
+
+void QEjdbDatabase::removeDatabase(QString connectionName)
+{
+    QEjdbDatabasePrivate::removeDatabase(connectionName);
+}
+
+bool QEjdbDatabase::removeDatabaseFiles(QString path, QString database)
+{
     // set filter for databasefiles and remove
     QStringList filter;
-    filter << m_dbName + "*";
-    m_dbPath.setNameFilters(filter);
-    QFileInfoList files = m_dbPath.entryInfoList(QDir::Files);
+    filter << database + "*";
+    QDir dbPath(path);
+    dbPath.setNameFilters(filter);
+    QFileInfoList files = dbPath.entryInfoList(QDir::Files);
 
     foreach(QFileInfo f, files) {
         if (f.isFile()) {
@@ -63,44 +242,64 @@ bool QEJDBDatabase::remove()
     return true;
 }
 
-QEJDBCollection QEJDBDatabase::collection(QString collectionName)
+QEjdbDatabase QEjdbDatabase::database(QString connectionName)
 {
-    if (m_collections.contains(collectionName)) {
-        QSharedPointer<QEJDBCollection> ptr = m_collections.value(collectionName);
-        return *ptr;
+    return QEjdbDatabasePrivate::database(connectionName, true);
+}
+
+
+QEjdbDatabase::QEjdbDatabase(const QEjdbDatabase &other)
+{
+    d = other.d;
+    d->ref.ref();
+}
+
+
+QEjdbDatabase &QEjdbDatabase::operator=(const QEjdbDatabase &other)
+{
+    qAtomicAssign(d, other.d);
+    return *this;
+}
+
+QEjdbDatabase::QEjdbDatabase()
+{
+
+}
+
+QEjdbDatabase::~QEjdbDatabase()
+{
+    if (!d->ref.deref()) {
+        close();
+        delete d;
     }
+}
+
+bool QEjdbDatabase::open()
+{
+   return d->open();
+}
+
+bool QEjdbDatabase::close()
+{
+    return d->close();
+}
+
+bool QEjdbDatabase::isOpen()
+{
+    return d->isOpen();
+}
 
 
-    EJCOLL *col = ejdbgetcoll(m_db, collectionName.toLatin1());
-
-    if (!col) {
+QEjdbCollection QEjdbDatabase::collection(QString collectionName)
+{
+    if (!d->containsCollection(collectionName)) {
         throw 1;
     }
 
-    return storeCollection(col, collectionName);
-
+    return d->collection(collectionName);
 }
 
-QEJDBCollection QEJDBDatabase::createCollection(QString collectionName)
+QEjdbCollection QEjdbDatabase::createCollection(QString collectionName)
 {
-    EJCOLL *col = ejdbcreatecoll(m_db, collectionName.toLatin1(), NULL);
-    return storeCollection(col, collectionName);
-}
-
-QEJDBCollection QEJDBDatabase::storeCollection(EJCOLL *col, QString collectionName)
-{
-    QSharedPointer<QEJDBCollection> ptr;
-    if (m_collections.contains(collectionName)) {
-        //todo exception handling
-
-    } else{
-        ptr = QSharedPointer<QEJDBCollection>(new QEJDBCollection(m_db, col, collectionName));
-        m_collections.insert(collectionName, ptr);
-    }
-    return *ptr;
-}
-
-void QEJDBDatabase::loadCollections()
-{
-   //todo
+    return d->createCollection(collectionName);
 }

@@ -11,31 +11,30 @@ Tst_Database::Tst_Database(QObject *parent) :
 void Tst_Database::tst_open()
 {
 
-    QEJDBDatabase *db = new QEJDBDatabase();
-    bool open = db->open(".", "test.db", QEJDB::CREATE | QEJDB::WRITE
-                     | QEJDB::LOCK_NB | QEJDB::TRUNCATE
-                     | QEJDB::LOCK_NB);
+    QEjdbDatabase db = QEjdbDatabase::addDatabase(".", "test.db", QEJDB::CREATE | QEJDB::WRITE
+                                          | QEJDB::LOCK_NB | QEJDB::TRUNCATE | QEJDB::LOCK_NB);
+    bool open = db.open();
     QCOMPARE(open, true);
 
-    QCOMPARE(db->isOpen(), true);
+    QCOMPARE(db.isOpen(), true);
 
-    db->close();
+    QEjdbDatabase::removeDatabase();
 
 }
 
 void Tst_Database::tst_collection()
 {
-     QEJDBDatabase *db = new QEJDBDatabase();
+     QEjdbDatabase db = QEjdbDatabase::addDatabase(".", "test.db", QEJDB::CREATE | QEJDB::WRITE
+                                           | QEJDB::LOCK_NB | QEJDB::TRUNCATE
+                                           | QEJDB::LOCK_NB);
 
-    if (!db->open(".", "test.db", QEJDB::CREATE | QEJDB::WRITE
-                  | QEJDB::LOCK_NB | QEJDB::TRUNCATE
-                  | QEJDB::LOCK_NB)) {
+    if (!db.open()) {
 
     }
 
     bool exception = false;
     try {
-        QEJDBCollection col = db->collection("testCollection");
+        QEjdbCollection col = db.collection("testCollection");
         qDebug() << &col;
 
     } catch(int error) {
@@ -44,25 +43,18 @@ void Tst_Database::tst_collection()
 
     QCOMPARE(exception, true);
 
-    QEJDBCollection col = db->createCollection("testCollection2");
-    col = db->collection("testCollection2");
+    QEjdbCollection col = db.createCollection("testCollection2");
+    col = db.collection("testCollection2");
 
     QCOMPARE(QString("testCollection2"), col.collectionName());
 
-    db->close();
+    QEjdbDatabase::removeDatabase();
 
 }
 
 void Tst_Database::cleanupTestCase()
 {
-    QEJDBDatabase *db = new QEJDBDatabase();
 
-    if (!db->open(".", "test.db", QEJDB::CREATE | QEJDB::WRITE
-                  | QEJDB::LOCK_NB | QEJDB::TRUNCATE
-                  | QEJDB::LOCK_NB)) {
-
-    }
-
-    db->remove();
+    QEjdbDatabase::removeDatabaseFiles(".", "test.db");
 }
 

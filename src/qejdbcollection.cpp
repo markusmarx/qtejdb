@@ -1,8 +1,9 @@
 #include "qejdbcollection.h"
 #include "qejdbdatabase.h"
 #include <QDebug>
+#include <QJsonDocument>
 
-QEJDBCollection::QEJDBCollection(EJDB *db, EJCOLL *col, QString collectionName):m_db(db), m_col(col),
+QEjdbCollection::QEjdbCollection(EJDB *db, EJCOLL *col, QString collectionName):m_db(db), m_col(col),
     m_collectionName(collectionName)
 {
 
@@ -10,12 +11,12 @@ QEJDBCollection::QEJDBCollection(EJDB *db, EJCOLL *col, QString collectionName):
 }
 
 
-bool QEJDBCollection::save(QJsonObject &obj)
+bool QEjdbCollection::save(QJsonObject &obj)
 {
     bson_oid_t oid;
 
     // get bson
-    bson bsrec = QEJDBCollection::convert2Bson(obj);
+    bson bsrec = QEjdbCollection::convert2Bson(obj);
 
     // save
     bool res = ejdbsavebson(m_col, &bsrec, &oid);
@@ -27,20 +28,26 @@ bool QEJDBCollection::save(QJsonObject &obj)
     return res;
 }
 
-QJsonObject QEJDBCollection::load(QString oidStr)
+QJsonObject QEjdbCollection::load(QString oidStr)
 {
-    qDebug() << oidStr;
+
     bson_oid_t oid;
     bson_oid_t *oid_t;
     bson_oid_from_string(&oid, oidStr.toLatin1());
 
     bson* bsrec = ejdbloadbson(m_col, &oid);
+    char* buf;
+    int length;
+
+    bson2json(bsrec->data, &buf, &length);
+
+    QJsonDocument doc = QJsonDocument::fromJson(QByteArray(buf, length));
 
     //bson_print_raw(bsrec->data, 0);
 
-    QJsonObject obj;
+    QJsonObject obj = doc.object();
 
-    bson_iterator *it = bson_iterator_create();
+    /*bson_iterator *it = bson_iterator_create();
     bson_iterator_init(it, bsrec);
 
 
@@ -48,7 +55,7 @@ QJsonObject QEJDBCollection::load(QString oidStr)
     while (bson_iterator_more(it)) {
         bstype = bson_iterator_next(it);
         const char* key = bson_iterator_key(it);
-        qDebug() << key << ":" << bstype;
+
 
         switch(bstype) {
             case BSON_OID:
@@ -67,13 +74,13 @@ QJsonObject QEJDBCollection::load(QString oidStr)
         }
 
     }
-    bson_iterator_dispose(it);
+    bson_iterator_dispose(it);*/
     return obj;
 }
 
 
 
-bson QEJDBCollection::convert2Bson(QJsonObject obj)
+bson QEjdbCollection::convert2Bson(QJsonObject obj)
 {
 
     bson bsrec;
@@ -86,7 +93,7 @@ bson QEJDBCollection::convert2Bson(QJsonObject obj)
         bson_append_oid(&bsrec, "_id", &oid);
     }
 
-    QEJDBCollection::convert2Bson2(obj, bsrec);
+    QEjdbCollection::convert2Bson2(obj, bsrec);
 
     bson_finish(&bsrec);
 
@@ -94,8 +101,9 @@ bson QEJDBCollection::convert2Bson(QJsonObject obj)
 }
 
 
-void QEJDBCollection::convert2Bson2(QJsonObject obj, bson &bsrec)
+void QEjdbCollection::convert2Bson2(QJsonObject obj, bson &bsrec)
 {
+
     QStringList keys = obj.keys();
 
     foreach(QString key, keys) {
@@ -112,7 +120,7 @@ void QEJDBCollection::convert2Bson2(QJsonObject obj, bson &bsrec)
             case QJsonValue::Object:
                 bson_append_start_object(&bsrec, key.toLatin1());
                 QJsonObject jsonObj = v.toObject();
-                QEJDBCollection::convert2Bson2(jsonObj, bsrec);
+                QEjdbCollection::convert2Bson2(jsonObj, bsrec);
                 bson_append_finish_object(&bsrec);
                 break;
         }

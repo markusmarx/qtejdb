@@ -5,12 +5,12 @@
 #include <QJsonObject>
 #include "ejdb.h"
 
-class QEJDBCollection
+class QEjdbCollection
 {
 
 public:
 
-    QEJDBCollection(EJDB* db, EJCOLL* col, QString m_collectionName);
+    QEjdbCollection(EJDB* db, EJCOLL* col, QString m_collectionName);
 
     /**
      * @brief save save a jsonobject. if a jsonobject has a _id property then the document ist updated.

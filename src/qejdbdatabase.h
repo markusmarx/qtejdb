@@ -4,8 +4,6 @@
 #include <QSharedPointer>
 #include <QDir>
 
-#include "ejdb.h"
-
 #include "qejdbcollection.h"
 
 namespace QEJDB {
@@ -32,21 +30,20 @@ namespace QEJDB {
 
 }
 
+class QEjdbDatabasePrivate;
+class QEjdbDatabasePrivate;
 
-class QEJDBDatabase
+class QEjdbDatabase
 {
 
 public:
 
-    /**
-     * @brief QEJDBDatabase constructor
-     */
-    QEJDBDatabase();
+    QEjdbDatabase();
 
     /**
      * @brief ~QEJDBDatabase destructor
      */
-    ~QEJDBDatabase();
+    ~QEjdbDatabase();
 
 
     /**
@@ -56,7 +53,7 @@ public:
      * @param mode
      * @return
      */
-    bool open(QString path, QString databaseName, int mode);
+    bool open();
 
     /**
      * @brief closeDatabase close database.
@@ -70,48 +67,46 @@ public:
      */
     bool isOpen();
 
-    /**
-     * @brief remove database and all files.
-     * @return
-     */
-    bool remove();
 
     /**
      * @brief collection
      * @param collectionName
      * @return
      */
-    QEJDBCollection collection(QString collectionName);
+    QEjdbCollection collection(QString collectionName);
 
     /**
      * @brief createCollection
      * @param collectionName
      * @return
      */
-    QEJDBCollection createCollection(QString collectionName);
+    QEjdbCollection createCollection(QString collectionName);
+
+    static QEjdbDatabase addDatabase(QString path, QString database, int mode, QString connectionName = QLatin1String(defaultConnection));
+
+    static QEjdbDatabase database(QString connectionName = QLatin1String(defaultConnection));
+
+    static void removeDatabase(QString connectionName  = QLatin1String(defaultConnection));
+
+    static bool removeDatabaseFiles(QString path, QString database);
+
+    QEjdbDatabase(const QEjdbDatabase &other);
+
+    QEjdbDatabase &operator =(const QEjdbDatabase &other);
+
+protected:
+    /**
+     * @brief QEJDBDatabase constructor
+     * @param connectionName
+     */
+    QEjdbDatabase(QString path, QString databaseName, int mode);
+
 
 private:
+    friend class QEjdbDatabasePrivate;
+    QEjdbDatabasePrivate *d;
 
-    /**
-     * @brief m_dbPath contains the path to the db files.
-     */
-    QDir m_dbPath;
-
-    /**
-     * @brief m_dbName contains the db name.
-     */
-    QString m_dbName;
-
-    /**
-     * @brief m_db pointer to ejdb.
-     */
-    EJDB* m_db;
-
-    /**
-     * @brief m_collections
-     */
-    QHash<QString, QSharedPointer<QEJDBCollection> > m_collections;
-
+    QT_STATIC_CONST char *defaultConnection;
 
     /**
      * @brief storeCollection store collection in hashmap and create QEJDBCollection object.
@@ -119,13 +114,12 @@ private:
      * @param collectionName
      * @return
      */
-    QEJDBCollection storeCollection(EJCOLL* col, QString collectionName);
+    QEjdbCollection storeCollection(EJCOLL* col, QString collectionName);
 
     /**
      * @brief loadCollections when db is opened the collections are loaded.
      */
     void loadCollections();
-
 
 
 };
