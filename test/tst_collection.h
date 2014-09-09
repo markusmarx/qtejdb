@@ -15,6 +15,7 @@ signals:
 private slots:
     void initTestCase();
     void tst_simpleCreate();
+    void tst_simpleQuery();
     void cleanupTestCase();
 
 private:

@@ -13,26 +13,24 @@ namespace QEJDB {
      */
     enum DB_MODE {
         /**< Open as a reader. */
-        READ        = JBOREADER,
+        READ        = 1 << 0,
         /**< Open as a writer. */
-        WRITE       = JBOWRITER,
+        WRITE       = 1 << 1,
          /**< Create if db file not exists. */
-        CREATE      = JBOCREAT,
+        CREATE      = 1 << 2,
         /**< Truncate db on open. */
-        TRUNCATE    = JBOTRUNC,
+        TRUNCATE    = 1 << 3,
         /**< Open without locking. */
-        NO_LOCK     = JBONOLCK,
+        NO_LOCK     = 1 << 4,
         /**< Lock without blocking. */
-        LOCK_NB     = JBOLCKNB,
+        LOCK_NB     = 1 << 5,
         /**< Synchronize every transaction. */
-        SYNC        = JBOTSYNC
+        SYNC        = 1 << 6
     };
 
 }
 
 class QEjdbDatabasePrivate;
-class QEjdbDatabasePrivate;
-
 class QEjdbDatabase
 {
 
@@ -94,6 +92,8 @@ public:
 
     QEjdbDatabase &operator =(const QEjdbDatabase &other);
 
+    QList<QJsonObject> query(QString collection, QString query);
+
 protected:
     /**
      * @brief QEJDBDatabase constructor
@@ -103,18 +103,12 @@ protected:
 
 
 private:
+
     friend class QEjdbDatabasePrivate;
     QEjdbDatabasePrivate *d;
 
     QT_STATIC_CONST char *defaultConnection;
 
-    /**
-     * @brief storeCollection store collection in hashmap and create QEJDBCollection object.
-     * @param col
-     * @param collectionName
-     * @return
-     */
-    QEjdbCollection storeCollection(EJCOLL* col, QString collectionName);
 
     /**
      * @brief loadCollections when db is opened the collections are loaded.

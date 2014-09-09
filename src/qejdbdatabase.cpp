@@ -3,7 +3,7 @@
 #include <QDir>
 #include <QReadLocker>
 #include <QReadWriteLock>
-#include <QAtomicInt>
+#include "qatomic.h"
 
 #include "ejdb.h"
 
@@ -53,10 +53,10 @@ public:
 
     bool containsCollection(QString collectionName);
 
+    void query(QString collection, QString query);
+
     static void removeDatabase(const QString &name);
-
     static void addDatabase(const QEjdbDatabase &db, const QString &name);
-
     static QEjdbDatabase database(const QString &name, bool open);
 
 private:
@@ -128,6 +128,42 @@ bool QEjdbDatabasePrivate::containsCollection(QString collectionName)
     EJCOLL *col = ejdbgetcoll(m_db, collectionName.toLatin1());
 
     return col != 0;
+}
+
+void QEjdbDatabasePrivate::query(QString collection, QString query)
+{
+
+    bson bq1;
+    bson_init_as_query(&bq1);
+    bson_append_start_object(&bq1, "test");
+    bson_append_string(&bq1, "$begin", "tes");
+    bson_append_finish_object(&bq1);
+    bson_finish(&bq1);
+
+    EJCOLL *coll = ejdbgetcoll(m_db, collection.toLatin1());
+
+    EJQ *q = ejdbcreatequery(m_db, &bq1, NULL, 0, NULL);
+
+    uint32_t count;
+    TCLIST *res = ejdbqryexecute(coll, q, &count, 0, NULL);
+
+    for (int i = 0; i < TCLISTNUM(res); ++i) {
+        void *bsdata = TCLISTVALPTR(res, i);
+        int size = bson_size2(bsdata);
+        bson *bs = bson_create_from_buffer(bsdata, size);
+
+        bson_print_raw((char*)bsdata, 0);
+
+    }
+    fprintf(stderr, "\n");
+
+    //Dispose result set
+    tclistdel(res);
+
+    //Dispose query
+    ejdbquerydel(q);
+    bson_destroy(&bq1);
+
 }
 
 QEjdbCollection QEjdbDatabasePrivate::collection(QString collectionName)
@@ -257,8 +293,14 @@ QEjdbDatabase::QEjdbDatabase(const QEjdbDatabase &other)
 
 QEjdbDatabase &QEjdbDatabase::operator=(const QEjdbDatabase &other)
 {
-    qAtomicAssign(d, other.d);
+    qAtomicAssign<QEjdbDatabasePrivate>(d, other.d);
     return *this;
+}
+
+QList<QJsonObject> QEjdbDatabase::query(QString collection, QString query)
+{
+    d->query(collection, query);
+    return QList<QJsonObject>();
 }
 
 QEjdbDatabase::QEjdbDatabase()
@@ -268,10 +310,7 @@ QEjdbDatabase::QEjdbDatabase()
 
 QEjdbDatabase::~QEjdbDatabase()
 {
-    if (!d->ref.deref()) {
-        close();
-        delete d;
-    }
+    qAtomicDetach<QEjdbDatabasePrivate>(d);
 }
 
 bool QEjdbDatabase::open()

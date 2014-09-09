@@ -31,12 +31,14 @@ void Tst_Collection::tst_simpleCreate()
     QCOMPARE(obj.value("_id"), obj2.value("_id"));
 
     QJsonObject obj3;
-    obj.insert("test", QJsonValue("test"));
+    obj3.insert("test", QJsonValue("test"));
+
 
     QJsonObject obj4;
     obj4.insert("test", "test");
 
     obj3.insert("inline", obj4);
+    qDebug() << obj3;
 
     col.save(obj3);
 
@@ -48,8 +50,13 @@ void Tst_Collection::tst_simpleCreate()
 
     qDebug() << obj5;
 
+}
 
+void Tst_Collection::tst_simpleQuery()
+{
+    QEjdbDatabase db = QEjdbDatabase::database();
 
+    db.query("testcollection", "{'test' : {'$begin' : 'te'}}");
 }
 
 void Tst_Collection::cleanupTestCase()
