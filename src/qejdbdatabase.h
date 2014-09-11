@@ -5,6 +5,7 @@
 #include <QDir>
 
 #include "qejdbcollection.h"
+#include "qejdbcondition.h"
 
 namespace QEJDB {
 
@@ -92,7 +93,7 @@ public:
 
     QEjdbDatabase &operator =(const QEjdbDatabase &other);
 
-    QList<QJsonObject> query(QString collection, QString query);
+    QList<QJsonObject> query(QString collection, QEjdbCondition condition);
 
 protected:
     /**

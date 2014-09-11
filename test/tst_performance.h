@@ -11,8 +11,13 @@ public:
 
 signals:
 
-public slots:
+private slots:
 
+    void initTestCase();
+
+    void cleanupTestCase();
+
+    void tst_insQryTsd();
 };
 
 #endif // TST_PERFORMANCE_H
