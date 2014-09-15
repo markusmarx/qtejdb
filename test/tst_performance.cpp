@@ -16,7 +16,7 @@ void Tst_Performance::initTestCase()
     QEjdbDatabase::removeDatabaseFiles(".", "test_db");
     QEjdbDatabase::addDatabase(".", "test_db", QEJDB::CREATE | QEJDB::WRITE
                              | QEJDB::LOCK_NB | QEJDB::TRUNCATE
-                             | QEJDB::LOCK_NB).open();
+                             | QEJDB::LOCK_NB | QEJDB::SYNC).open();
 }
 
 void Tst_Performance::cleanupTestCase()
@@ -76,9 +76,9 @@ void Tst_Performance::tst_insQryTsd()
         t.restart();
     }
 
-    QList<QJsonObject> result = m_db.query("testcollection", QEjdbCondition("name", QEjdbCondition::EQUALS, "test"));
+   /* QList<QJsonObject> result = m_db.query("testcollection", QEjdbCondition("name", QEjdbCondition::EQUALS, "test"));
     qDebug() << "found " << result.size() << " data";
     qDebug() << result.at(0);
-    qDebug() << col.load(id);
+    qDebug() << col.load(id);*/
 
 }

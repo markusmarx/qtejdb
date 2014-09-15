@@ -35,18 +35,25 @@ void Tst_Database::tst_collection()
     bool exception = false;
     try {
         QEjdbCollection col = db.collection("testCollection");
-        qDebug() << &col;
-
+        QCOMPARE(true, false);
     } catch(int error) {
-        exception = true;
-    }
 
-    QCOMPARE(exception, true);
+    }
 
     QEjdbCollection col = db.createCollection("testCollection2");
     col = db.collection("testCollection2");
 
     QCOMPARE(QString("testCollection2"), col.collectionName());
+    QCOMPARE(col.removeCollection(), true);
+    try {
+        QEjdbCollection col = db.collection("testCollection2");
+        QCOMPARE(true, false);
+
+    } catch(int error) {
+
+    }
+
+
 
     QEjdbDatabase::removeDatabase();
 

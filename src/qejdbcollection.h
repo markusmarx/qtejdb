@@ -39,6 +39,8 @@ public:
 
     QEjdbCollection &operator =(const QEjdbCollection &other);
 
+    bool removeCollection();
+
     ~QEjdbCollection();
 
 protected:

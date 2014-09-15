@@ -62,6 +62,29 @@ void Tst_Collection::tst_simpleQuery()
     qDebug() << list;
 }
 
+void Tst_Collection::tst_dataTypes()
+{
+    QEjdbDatabase m_db = QEjdbDatabase::database();
+    QEjdbCollection col = m_db.createCollection("datatypes");
+
+    QJsonObject testObj;
+    testObj.insert("string", "test");
+    testObj.insert("int", (int)10);
+    testObj.insert("float", 11.334);
+    testObj.insert("double", (double)11.3342233812344);
+    testObj.insert("long", (qint64)2233113123123123223);
+    testObj.insert("date", QDate(2014, 12, 12).toJulianDay());
+    testObj.insert("timestamp", QDateTime().toMSecsSinceEpoch());
+    QByteArray ba;
+    ba.append(12).append(23).append(47);
+
+    testObj.insert("binary", QJsonValue(ba.data()));
+
+    col.save(testObj);
+
+    qDebug() << testObj;
+}
+
 void Tst_Collection::cleanupTestCase()
 {
 

@@ -2,6 +2,7 @@
 #include <QDebug>
 #include <QJsonDocument>
 #include "globals_p.h"
+#include "ejdb.h"
 
 class QEjdbCollectionPrivate
 {
@@ -34,7 +35,12 @@ public:
 
 
     bool save(QJsonObject &obj);
+
+
     QJsonObject load(QString oidStr);
+
+    bool removeCollection();
+
 };
 
 
@@ -79,8 +85,14 @@ QJsonObject QEjdbCollectionPrivate::load(QString oidStr)
     return obj;
 }
 
+bool QEjdbCollectionPrivate::removeCollection()
+{
+    if (!ejdbrmcoll(this->m_db, this->m_collectionName.toLatin1(), true)) {
+        return false;
+    }
 
-
+    return true;
+}
 
 bool QEjdbCollection::save(QJsonObject &obj)
 {
@@ -94,7 +106,7 @@ QJsonObject QEjdbCollection::load(QString oid)
 
 QString QEjdbCollection::collectionName() const
 {
-    return d->m_collectionName;
+    return QString(d->m_collectionName);
 }
 
 QEjdbCollection::QEjdbCollection(const QEjdbCollection &other)
@@ -108,6 +120,11 @@ QEjdbCollection &QEjdbCollection::operator=(const QEjdbCollection &other)
 {
     qAtomicAssign<QEjdbCollectionPrivate>(d, other.d);
     return *this;
+}
+
+bool QEjdbCollection::removeCollection()
+{
+    return d->removeCollection();
 }
 
 QEjdbCollection::~QEjdbCollection()
