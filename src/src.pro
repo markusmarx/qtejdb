@@ -15,14 +15,16 @@ SOURCES += \
     qejdbdatabase.cpp \
     qejdbcollection.cpp \
     qejdbquery.cpp \
-    qejdbcondition.cpp
+    qejdbcondition.cpp \
+    qbsonobject.cpp
 
 HEADERS += \
     qejdbdatabase.h \
     qejdbcollection.h \
     qejdbquery.h \
     qejdbcondition.h \
-    globals_p.h
+    globals_p.h \
+    qbsonobject.h
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../3rdparty/ejdb/tcejdb/release/ -ltcejdb
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../3rdparty/ejdb/tcejdb/debug/ -ltcejdb

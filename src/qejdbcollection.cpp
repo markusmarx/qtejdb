@@ -35,7 +35,7 @@ public:
 
 
     bool save(QJsonObject &obj);
-
+    bool remove(QJsonObject &obj);
 
     QJsonObject load(QString oidStr);
 
@@ -69,11 +69,19 @@ bool QEjdbCollectionPrivate::save(QJsonObject &obj)
     return res;
 }
 
+bool QEjdbCollectionPrivate::remove(QJsonObject &obj)
+{
+    QString oidStr = obj.value("_id").toString();
+    bson_oid_t oid;
+
+    bson_oid_from_string(&oid, oidStr.toLatin1());
+    return ejdbrmbson(m_col, &oid);
+}
+
 QJsonObject QEjdbCollectionPrivate::load(QString oidStr)
 {
 
     bson_oid_t oid;
-    bson_oid_t *oid_t;
     bson_oid_from_string(&oid, oidStr.toLatin1());
 
     bson* bsrec = ejdbloadbson(m_col, &oid);
@@ -102,6 +110,11 @@ bool QEjdbCollection::save(QJsonObject &obj)
 QJsonObject QEjdbCollection::load(QString oid)
 {
     return d->load(oid);
+}
+
+bool QEjdbCollection::remove(QJsonObject &obj)
+{
+    return d->remove(obj);
 }
 
 QString QEjdbCollection::collectionName() const

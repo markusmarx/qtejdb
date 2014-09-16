@@ -29,6 +29,8 @@ public:
      */
     QJsonObject load(QString oid);
 
+    bool remove(QJsonObject &obj);
+
     /**
      * @brief collectionName return the name of the collection
      * @return collectionName

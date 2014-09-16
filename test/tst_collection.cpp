@@ -14,11 +14,9 @@ void Tst_Collection::initTestCase()
     QEjdbDatabase::addDatabase(".", "test_db", QEJDB::CREATE | QEJDB::WRITE
                              | QEJDB::LOCK_NB | QEJDB::TRUNCATE
                              | QEJDB::LOCK_NB).open();
-
-
 }
 
-void Tst_Collection::tst_simpleCreate()
+void Tst_Collection::tst_simpleCRUD()
 {
     QEjdbDatabase m_db = QEjdbDatabase::database();
     QEjdbCollection col = m_db.createCollection("testcollection");
@@ -51,6 +49,10 @@ void Tst_Collection::tst_simpleCreate()
 
     qDebug() << obj5;
 
+    QCOMPARE(col.remove(obj5), true);
+
+    //obj5 = col.load(obj3.value("_id").toString());
+
 }
 
 void Tst_Collection::tst_simpleQuery()
@@ -58,7 +60,7 @@ void Tst_Collection::tst_simpleQuery()
     QEjdbDatabase db = QEjdbDatabase::database();
 
     QList<QJsonObject> list = db.query("testcollection", QEjdbCondition("test", QEjdbCondition::BEGIN, "tes"));
-    QCOMPARE(list.size(), 2);
+    QCOMPARE(list.size(), 1);
     qDebug() << list;
 }
 
