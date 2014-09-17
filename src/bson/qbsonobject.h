@@ -8,11 +8,13 @@ class QBsonObjectData;
 class QBsonObject
 {
 public:
+
     QBsonObject();
     QBsonObject(const QBsonObject &);
     QBsonObject &operator=(const QBsonObject &);
     ~QBsonObject();
 
+    QBsonObject(QByteArray bson);
 private:
     QSharedDataPointer<QBsonObjectData> data;
 };
