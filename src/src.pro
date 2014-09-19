@@ -16,15 +16,20 @@ SOURCES += \
     qejdbcollection.cpp \
     qejdbquery.cpp \
     qejdbcondition.cpp \
-    qbsonobject.cpp
+    bson/qbsonobject.cpp \
+    bson/qbsonvalue.cpp \
+    bson/qbsonarray.cpp \
+    bson/qbsonoid.cpp
 
 HEADERS += \
     qejdbdatabase.h \
     qejdbcollection.h \
     qejdbquery.h \
     qejdbcondition.h \
-    globals_p.h \
-    qbsonobject.h
+    bson/qbsonobject.h \
+    bson/qbsonvalue.h \
+    bson/qbsonarray.h \
+    bson/qbsonoid.h
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../3rdparty/ejdb/tcejdb/release/ -ltcejdb
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../3rdparty/ejdb/tcejdb/debug/ -ltcejdb

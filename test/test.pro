@@ -17,12 +17,14 @@ TEMPLATE = app
 SOURCES += main.cpp \
     tst_database.cpp \
     tst_collection.cpp \
-    tst_performance.cpp
+    tst_performance.cpp \
+    tst_qbson.cpp
 
 HEADERS += \
     tst_database.h \
     tst_collection.h \
-    tst_performance.h
+    tst_performance.h \
+    tst_qbson.h
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../src/release/ -lqtejdb
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../src/debug/ -lqtejdb
