@@ -19,6 +19,7 @@ public:
     ~QBsonOid();
 
     QString value() const;
+    bool isValid() const;
 private:
     QBsonOidData *data;
 };
