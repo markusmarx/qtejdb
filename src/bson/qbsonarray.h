@@ -1,7 +1,8 @@
 #ifndef QBSONARRAY_H
 #define QBSONARRAY_H
 
-#include <QSharedDataPointer>
+#include <QObject>
+#include "qbsonvalue.h"
 
 class QBsonArrayData;
 
@@ -13,8 +14,14 @@ public:
     QBsonArray &operator=(const QBsonArray &);
     ~QBsonArray();
 
+    void append(const QBsonValue &value);
+    void insert(int i, const QBsonValue &value);
+    QBsonValue value(int i);
+    QList<QBsonValue> values() const;
+
 private:
-    QSharedDataPointer<QBsonArrayData> data;
+    QBsonArrayData *data;
 };
 
+Q_DECLARE_METATYPE(QBsonArray)
 #endif // QBSONARRAY_H

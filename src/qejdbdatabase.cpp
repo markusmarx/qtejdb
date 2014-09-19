@@ -11,224 +11,7 @@
 #include "qejdbcondition.h"
 #include "ejdb.h"
 #include "bson.h"
-#include "globals_p.h"
 
-/**
- * @brief QEJDB::convert2BsonEntry convert the variant value in a bson repräsentation and
- * append to the given bson.
- *
- * @param bson pointer to a bson structur
- * @param attr attribute name to append.
- * @param value variant value. Supported types are: bool, string, int, double, longlong
- */
-void QEJDB::convert2BsonEntry(bson *bson, const char* attr, QVariant value)
-{
-    switch (value.type()) {
-        case QVariant::String:
-            bson_append_string(bson, attr, value.toString().toLatin1()); break;
-        case QVariant::Int:
-            bson_append_int(bson, attr, value.toInt()); break;
-        case QVariant::Double:
-            bson_append_double(bson, attr, value.toDouble()); break;
-        case QVariant::LongLong:
-            bson_append_long(bson, attr, value.toLongLong()); break;
-        case QVariant::Bool:
-            bson_append_bool(bson, attr, value.toBool()); break;
-        default: break;
-    }
-}
-
-/**
- * @brief QEJDB::convert2Query  convert a given condition object in a bson query repräsentation.
- *
- * @param bq pointer to a bson structure.
- * @param condition QEjdbContition to convert.
- */
-void QEJDB::convert2Query(bson *bq, QEjdbCondition condition)
-{
-
-    if (condition.type() == QEjdbCondition::EQUALS) {
-        bson_append_string(bq, condition.attribute().toLatin1(), condition.value().toString().toLatin1());
-    } else {
-
-        bson_append_start_object(bq, condition.attribute().toLatin1());
-
-        switch (condition.type()) {
-            case QEjdbCondition::BEGIN:
-                QEJDB::convert2BsonEntry(bq, QStringLiteral("$begin").toLatin1(), condition.value());
-                break;
-            default: break;
-        }
-        bson_append_finish_object(bq);
-    }
-}
-
-/**
- * @brief QEJDB::convert2QJsonValue convert a bson type in a QJsonValue type.
- *
- * @param bt bson_type enum
- * @param it iterator that points to the value.
- *
- * @return QJsonValue()
- */
-QJsonValue QEJDB::convert2QJsonValue(bson_type bt, bson_iterator *it)
-{
-
-    bson_oid_t *oid;
-    switch (bt) {
-        case BSON_LONG:
-            return QJsonValue((qint64) bson_iterator_long(it));
-        case BSON_INT:
-            return QJsonValue(bson_iterator_int(it));
-        case BSON_DOUBLE:
-            return QJsonValue(bson_iterator_double(it));
-        case BSON_STRING:
-        case BSON_SYMBOL:
-            return QJsonValue(bson_iterator_string(it));
-        case BSON_OID:
-            char xoid[25];
-            oid = bson_iterator_oid(it);
-            bson_oid_to_string(oid, xoid);
-            return QJsonValue(QString(xoid));
-        case BSON_ARRAY:
-        case BSON_OBJECT:
-            bson_iterator sit;
-            BSON_ITERATOR_SUBITERATOR(it, &sit);
-            if (bt == BSON_OBJECT) {
-                QJsonObject subObj;
-                convert2QJson2(subObj, &sit);
-                return QJsonValue(subObj);
-            } else {
-                QJsonArray subArr;
-                convert2QJson2(subArr, &sit);
-                return QJsonValue(subArr);
-            }
-    }
-}
-
-/**
- * @brief QEJDB::convert2QJson2 append values from a bson iterator to the array.
- *
- * @param obj QJsonArray
- * @param it iterator points to the array.
- */
-void QEJDB::convert2QJson2(QJsonArray &obj, bson_iterator *it)
-{
-    bson_type bt;
-    while ((bt = bson_iterator_next(it)) != BSON_EOO)  {
-        obj.append(QJsonValue(convert2QJsonValue(bt, it)));
-    }
-
-}
-
-/**
- * @brief QEJDB::convert2QJson2 append values from bson iterator to the object.
- *
- * @param obj QJsonObject
- * @param it iterator point to the object.
- */
-void QEJDB::convert2QJson2(QJsonObject &obj, bson_iterator *it)
-{
-    bson_type bt;
-
-    while ((bt = bson_iterator_next(it)) != BSON_EOO) {
-        QString key = BSON_ITERATOR_KEY(it);
-        obj.insert(key, convert2QJsonValue(bt, it));
-    }
-}
-
-/**
- * @brief QEJDB::convert2QJson convert a bson to a QJsonObject. The converter uses the ejdb bson2json function.
- * So all datatypes should supported. Currently this is not fully tested.
- *
- * @param bson pointer to a bson structure.
- * @return converted QJsonObject.
- */
-QJsonObject QEJDB::convert2QJson(bson *bson)
-{
-    QJsonObject obj;
-    bson_iterator it;
-
-    BSON_ITERATOR_FROM_BUFFER(&it, bson->data);
-
-    convert2QJson2(obj, &it);
-
-    return obj;
-}
-
-
-/**
- * @brief QEJDB::convert2Bson convert the given QJsonObject to a bson repräsentation.
- *
- * @param obj QJsonObject
- *
- * @return bson
- */
-bson QEJDB::convert2Bson(QJsonObject obj)
-{
-
-    bson bsrec;
-    bson_init(&bsrec);
-
-    if (obj.contains("_id")) {
-
-        bson_oid_t oid;
-        bson_oid_from_string(&oid, obj.value("_id").toString().toLatin1());
-        bson_append_oid(&bsrec, "_id", &oid);
-    }
-
-
-    QStringList keys = obj.keys();
-
-    foreach(QString key, keys) {
-        QJsonValue v = obj.value(key);
-        QEJDB::convert2Bson2(key.toLatin1(), v, bsrec);
-    }
-
-    bson_finish(&bsrec);
-
-    return bsrec;
-}
-
-/**
- * @brief convert2Bson2 recursive method to convert QJsonValue 2 bson record.
- *
- * @param attr  const *char attribute name.
- * @param value QJsonValue to convert.
- * @param bsrec pointer to the bson record.
- */
-void QEJDB::convert2Bson2(const char* attr, QJsonValue value, bson &bsrec)
-{    
-
-    if (value.type() == QJsonValue::Object) {
-        bson_append_start_object(&bsrec, attr);
-        QJsonObject jsonObj = value.toObject();
-        QStringList keys = jsonObj.keys();
-
-        foreach(QString key, keys) {
-            QJsonValue v = jsonObj.value(key);
-            QEJDB::convert2Bson2(key.toLatin1(), v, bsrec);
-        }
-
-        bson_append_finish_object(&bsrec);
-    } else if (value.type() ==QJsonValue::Array) {
-
-       QJsonArray arr = value.toArray();
-        QJsonArray::Iterator it;
-        bson_append_start_array(&bsrec, attr);
-        int i = 0;
-        char kbuf[TCNUMBUFSIZ];
-        for (it = arr.begin(); it != arr.end();++it) {
-            bson_numstrn(kbuf, TCNUMBUFSIZ, i++);
-            QEJDB::convert2Bson2(kbuf, *it, bsrec);
-        }
-
-        bson_append_finish_array(&bsrec);
-    } else if (value.type() != QJsonValue::Undefined) {
-        QEJDB::convert2BsonEntry(&bsrec, attr, value.toVariant());
-    }
-
-}
 
 /**
  * Hash to store open connections. Copied from QSqlDatabase.
@@ -346,7 +129,7 @@ bool QEjdbDatabasePrivate::containsCollection(QString collectionName)
 
 QList<QJsonObject> QEjdbDatabasePrivate::query(QString collectionName, QEjdbCondition condition)
 {
-
+/*
     bson bq1;
     bson_init_as_query(&bq1);
     QEJDB::convert2Query(&bq1, condition);
@@ -378,8 +161,9 @@ QList<QJsonObject> QEjdbDatabasePrivate::query(QString collectionName, QEjdbCond
     //Dispose query
     ejdbquerydel(q);
     bson_destroy(&bq1);
-
-    return resultList;
+*/
+    QList<QJsonObject> res;
+    return res;
 
 }
 
@@ -501,9 +285,8 @@ QEjdbDatabase QEjdbDatabase::database(QString connectionName)
 }
 
 
-QEjdbDatabase::QEjdbDatabase(const QEjdbDatabase &other)
+QEjdbDatabase::QEjdbDatabase(const QEjdbDatabase &other):d(other.d)
 {
-    d = other.d;
     d->ref.ref();
 }
 
@@ -526,7 +309,8 @@ QEjdbDatabase::QEjdbDatabase()
 
 QEjdbDatabase::~QEjdbDatabase()
 {
-    qAtomicDetach<QEjdbDatabasePrivate>(d);
+    if (!d->ref.deref())
+        delete d;
 }
 
 bool QEjdbDatabase::open()

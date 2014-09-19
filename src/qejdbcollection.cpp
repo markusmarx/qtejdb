@@ -57,7 +57,7 @@ bool QEjdbCollectionPrivate::save(QJsonObject &obj)
     bson_oid_t oid;
 
     // get bson
-    bson bsrec = QEJDB::convert2Bson(obj);
+    /*bson bsrec = QEJDB::convert2Bson(obj);
 
     // save
     bool res = ejdbsavebson(m_col, &bsrec, &oid);
@@ -66,7 +66,8 @@ bool QEjdbCollectionPrivate::save(QJsonObject &obj)
     obj.insert("_id", QJsonValue(QString(oidhex)));
     bson_destroy(&bsrec);
 
-    return res;
+    return res;*/
+    return false;
 }
 
 bool QEjdbCollectionPrivate::remove(QJsonObject &obj)
@@ -86,9 +87,10 @@ QJsonObject QEjdbCollectionPrivate::load(QString oidStr)
 
     bson* bsrec = ejdbloadbson(m_col, &oid);
 
-    QJsonObject obj = QEJDB::convert2QJson(bsrec);
+    /*QJsonObject obj = QEJDB::convert2QJson(bsrec);
     bson_del(bsrec);
-
+*/
+    QJsonObject obj;
 
     return obj;
 }
