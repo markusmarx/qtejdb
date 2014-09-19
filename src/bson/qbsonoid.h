@@ -5,6 +5,11 @@
 
 class QBsonOidData;
 
+/**
+ * @brief The QBsonOid class wrapper to store a bson id value. Bson Id is a
+ * 12-byte array.
+ * @see http://docs.mongodb.org/manual/reference/object-id/
+ */
 class QBsonOid
 {
 public:

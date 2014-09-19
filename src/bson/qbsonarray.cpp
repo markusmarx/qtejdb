@@ -12,21 +12,38 @@ public:
     QList<QBsonValue> list;
 };
 
+/**
+ * @brief QBsonArray::QBsonArray construct a empty QBsonArray
+ */
 QBsonArray::QBsonArray() : data(new QBsonArrayData)
 {
 }
 
+/**
+ * @brief QBsonArray::QBsonArray copy constructor
+ * @param rhs
+ */
 QBsonArray::QBsonArray(const QBsonArray &rhs) : data(rhs.data)
 {
     data->ref.ref();
 }
 
+/**
+ * @brief QBsonArray::operator = copy a shared instance
+ *
+ * @param rhs source instance
+ * @return this instace
+ */
 QBsonArray &QBsonArray::operator=(const QBsonArray &rhs)
 {
     qAtomicAssign(data, rhs.data);
     return *this;
 }
 
+/**
+ * @brief QBsonArray::~QBsonArray destruct instance and delete shared instance if not
+ * used.
+ */
 QBsonArray::~QBsonArray()
 {
     if (!data->ref.deref())

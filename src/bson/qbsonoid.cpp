@@ -113,5 +113,5 @@ QString QBsonOid::value() const
  */
 bool QBsonOid::isValid() const
 {
-    return data->id.length() == 25;
+    return data->id.length() == 24;
 }
