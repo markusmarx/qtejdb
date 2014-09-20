@@ -44,7 +44,7 @@ void Tst_QBson::tst_qbson()
     QCOMPARE(b3.value("name5").toDateTime(), d);
     QCOMPARE(b3.value("name6").toBinary(), QByteArray(t));
     QCOMPARE(b3.value("name7").toBool(), true);
-    QCOMPARE(b3.value("name8").toId().value(), b2.value("name8").toId().value());
+    QCOMPARE(b3.value("name8").toId().toString(), b2.value("name8").toId().toString());
 
 }
 
@@ -78,7 +78,7 @@ void Tst_QBson::tst_stream()
     QCOMPARE(b3.value("name5").toDateTime(), d);
     QCOMPARE(b3.value("name6").toBinary(), QByteArray(t));
     QCOMPARE(b3.value("name7").toBool(), true);
-    QCOMPARE(b3.value("name8").toId().value(), b2.value("name8").toId().value());
+    QCOMPARE(b3.value("name8").toId().toString(), b2.value("name8").toId().toString());
 
     for (int i = 0; i < 10000; i++) {
         QBsonObject bs;

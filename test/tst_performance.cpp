@@ -1,7 +1,7 @@
 #include "tst_performance.h"
 #include "qejdbdatabase.h"
-#include <QJsonDocument>
-#include <QJsonArray>
+#include "bson/qbsonobject.h"
+#include "bson/qbsonarray.h"
 #include <QTest>
 #include <QElapsedTimer>
 #include <QDebug>
@@ -36,31 +36,31 @@ void Tst_Performance::tst_insQryTsd()
     QElapsedTimer t;
 
 
-    QJsonObject obj;
-    obj.insert("name", QJsonValue("test"));
-    obj.insert("name1", QJsonValue("test"));
-    obj.insert("name2", QJsonValue("test"));
-    obj.insert("name3", QJsonValue("test"));
-    obj.insert("name4", QJsonValue("test"));
-    obj.insert("name5", QJsonValue("test"));
-    obj.insert("num", QJsonValue(10));
-    obj.insert("num1", QJsonValue(10));
-    obj.insert("num2", QJsonValue(10));
-    obj.insert("num3", QJsonValue(10));
-    obj.insert("num4", QJsonValue(10));
-    obj.insert("num5", QJsonValue(10));
-    obj.insert("description", QJsonValue("test test test test test test test test test test test test test test test test"));
-    obj.insert("description1", QJsonValue("test test test test test test test test test test test test test test test test"));
-    obj.insert("description2", QJsonValue("test test test test test test test test test test test test test test test test"));
-    obj.insert("description3", QJsonValue("test test test test test test test test test test test test test test test test"));
-    obj.insert("description4", QJsonValue("test test test test test test test test test test test test test test test test"));
-    QJsonArray arr;
+    QBsonObject obj;
+    obj.insert("name", QBsonValue("test"));
+    obj.insert("name1", QBsonValue("test"));
+    obj.insert("name2", QBsonValue("test"));
+    obj.insert("name3", QBsonValue("test"));
+    obj.insert("name4", QBsonValue("test"));
+    obj.insert("name5", QBsonValue("test"));
+    obj.insert("num", QBsonValue(10));
+    obj.insert("num1", QBsonValue(10));
+    obj.insert("num2", QBsonValue(10));
+    obj.insert("num3", QBsonValue(10));
+    obj.insert("num4", QBsonValue(10));
+    obj.insert("num5", QBsonValue(10));
+    obj.insert("description", QBsonValue("test test test test test test test test test test test test test test test test"));
+    obj.insert("description1", QBsonValue("test test test test test test test test test test test test test test test test"));
+    obj.insert("description2", QBsonValue("test test test test test test test test test test test test test test test test"));
+    obj.insert("description3", QBsonValue("test test test test test test test test test test test test test test test test"));
+    obj.insert("description4", QBsonValue("test test test test test test test test test test test test test test test test"));
+    QBsonArray arr;
     arr.append("test1");
     arr.append("test2");
     arr.append("test3");
     arr.append("test4");
     obj.insert("array", arr);
-    qDebug() << obj;
+    //qDebug() << obj;
     int iteration = 10000;
     t.start();
 
