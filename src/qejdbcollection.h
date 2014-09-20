@@ -2,13 +2,13 @@
 #define QEJDBCOLLECTION_H
 
 #include <QString>
-#include <QJsonObject>
 #include "qatomic.h"
 
 struct EJDB;
 struct EJCOLL;
 class QEjdbCollectionPrivate;
 class QEjdbDatabasePrivate;
+class QBsonObject;
 class QEjdbCollection
 {
     friend class QEjdbDatabasePrivate;
@@ -20,16 +20,16 @@ public:
      * @param obj
      * @return if successful true otherwise false.
      */
-    bool save(QJsonObject &obj);
+    bool save(QBsonObject &obj);
 
     /**
      * @brief load load a json by object id.
      * @param oid object id
      * @return jsonobject.
      */
-    QJsonObject load(QString oid);
+    QBsonObject load(QString oid);
 
-    bool remove(QJsonObject &obj);
+    bool remove(QBsonObject &obj);
 
     /**
      * @brief collectionName return the name of the collection

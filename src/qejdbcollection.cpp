@@ -1,8 +1,10 @@
 #include "qejdbcollection.h"
 #include <QDebug>
-#include <QJsonDocument>
 #include "globals_p.h"
 #include "ejdb.h"
+#include "bson/qbsonobject.h"
+#include "bson/qbsonobject_p.h"
+
 
 class QEjdbCollectionPrivate
 {
@@ -34,10 +36,10 @@ public:
     QAtomicInt ref;
 
 
-    bool save(QJsonObject &obj);
-    bool remove(QJsonObject &obj);
+    bool save(QBsonObject &obj);
+    bool remove(QBsonObject &obj);
 
-    QJsonObject load(QString oidStr);
+    QBsonObject load(QString oidStr);
 
     bool removeCollection();
 
@@ -52,25 +54,25 @@ QEjdbCollection::QEjdbCollection(EJDB *db, EJCOLL *col, QString collectionName)
 }
 
 
-bool QEjdbCollectionPrivate::save(QJsonObject &obj)
+bool QEjdbCollectionPrivate::save(QBsonObject &obj)
 {
     bson_oid_t oid;
 
     // get bson
-    /*bson bsrec = QEJDB::convert2Bson(obj);
+    QBsonObjectData *d = obj.data;
+    bson bsrec = QBsonObjectData::convert2Bson(*d);
 
     // save
     bool res = ejdbsavebson(m_col, &bsrec, &oid);
     char oidhex[25];
     bson_oid_to_string(&oid, oidhex);
-    obj.insert("_id", QJsonValue(QString(oidhex)));
-    bson_destroy(&bsrec);
+    obj.insert("_id", QBsonOid(oidhex));
+    //bson_destroy(bsrec);
 
-    return res;*/
-    return false;
+    return res;
 }
 
-bool QEjdbCollectionPrivate::remove(QJsonObject &obj)
+bool QEjdbCollectionPrivate::remove(QBsonObject &obj)
 {
     QString oidStr = obj.value("_id").toString();
     bson_oid_t oid;
@@ -79,18 +81,15 @@ bool QEjdbCollectionPrivate::remove(QJsonObject &obj)
     return ejdbrmbson(m_col, &oid);
 }
 
-QJsonObject QEjdbCollectionPrivate::load(QString oidStr)
+QBsonObject QEjdbCollectionPrivate::load(QString oidStr)
 {
 
     bson_oid_t oid;
     bson_oid_from_string(&oid, oidStr.toLatin1());
 
     bson* bsrec = ejdbloadbson(m_col, &oid);
-
-    /*QJsonObject obj = QEJDB::convert2QJson(bsrec);
+    QBsonObject obj(bsrec);
     bson_del(bsrec);
-*/
-    QJsonObject obj;
 
     return obj;
 }
@@ -104,17 +103,17 @@ bool QEjdbCollectionPrivate::removeCollection()
     return true;
 }
 
-bool QEjdbCollection::save(QJsonObject &obj)
+bool QEjdbCollection::save(QBsonObject &obj)
 {
     return d->save(obj);
 }
 
-QJsonObject QEjdbCollection::load(QString oid)
+QBsonObject QEjdbCollection::load(QString oid)
 {
     return d->load(oid);
 }
 
-bool QEjdbCollection::remove(QJsonObject &obj)
+bool QEjdbCollection::remove(QBsonObject &obj)
 {
     return d->remove(obj);
 }
