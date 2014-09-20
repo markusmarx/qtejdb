@@ -10,6 +10,8 @@
 typedef QHash<QString, QBsonValue> QBsonValueHash;
 class QBsonObjectData;
 class QBsonOid;
+class QEjdbCollection;
+
 class QBsonObject
 {
 public:
@@ -26,9 +28,19 @@ public:
     QStringList names();
     QBsonValueHash values();
     QByteArray toBinary();
+    bool remove(const QString& name);
+
+
 
 private:
+    friend class QEjdbCollectionPrivate;
+    friend class QObjectBsonData;
     QBsonObjectData *data;
+
+    QBsonObject(void* bsonRec);
+
+    QBsonObjectData* constData() const {return data;};
+
 };
 
 Q_DECLARE_METATYPE(QBsonObject)

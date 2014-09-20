@@ -4,39 +4,12 @@
 #include "bson.h"
 #include "qbsonvalue.h"
 #include "qejdbcondition.h"
-#include "qatomic.h"
 #include "qbsonarray.h"
 #include "qbsonoid.h"
+#include "qbsonobject_p.h"
 #include <QDateTime>
 #include <QDebug>
 
-#define TCNUMBUFSIZ 32
-
-class QBsonObjectData  {
-
-public:
-    QBsonObjectData()
-    {
-        ref = 1;
-    }
-
-    QBsonValueHash values;
-    QByteArray toBinary();
-
-    static void fromBinary(const QByteArray& binary, QBsonObject& obj);
-    static bson convert2Bson(QBsonObjectData &obj);
-    static void convert2Bson2(const char* attr, QBsonValue value, bson &bsrec);
-    static void convert2Query(bson* bson, QEjdbCondition &condition);
-    static void convert2BsonEntry(bson *bson, const char* attr, QBsonValue &value);
-
-    static void convert2QBson(bson* bson, QBsonObject& obj);
-    static void convert2QBson2(QBsonObject &obj, bson_iterator *it);
-    static void convert2QBson2(QBsonArray &obj, bson_iterator *it);
-    static QBsonValue convert2QBsonValue(bson_type bt, bson_iterator *it);
-
-    QAtomicInt ref;
-
-};
 
 /**
  * @brief QBsonObjectData::convert2BsonEntry convert the variant value in a bson repräsentation and
@@ -55,7 +28,7 @@ void QBsonObjectData::convert2BsonEntry(bson *bson, const char* attr, QBsonValue
     switch (value.type()) {
         case QBsonValue::Id:
             bson_oid_t oid;
-            bson_oid_from_string(&oid, value.toId().value().toLatin1());
+            bson_oid_from_string(&oid, value.toId().toString().toLatin1());
             bson_append_oid(bson, attr, &oid);
             break;
         case QBsonValue::String:
@@ -254,23 +227,16 @@ QByteArray QBsonObjectData::toBinary()
 
 void QBsonObjectData::fromBinary(const QByteArray& binary, QBsonObject& obj)
 {
-
     const char* data = binary.constData();
     bson bs;
-
-    //char* data2;
-    //strcpy(data2, data);
     bson_init_with_data(&bs, data);
     bson_finish(&bs);
-
-    //bson_print_raw(data, 1);
     convert2QBson(&bs, obj);
 
 }
 
 bson QBsonObjectData::convert2Bson(QBsonObjectData &obj)
 {
-
     bson bsrec;
     bson_init(&bsrec);
     QBsonValueHash values = obj.values;
@@ -348,8 +314,21 @@ QBsonObject::QBsonObject() : data(new QBsonObjectData)
  * @brief QBsonObject::QBsonObject construct a QBsonObject from stream.
  * @param bson
  */
-QBsonObject::QBsonObject(const QByteArray& bson) : data(new QBsonObjectData) {
+QBsonObject::QBsonObject(const QByteArray& bson):
+    data(new QBsonObjectData)
+{
     QBsonObjectData::fromBinary(bson, *this);
+}
+
+/**
+ * @brief QBsonObject::QBsonObject construct a bson from the bsonrec.
+ *
+ * @param bsonRec bson record.
+ */
+QBsonObject::QBsonObject(void *bsonRec):
+    data(new QBsonObjectData)
+{
+    QBsonObjectData::convert2QBson((bson*)bsonRec, *this);
 }
 
 /**
@@ -387,6 +366,19 @@ QByteArray QBsonObject::toBinary()
 {
     return data->toBinary();
 }
+
+/**
+ * @brief QBsonObject::remove remove name value pair.
+ *
+ * @param name value name
+ *
+ * @return true if success otherwise false.
+ */
+bool QBsonObject::remove(const QString &name)
+{
+    return data->values.remove(name) > 0;
+}
+
 
 /**
  * @brief QBsonObject::QBsonObject create a shared instance.
