@@ -22,9 +22,9 @@ public:
     QEjdbCondition &operator=(const QEjdbCondition &);
     ~QEjdbCondition();
 
-    QString attribute();
-    ConditionType type();
-    QVariant value();
+    QString attribute() const;
+    ConditionType type() const;
+    QVariant value() const;
 
 private:
     QSharedDataPointer<QEjdbConditionData> data;

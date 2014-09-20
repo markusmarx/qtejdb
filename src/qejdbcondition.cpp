@@ -33,17 +33,17 @@ QEjdbCondition::~QEjdbCondition()
 {
 }
 
-QString QEjdbCondition::attribute()
+QString QEjdbCondition::attribute() const
 {
     return data->m_attribute;
 }
 
-QVariant QEjdbCondition::value()
+QVariant QEjdbCondition::value() const
 {
     return data->m_value;
 }
 
-QEjdbCondition::ConditionType QEjdbCondition::type()
+QEjdbCondition::ConditionType QEjdbCondition::type() const
 {
     return data->m_type;
 }

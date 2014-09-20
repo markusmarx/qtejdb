@@ -61,7 +61,7 @@ void Tst_Performance::tst_insQryTsd()
     arr.append("test4");
     obj.insert("array", arr);
     //qDebug() << obj;
-    int iteration = 10000;
+    int iteration = 1000;
     t.start();
 
     QString id;

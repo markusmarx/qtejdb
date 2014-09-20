@@ -3,9 +3,7 @@
 #include <QDir>
 #include <QReadLocker>
 #include <QReadWriteLock>
-#include <QJsonDocument>
-#include <QJsonArray>
-#include <QJsonValue>
+#include "bson/qbsonobject.h"
 
 #include "qatomic.h"
 #include "qejdbcondition.h"
@@ -52,7 +50,7 @@ public:
     QEjdbCollection storeCollection(EJCOLL *col, QString collectionName);
     QEjdbCollection createCollection(QString collectionName);
     bool containsCollection(QString collectionName);
-    QList<QJsonObject> query(QString collection, QEjdbCondition condition);
+    QList<QBsonObject> query(QString collection, QEjdbCondition condition);
     static void removeDatabase(const QString &name);
     static void addDatabase(const QEjdbDatabase &db, const QString &name);
     static QEjdbDatabase database(const QString &name, bool open);
@@ -127,44 +125,12 @@ bool QEjdbDatabasePrivate::containsCollection(QString collectionName)
     return col != 0;
 }
 
-QList<QJsonObject> QEjdbDatabasePrivate::query(QString collectionName, QEjdbCondition condition)
+QList<QBsonObject> QEjdbDatabasePrivate::query(QString collectionName, QEjdbCondition condition)
 {
-/*
-    bson bq1;
-    bson_init_as_query(&bq1);
-    QEJDB::convert2Query(&bq1, condition);
-    bson_finish(&bq1);
 
-    EJCOLL *coll = ejdbgetcoll(m_db, collectionName.toLatin1());
+    QEjdbCollection col = collection(collectionName);
 
-    EJQ *q = ejdbcreatequery(m_db, &bq1, NULL, 0, NULL);
-
-    uint32_t count;
-    TCLIST *res = ejdbqryexecute(coll, q, &count, 0, NULL);
-
-    QList<QJsonObject> resultList;
-
-    for (int i = 0; i < TCLISTNUM(res); ++i) {
-        void *bsdata = TCLISTVALPTR(res, i);
-        int size = bson_size2(bsdata);
-        bson *bs = bson_create_from_buffer(bsdata, size);
-
-        QJsonObject obj = QEJDB::convert2QJson(bs);
-
-        resultList.append(obj);
-
-    }
-
-    //Dispose result set
-    tclistdel(res);
-
-    //Dispose query
-    ejdbquerydel(q);
-    bson_destroy(&bq1);
-*/
-    QList<QJsonObject> res;
-    return res;
-
+    return col.query(condition);
 }
 
 QEjdbCollection QEjdbDatabasePrivate::collection(QString collectionName)
@@ -297,7 +263,7 @@ QEjdbDatabase &QEjdbDatabase::operator=(const QEjdbDatabase &other)
     return *this;
 }
 
-QList<QJsonObject> QEjdbDatabase::query(QString collection, QEjdbCondition condition)
+QList<QBsonObject> QEjdbDatabase::query(QString collection, QEjdbCondition condition)
 {
     return d->query(collection, condition);
 }

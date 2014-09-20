@@ -75,31 +75,6 @@ void QBsonObjectData::convert2BsonEntry(bson *bson, const char* attr, QBsonValue
 }
 
 /**
- * @brief QBsonObjectData::convert2Query  convert a given condition object in a bson query repräsentation.
- *
- * @param bq pointer to a bson structure.
- * @param condition QEjdbCondition to convert.
- */
-void QBsonObjectData::convert2Query(bson *bq, QEjdbCondition &condition)
-{
-
-    if (condition.type() == QEjdbCondition::EQUALS) {
-        bson_append_string(bq, condition.attribute().toLatin1(), condition.value().toString().toLatin1());
-    } else {
-
-        bson_append_start_object(bq, condition.attribute().toLatin1());
-
-        switch (condition.type()) {
-            case QEjdbCondition::BEGIN:
-                //QBsonObjectData::convert2BsonEntry(bq, QStringLiteral("$begin").toLatin1(), condition.value());
-                break;
-            default: break;
-        }
-        bson_append_finish_object(bq);
-    }
-}
-
-/**
  * @brief QBsonObjectData::convert2QBsonValue convert a bson type in a QBsonValue type.
  *
  * @param bt bson_type enum
@@ -215,8 +190,8 @@ void QBsonObjectData::convert2QBson(bson *bson, QBsonObject& obj)
  */
 QByteArray QBsonObjectData::toBinary()
 {
-    bson bs;
-    bs = convert2Bson(*this);
+
+    bson bs = convert2Bson(*this);
     const char* binary = bson_data(&bs);
     int size = bson_size(&bs);
 

@@ -93,7 +93,7 @@ public:
 
     QEjdbDatabase &operator =(const QEjdbDatabase &other);
 
-    QList<QJsonObject> query(QString collection, QEjdbCondition condition);
+    QList<QBsonObject> query(QString collection, QEjdbCondition condition);
 
 protected:
     /**

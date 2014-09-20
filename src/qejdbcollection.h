@@ -9,6 +9,8 @@ struct EJCOLL;
 class QEjdbCollectionPrivate;
 class QEjdbDatabasePrivate;
 class QBsonObject;
+class QEjdbCondition;
+
 class QEjdbCollection
 {
     friend class QEjdbDatabasePrivate;
@@ -42,6 +44,8 @@ public:
     QEjdbCollection &operator =(const QEjdbCollection &other);
 
     bool removeCollection();
+
+    QList<QBsonObject> query(const QEjdbCondition& condition);
 
     ~QEjdbCollection();
 

@@ -9,10 +9,10 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
-    //QTest::qExec(new Tst_QBson, argc, argv);
+    QTest::qExec(new Tst_QBson, argc, argv);
     //QTest::qExec(new Tst_Database, argc, argv);
-    QTest::qExec(new Tst_Collection, argc, argv);
-    //QTest::qExec(new Tst_Performance, argc, argv);
+    //QTest::qExec(new Tst_Collection, argc, argv);
+    QTest::qExec(new Tst_Performance, argc, argv);
 
     //return a.exec();
 }
