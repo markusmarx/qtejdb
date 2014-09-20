@@ -29,7 +29,8 @@ HEADERS += \
     bson/qbsonobject.h \
     bson/qbsonvalue.h \
     bson/qbsonarray.h \
-    bson/qbsonoid.h
+    bson/qbsonoid.h \
+    bson/qbsonobject_p.h
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../3rdparty/ejdb/tcejdb/release/ -ltcejdb
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../3rdparty/ejdb/tcejdb/debug/ -ltcejdb
