@@ -23,8 +23,11 @@ public:
     QBsonOid &operator=(const QBsonOid &);
     ~QBsonOid();
 
-    QString value() const;
+    QString toString() const;
     bool isValid() const;
+    bool operator ==(const QBsonOid& id) const;
+    operator QString();
+
 private:
     QBsonOidData *data;
 };

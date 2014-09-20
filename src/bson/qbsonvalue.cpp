@@ -194,7 +194,14 @@ QBsonValue::QBsonValueType QBsonValue::type() const
  */
 QString QBsonValue::toString() const
 {
-    return data->v.toString();
+    switch(data->type) {
+        case QBsonValue::Id:
+            return toId().toString();
+        default:
+            return data->v.toString();
+    }
+
+
 }
 
 /**
@@ -285,4 +292,18 @@ bool QBsonValue::toBool() const
 QBsonOid QBsonValue::toId() const
 {
     return data->v.value<QBsonOid>();
+}
+
+bool QBsonValue::operator ==(const QBsonValue value) const
+{
+    return data->v == value.data->v;
+}
+
+/**
+ * @brief QBsonValue::isObject returns true if type is QBsonValue::Object
+ * @return true if type is QBsonValue::Object otherwise false.
+ */
+bool QBsonValue::isObject() const
+{
+    return data->type == QBsonValue::Object;
 }

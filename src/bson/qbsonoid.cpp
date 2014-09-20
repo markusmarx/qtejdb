@@ -101,7 +101,7 @@ QBsonOid::~QBsonOid()
  *
  * @return id as QString
  */
-QString QBsonOid::value() const
+QString QBsonOid::toString() const
 {
     return data->id;
 }
@@ -114,4 +114,14 @@ QString QBsonOid::value() const
 bool QBsonOid::isValid() const
 {
     return data->id.length() == 24;
+}
+
+bool QBsonOid::operator ==(const QBsonOid &id) const
+{
+    return data->id == id.toString();
+}
+
+QBsonOid::operator QString()
+{
+    return data->id;
 }

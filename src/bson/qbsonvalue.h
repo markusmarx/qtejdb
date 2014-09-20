@@ -51,7 +51,8 @@ public:
     QBsonArray toArray() const;
     bool toBool() const;
     QBsonOid toId() const;
-
+    bool operator ==(const QBsonValue value) const;
+    bool isObject() const;
 
 private:
     QBsonValueData *data;
