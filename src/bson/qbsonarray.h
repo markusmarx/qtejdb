@@ -18,6 +18,7 @@ public:
     void insert(int i, const QBsonValue &value);
     QBsonValue value(int i);
     QList<QBsonValue> values() const;
+    int size() const;
 
 private:
     QBsonArrayData *data;

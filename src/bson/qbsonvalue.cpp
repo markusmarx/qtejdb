@@ -307,3 +307,12 @@ bool QBsonValue::isObject() const
 {
     return data->type == QBsonValue::Object;
 }
+
+/**
+ * @brief QBsonValue::isArray returns true if type id QBsonValue::Array
+ * @return true if type id QBsonValue::Array otherwise false.
+ */
+bool QBsonValue::isArray() const
+{
+    return data->type == QBsonValue::Array;
+}

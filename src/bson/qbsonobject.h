@@ -30,8 +30,6 @@ public:
     QByteArray toBinary();
     bool remove(const QString& name);
 
-
-
 private:
     friend class QEjdbCollectionPrivate;
     friend class QObjectBsonData;
@@ -44,5 +42,7 @@ private:
 };
 
 Q_DECLARE_METATYPE(QBsonObject)
+
+QDebug operator<<(QDebug dbg, const QBsonObject &c);
 
 #endif // QBSONOBJECT_H

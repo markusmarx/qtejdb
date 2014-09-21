@@ -90,3 +90,8 @@ QList<QBsonValue> QBsonArray::values() const
 {
     return data->list;
 }
+
+int QBsonArray::size() const
+{
+    return data->list.size();
+}

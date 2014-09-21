@@ -355,6 +355,7 @@ bool QBsonObject::remove(const QString &name)
 }
 
 
+
 /**
  * @brief QBsonObject::QBsonObject create a shared instance.
  * @param rhs
@@ -379,4 +380,11 @@ QBsonObject::~QBsonObject()
 {
     if(!data->ref.deref())
         delete data;
+}
+
+
+QDebug operator<<(QDebug dbg, const QBsonObject &c)
+{
+    dbg << "test";
+    return dbg.space();
 }
