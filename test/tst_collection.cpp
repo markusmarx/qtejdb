@@ -66,10 +66,8 @@ void Tst_Collection::tst_simpleQuery()
     //qDebug() << list;
 }
 
-void Tst_Collection::tst_dataTypes()
+QBsonObject Tst_Collection::createTestObject()
 {
-    QEjdbDatabase m_db = QEjdbDatabase::database();
-    QEjdbCollection col = m_db.createCollection("datatypes");
     QBsonObject subObj;
     subObj.insert("name", "subinsert");
     QBsonArray arr;
@@ -90,6 +88,15 @@ void Tst_Collection::tst_dataTypes()
     ba.append(12).append(23).append(47);
 
     testObj.insert("binary", QBsonValue(ba.data()));
+
+    return testObj;
+}
+
+void Tst_Collection::tst_dataTypes()
+{
+    QEjdbDatabase m_db = QEjdbDatabase::database();
+    QEjdbCollection col = m_db.createCollection("datatypes");
+    QBsonObject testObj = createTestObject();
 
     col.save(testObj);
 
@@ -114,6 +121,8 @@ void Tst_Collection::tst_dataTypes()
     QCOMPARE(QString("subinsert"), loadedSubObj.value("name").toString());
     //qDebug() << testObj;
 }
+
+
 
 void Tst_Collection::cleanupTestCase()
 {

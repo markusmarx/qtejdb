@@ -2,7 +2,7 @@
 #define TST_COLLECTION_H
 
 #include <QObject>
-
+class QBsonObject;
 
 class Tst_Collection : public QObject
 {
@@ -10,6 +10,7 @@ class Tst_Collection : public QObject
 public:
     explicit Tst_Collection(QObject *parent = 0);
 
+    QBsonObject createTestObject();
 signals:
 
 private slots:

@@ -47,6 +47,7 @@ public:
     QList<QBsonObject> query(QEjdbCollectionPrivate* col, const QEjdbCondition& cond);
 
     static void convert2Query(bson *bq, const QEjdbCondition &condition);
+    static void appendQueryValue(bson *bq, const QString& attr, const QVariant &v);
 };
 
 
@@ -56,6 +57,40 @@ QEjdbCollection::QEjdbCollection(EJDB *db, EJCOLL *col, QString collectionName)
 {
 
 }
+
+void QEjdbCollectionPrivate::appendQueryValue(bson* bq, const QString& attr, const QVariant& v)
+{
+    switch (v.type()) {
+        case QMetaType::QString:
+            bson_append_string(bq, attr.toLatin1(), v.toString().toLatin1());
+        break;
+        case QMetaType::Int:
+            bson_append_int(bq, attr.toLatin1(), v.toInt());
+        break;
+        case QMetaType::Double:
+            bson_append_double(bq, attr.toLatin1(), v.toDouble());
+        break;
+        case QMetaType::Long:
+            bson_append_long(bq, attr.toLatin1(), v.toLongLong());
+        break;
+        case QMetaType::Bool:
+            bson_append_bool(bq, attr.toLatin1(), v.toBool());
+        break;
+        case QMetaType::QVariantList: {
+            QList<QVariant> vl = v.toList();
+            QList<QVariant>::Iterator it = vl.begin();
+            int i = 0;
+            bson_append_start_array(bq, attr.toLatin1());
+            for (;it != vl.end();) {
+                appendQueryValue(bq, QString::number(i), *it);
+            }
+            bson_append_finish_array(bq);
+            break;
+        }
+    }
+
+}
+
 
 /**
  * @brief QEjdbCollectionPrivate::convert2Query  convert a given condition object in a bson query repräsentation.
@@ -67,15 +102,14 @@ void QEjdbCollectionPrivate::convert2Query(bson *bq, const QEjdbCondition &condi
 {
 
     if (condition.type() == QEjdbCondition::EQUALS) {
-        bson_append_string(bq, condition.attribute().toLatin1(), condition.value().toString().toLatin1());
+        appendQueryValue(bq, condition.attribute(), condition.value());
     } else {
 
         bson_append_start_object(bq, condition.attribute().toLatin1());
 
         switch (condition.type()) {
             case QEjdbCondition::BEGIN:
-                bson_append_string(bq, "$begin",
-                                   condition.value().toString().toLatin1());
+                appendQueryValue(bq, "$begin", condition.value());
                 break;
             default: break;
         }
