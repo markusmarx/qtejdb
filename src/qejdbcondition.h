@@ -13,7 +13,9 @@ public:
     enum ConditionType {
         BEGIN,
         IN,
-        EQUALS
+        EQUALS,
+        GT, GTE,
+        LT, LTE
     };
 
 

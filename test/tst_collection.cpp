@@ -22,7 +22,7 @@ void Tst_Collection::tst_simpleCRUD()
 {
     QEjdbDatabase m_db = QEjdbDatabase::database();
     QEjdbCollection col = m_db.createCollection("testcollection");
-    QBsonObject obj;
+    QBsonObject obj = createTestObject();
     obj.insert("test", QBsonValue("test"));
 
     col.save(obj);
@@ -61,9 +61,33 @@ void Tst_Collection::tst_simpleQuery()
 {
     QEjdbDatabase db = QEjdbDatabase::database();
 
-    QList<QBsonObject> list = db.query("testcollection", QEjdbCondition("test", QEjdbCondition::BEGIN, "tes"));
+    QList<QBsonObject> list = db.query("testcollection",
+                                       QEjdbCondition("test",
+                                                      QEjdbCondition::BEGIN, "tes"));
     QCOMPARE(list.size(), 1);
-    //qDebug() << list;
+
+    list = db.query("testcollection",
+                                       QEjdbCondition("test",
+                                                      QEjdbCondition::EQUALS, "tes"));
+    QCOMPARE(list.size(), 0);
+
+    QVariantList qq;
+    qq << "test" << "tes";
+
+    list = db.query("testcollection", QEjdbCondition("test",
+                                                     QEjdbCondition::IN, qq));
+
+    QCOMPARE(list.size(), 1);
+
+    qq.clear();
+    qq << "te" << "tes";
+
+    list = db.query("testcollection", QEjdbCondition("test",
+                                                     QEjdbCondition::IN, qq));
+
+    QCOMPARE(list.size(), 0);
+
+
 }
 
 QBsonObject Tst_Collection::createTestObject()

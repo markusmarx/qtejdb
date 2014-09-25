@@ -82,7 +82,7 @@ void QEjdbCollectionPrivate::appendQueryValue(bson* bq, const QString& attr, con
             int i = 0;
             bson_append_start_array(bq, attr.toLatin1());
             for (;it != vl.end();) {
-                appendQueryValue(bq, QString::number(i), *it);
+                appendQueryValue(bq, QString::number(++i), *it++);
             }
             bson_append_finish_array(bq);
             break;
@@ -110,6 +110,21 @@ void QEjdbCollectionPrivate::convert2Query(bson *bq, const QEjdbCondition &condi
         switch (condition.type()) {
             case QEjdbCondition::BEGIN:
                 appendQueryValue(bq, "$begin", condition.value());
+                break;
+            case QEjdbCondition::IN:
+                appendQueryValue(bq, "$in", condition.value());
+                break;
+            case QEjdbCondition::GT:
+                appendQueryValue(bq, "$gt", condition.value());
+                break;
+            case QEjdbCondition::GTE:
+                appendQueryValue(bq, "$gte", condition.value());
+                break;
+            case QEjdbCondition::LT:
+                appendQueryValue(bq, "$lt", condition.value());
+                break;
+            case QEjdbCondition::LTE:
+                appendQueryValue(bq, "$lte", condition.value());
                 break;
             default: break;
         }

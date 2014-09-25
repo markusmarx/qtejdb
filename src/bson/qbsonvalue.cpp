@@ -7,6 +7,7 @@
 #include "qatomic.h"
 
 class QBsonValueData {
+
 public:
 
     QBsonValueData(QBsonValue::QBsonValueType t): type(t)
