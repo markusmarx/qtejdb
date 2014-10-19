@@ -3,7 +3,6 @@
 #include <QSharedData>
 #include "bson.h"
 #include "qbsonvalue.h"
-#include "qejdbcondition.h"
 #include "qbsonarray.h"
 #include "qbsonoid.h"
 #include "qbsonobject_p.h"
@@ -96,7 +95,7 @@ QBsonValue QBsonObjectData::convert2QBsonValue(bson_type bt, bson_iterator *it)
             return QBsonValue(bson_iterator_double(it));
         case BSON_STRING:
         case BSON_SYMBOL:
-            return QBsonValue(bson_iterator_string(it));
+            return QBsonValue(QLatin1String(bson_iterator_string(it)));
         case BSON_OID: {
             char xoid[25];
             bson_oid_t* oid = bson_iterator_oid(it);
@@ -196,7 +195,7 @@ QByteArray QBsonObjectData::toBinary()
     int size = bson_size(&bs);
 
     QByteArray bin(binary, size);
-    delete binary;
+    bson_destroy(&bs);
     return bin;
 }
 
@@ -210,10 +209,17 @@ void QBsonObjectData::fromBinary(const QByteArray& binary, QBsonObject& obj)
 
 }
 
-bson QBsonObjectData::convert2Bson(QBsonObjectData &obj)
+bson QBsonObjectData::convert2Bson(QBsonObjectData &obj, bson* bs)
 {
     bson bsrec;
-    bson_init(&bsrec);
+
+    if (bs == 0) {
+        bson_init(&bsrec);
+    } else {
+        bsrec = *bs;
+    }
+
+
     QBsonValueHash values = obj.values;
     if (values.contains("_id")) {
 
@@ -229,8 +235,9 @@ bson QBsonObjectData::convert2Bson(QBsonObjectData &obj)
 
         QBsonObjectData::convert2Bson2(it.key().toLatin1(), it.value(), bsrec);
     }
-
-    bson_finish(&bsrec);
+    if (bs == 0) {
+        bson_finish(&bsrec);
+    }
     return bsrec;
 }
 
@@ -315,6 +322,19 @@ QBsonObject::QBsonObject(void *bsonRec):
 void QBsonObject::insert(const QString &name, const QBsonValue &value)
 {
     data->values.insert(name, value);
+}
+
+/**
+ * @brief QBsonObject::append append the value to the QBsonObject instance.
+ *
+ * @param name  value name
+ * @param value value
+ * @return Returns this bsonobject.
+ */
+QBsonObject QBsonObject::append(const QString &name, const QBsonValue &value)
+{
+    insert(name, value);
+    return *this;
 }
 
 QBsonValue QBsonObject::value(const QString &name)

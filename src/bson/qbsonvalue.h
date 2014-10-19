@@ -26,7 +26,7 @@ public:
     QBsonValue(const QBsonObject &value);
     QBsonValue(const QString &value);
     QBsonValue(const QLatin1String &value);
-    QBsonValue(const char* value);
+    QBsonValue(const char *value);
     QBsonValue(double value);
     QBsonValue(long value);
     QBsonValue(const QDateTime &value);

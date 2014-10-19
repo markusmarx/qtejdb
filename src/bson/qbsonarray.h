@@ -14,7 +14,7 @@ public:
     QBsonArray &operator=(const QBsonArray &);
     ~QBsonArray();
 
-    void append(const QBsonValue &value);
+    QBsonArray append(const QBsonValue &value);
     void insert(int i, const QBsonValue &value);
     QBsonValue value(int i);
     QList<QBsonValue> values() const;

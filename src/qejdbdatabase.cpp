@@ -4,9 +4,9 @@
 #include <QReadLocker>
 #include <QReadWriteLock>
 #include "bson/qbsonobject.h"
+#include "qejdbquery.h"
 
 #include "qatomic.h"
-#include "qejdbcondition.h"
 #include "ejdb.h"
 #include "bson.h"
 
@@ -49,8 +49,9 @@ public:
     QEjdbCollection collection(QString collectionName);
     QEjdbCollection storeCollection(EJCOLL *col, QString collectionName);
     QEjdbCollection createCollection(QString collectionName);
+    bool removeCollection(const QString& collectionName);
     bool containsCollection(QString collectionName);
-    QList<QBsonObject> query(QString collection, QEjdbCondition condition);
+
     static void removeDatabase(const QString &name);
     static void addDatabase(const QEjdbDatabase &db, const QString &name);
     static QEjdbDatabase database(const QString &name, bool open);
@@ -84,7 +85,7 @@ private:
     /**
      * @brief m_collections
      */
-    QHash<QString, QSharedPointer<QEjdbCollection> > m_collections;
+    QHash<QString, QEjdbCollection> m_collections;
 
 };
 
@@ -125,19 +126,16 @@ bool QEjdbDatabasePrivate::containsCollection(QString collectionName)
     return col != 0;
 }
 
-QList<QBsonObject> QEjdbDatabasePrivate::query(QString collectionName, QEjdbCondition condition)
-{
-
-    QEjdbCollection col = collection(collectionName);
-
-    return col.query(condition);
-}
 
 QEjdbCollection QEjdbDatabasePrivate::collection(QString collectionName)
 {
+    if (!containsCollection(collectionName)) {
+        return QEjdbCollection(collectionName);
+    }
+
     if (m_collections.contains(collectionName)) {
-        QSharedPointer<QEjdbCollection> ptr = m_collections.value(collectionName);
-        return *ptr;
+        QEjdbCollection ptr = m_collections.value(collectionName);
+        return ptr;
     }
 
     EJCOLL *col = ejdbgetcoll(m_db, collectionName.toLatin1());
@@ -151,17 +149,30 @@ QEjdbCollection QEjdbDatabasePrivate::createCollection(QString collectionName)
     return storeCollection(col, collectionName);
 }
 
+bool QEjdbDatabasePrivate::removeCollection(const QString &collectionName)
+{
+    if (containsCollection(collectionName)) {
+        if (!ejdbrmcoll(this->m_db, collectionName.toLatin1(), true)) {
+            return false;
+        }
+        m_collections.remove(collectionName);
+        return true;
+    }
+    return false;
+}
+
 QEjdbCollection QEjdbDatabasePrivate::storeCollection(EJCOLL *col, QString collectionName)
 {
-    QSharedPointer<QEjdbCollection> ptr;
+
     if (m_collections.contains(collectionName)) {
         //todo exception handling
 
     } else{
-        ptr = QSharedPointer<QEjdbCollection>(new QEjdbCollection(m_db, col, collectionName));
+        QEjdbCollection ptr(m_db, col, collectionName);
         m_collections.insert(collectionName, ptr);
+        return ptr;
     }
-    return *ptr;
+    return QEjdbCollection(collectionName);
 }
 
 
@@ -263,10 +274,6 @@ QEjdbDatabase &QEjdbDatabase::operator=(const QEjdbDatabase &other)
     return *this;
 }
 
-QList<QBsonObject> QEjdbDatabase::query(QString collection, QEjdbCondition condition)
-{
-    return d->query(collection, condition);
-}
 
 QEjdbDatabase::QEjdbDatabase()
 {
@@ -297,14 +304,15 @@ bool QEjdbDatabase::isOpen()
 
 QEjdbCollection QEjdbDatabase::collection(QString collectionName)
 {
-    if (!d->containsCollection(collectionName)) {
-        throw 1;
-    }
-
     return d->collection(collectionName);
 }
 
 QEjdbCollection QEjdbDatabase::createCollection(QString collectionName)
 {
     return d->createCollection(collectionName);
+}
+
+bool QEjdbDatabase::removeCollection(const QString& collectionName )
+{
+    return d->removeCollection(collectionName);
 }

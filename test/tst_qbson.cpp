@@ -51,24 +51,26 @@ void Tst_QBson::tst_qbson()
 void Tst_QBson::tst_stream()
 {
     QDateTime d = QDateTime::currentDateTime();
-    char t[] = {12,12,12,23,23,23};
+    const char t[] = {12,12,12,23,23,23};
     QBsonObject b1;
     b1.insert("name1", QBsonValue(QLatin1String("test1")));
 
     QBsonObject b2;
+    QByteArray ba(t);
     b2.insert("name1", QBsonValue(QLatin1String("test1")));
     b2.insert("name2", QBsonValue(10));
     b2.insert("name3", QBsonValue(10.1111));
     b2.insert("name4", QBsonValue(b1));
     b2.insert("name5", QBsonValue(d));
-    b2.insert("name6", QBsonValue(QByteArray(t)));
+    b2.insert("name6", QBsonValue(ba));
     b2.insert("name7", QBsonValue(true));
     b2.insert("name8", QBsonValue(QBsonOid()));
 
     QByteArray stream = b2.toBinary();
-    //bson_print_raw(stream.constData(), 1);
+
 
     QBsonObject b3(stream);
+     //bson_print_raw(b3.toBinary().constData(), 1);
     QCOMPARE(b3.value("name1").toString(), QString("test1"));
     QCOMPARE(b3.value("name2").toInt(), 10);
     QCOMPARE(b3.value("name3").toDouble(), 10.1111);
@@ -76,7 +78,7 @@ void Tst_QBson::tst_stream()
              value("name1").toString(),
              QString("test1"));
     QCOMPARE(b3.value("name5").toDateTime(), d);
-    QCOMPARE(b3.value("name6").toBinary(), QByteArray(t));
+    QCOMPARE(b3.value("name6").toBinary().size(), ba.size());
     QCOMPARE(b3.value("name7").toBool(), true);
     QCOMPARE(b3.value("name8").toId().toString(), b2.value("name8").toId().toString());
 
@@ -94,6 +96,11 @@ void Tst_QBson::tst_stream()
         stream = bs.toBinary();
     }
 
+}
+
+void Tst_QBson::cleanupTestCase()
+{
+    delete this;
 }
 
 void Tst_QBson::tst_list()

@@ -2,8 +2,10 @@
 #include <QTest>
 #include <QDebug>
 #include "qejdbdatabase.h"
+#include "qejdbquery.h"
 #include "bson/qbsonobject.h"
 #include "bson/qbsonarray.h"
+
 
 Tst_Collection::Tst_Collection(QObject *parent) :
     QObject(parent)
@@ -61,29 +63,43 @@ void Tst_Collection::tst_simpleQuery()
 {
     QEjdbDatabase db = QEjdbDatabase::database();
 
-    QList<QBsonObject> list = db.query("testcollection",
-                                       QEjdbCondition("test",
-                                                      QEjdbCondition::BEGIN, "tes"));
-    QCOMPARE(list.size(), 1);
 
-    list = db.query("testcollection",
-                                       QEjdbCondition("test",
-                                                      QEjdbCondition::EQUALS, "tes"));
+
+    for (int i = 0; i < 1000; i++) {
+        //qDebug() << i;
+       QEjdbCollection col = db.collection("testcollection");
+       QList<QBsonObject> list;
+       QEjdbQuery query(col);
+       QBsonObject q = QBsonObject().append(
+                           "test", QBsonObject().append("$begin", "tes"));
+       list = query.exec(q);
+
+        QCOMPARE(list.size(), 1);
+
+    }
+
+    QEjdbQuery query(db.collection("testcollection"));
+    QList<QBsonObject> list = query.exec(QBsonObject().append("test", "tes"));
     QCOMPARE(list.size(), 0);
 
-    QVariantList qq;
-    qq << "test" << "tes";
 
-    list = db.query("testcollection", QEjdbCondition("test",
-                                                     QEjdbCondition::IN, qq));
+    list = query.exec(QBsonObject().append(
+                          "test",
+                            QBsonObject().append(
+                              "$in", QBsonArray().append("test").append("tes")
+                            )
+                          )
+                      );
 
     QCOMPARE(list.size(), 1);
 
-    qq.clear();
-    qq << "te" << "tes";
-
-    list = db.query("testcollection", QEjdbCondition("test",
-                                                     QEjdbCondition::IN, qq));
+    list = query.exec(QBsonObject().append(
+                          "test",
+                            QBsonObject().append(
+                                "$in", QBsonArray().append("te").append("tes")
+                            )
+                          )
+                      );
 
     QCOMPARE(list.size(), 0);
 
@@ -153,4 +169,6 @@ void Tst_Collection::cleanupTestCase()
 
     QEjdbDatabase::removeDatabase();
     QEjdbDatabase::removeDatabaseFiles(".", "test_db");
+
+    delete this;
 }

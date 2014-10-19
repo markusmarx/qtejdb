@@ -24,6 +24,8 @@ void Tst_Performance::cleanupTestCase()
 
     QEjdbDatabase::removeDatabase();
     QEjdbDatabase::removeDatabaseFiles(".", "test_db");
+
+    delete this;
 }
 
 void Tst_Performance::tst_insQryTsd()

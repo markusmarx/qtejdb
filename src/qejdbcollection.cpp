@@ -1,10 +1,9 @@
 #include "qejdbcollection.h"
 #include <QDebug>
-#include "globals_p.h"
 #include "ejdb.h"
 #include "bson/qbsonobject.h"
 #include "bson/qbsonobject_p.h"
-#include "qejdbcondition.h"
+#include "qejdbquery.h"
 
 
 class QEjdbCollectionPrivate
@@ -42,12 +41,8 @@ public:
 
     QBsonObject load(QString oidStr);
 
-    bool removeCollection();
+    QList<QBsonObject> query(const QBsonObject& cond);
 
-    QList<QBsonObject> query(QEjdbCollectionPrivate* col, const QEjdbCondition& cond);
-
-    static void convert2Query(bson *bq, const QEjdbCondition &condition);
-    static void appendQueryValue(bson *bq, const QString& attr, const QVariant &v);
 };
 
 
@@ -58,79 +53,6 @@ QEjdbCollection::QEjdbCollection(EJDB *db, EJCOLL *col, QString collectionName)
 
 }
 
-void QEjdbCollectionPrivate::appendQueryValue(bson* bq, const QString& attr, const QVariant& v)
-{
-    switch (v.type()) {
-        case QMetaType::QString:
-            bson_append_string(bq, attr.toLatin1(), v.toString().toLatin1());
-        break;
-        case QMetaType::Int:
-            bson_append_int(bq, attr.toLatin1(), v.toInt());
-        break;
-        case QMetaType::Double:
-            bson_append_double(bq, attr.toLatin1(), v.toDouble());
-        break;
-        case QMetaType::Long:
-            bson_append_long(bq, attr.toLatin1(), v.toLongLong());
-        break;
-        case QMetaType::Bool:
-            bson_append_bool(bq, attr.toLatin1(), v.toBool());
-        break;
-        case QMetaType::QVariantList: {
-            QList<QVariant> vl = v.toList();
-            QList<QVariant>::Iterator it = vl.begin();
-            int i = 0;
-            bson_append_start_array(bq, attr.toLatin1());
-            for (;it != vl.end();) {
-                appendQueryValue(bq, QString::number(++i), *it++);
-            }
-            bson_append_finish_array(bq);
-            break;
-        }
-    }
-
-}
-
-
-/**
- * @brief QEjdbCollectionPrivate::convert2Query  convert a given condition object in a bson query repräsentation.
- *
- * @param bq pointer to a bson structure.
- * @param condition QEjdbCondition to convert.
- */
-void QEjdbCollectionPrivate::convert2Query(bson *bq, const QEjdbCondition &condition)
-{
-
-    if (condition.type() == QEjdbCondition::EQUALS) {
-        appendQueryValue(bq, condition.attribute(), condition.value());
-    } else {
-
-        bson_append_start_object(bq, condition.attribute().toLatin1());
-
-        switch (condition.type()) {
-            case QEjdbCondition::BEGIN:
-                appendQueryValue(bq, "$begin", condition.value());
-                break;
-            case QEjdbCondition::IN:
-                appendQueryValue(bq, "$in", condition.value());
-                break;
-            case QEjdbCondition::GT:
-                appendQueryValue(bq, "$gt", condition.value());
-                break;
-            case QEjdbCondition::GTE:
-                appendQueryValue(bq, "$gte", condition.value());
-                break;
-            case QEjdbCondition::LT:
-                appendQueryValue(bq, "$lt", condition.value());
-                break;
-            case QEjdbCondition::LTE:
-                appendQueryValue(bq, "$lte", condition.value());
-                break;
-            default: break;
-        }
-        bson_append_finish_object(bq);
-    }
-}
 
 bool QEjdbCollectionPrivate::save(QBsonObject &obj)
 {
@@ -172,27 +94,19 @@ QBsonObject QEjdbCollectionPrivate::load(QString oidStr)
     return obj;
 }
 
-bool QEjdbCollectionPrivate::removeCollection()
-{
-    if (!ejdbrmcoll(this->m_db, this->m_collectionName.toLatin1(), true)) {
-        return false;
-    }
 
-    return true;
-}
-
-QList<QBsonObject> QEjdbCollectionPrivate::query(QEjdbCollectionPrivate* col, const QEjdbCondition &condition)
+QList<QBsonObject> QEjdbCollectionPrivate::query(const QBsonObject &query)
 {
     bson bq1;
     bson_init_as_query(&bq1);
-
-    QEjdbCollectionPrivate::convert2Query(&bq1, condition);
+    QBsonObjectData *d = query.data;
+    bq1 = QBsonObjectData::convert2Bson(*d, &bq1);
 
     bson_finish(&bq1);
 
-    EJCOLL *coll = col->m_col;
+    EJCOLL *coll = this->m_col;
 
-    EJQ *q = ejdbcreatequery(col->m_db, &bq1, NULL, 0, NULL);
+    EJQ *q = ejdbcreatequery(this->m_db, &bq1, NULL, 0, NULL);
 
     uint32_t count;
     TCLIST *res = ejdbqryexecute(coll, q, &count, 0, NULL);
@@ -207,6 +121,7 @@ QList<QBsonObject> QEjdbCollectionPrivate::query(QEjdbCollectionPrivate* col, co
         QBsonObjectData::convert2QBson(bs, obj);
 
         resultList.append(obj);
+        bson_del(bs);
 
     }
 
@@ -255,19 +170,29 @@ QEjdbCollection &QEjdbCollection::operator=(const QEjdbCollection &other)
     return *this;
 }
 
-bool QEjdbCollection::removeCollection()
+
+QList<QBsonObject> QEjdbCollection::query(const QBsonObject &query)
 {
-    return d->removeCollection();
+    return d->query(query);
 }
 
-QList<QBsonObject> QEjdbCollection::query(const QEjdbCondition &condition)
+bool QEjdbCollection::isValid() const
 {
-    return d->query(d, condition);
+    return d->m_col != 0;
 }
 
 QEjdbCollection::~QEjdbCollection()
 {
-   if (!d->ref.deref())
+   if (!d->ref.deref()) {
        delete d;
+       d = 0;
+   }
+
+}
+
+QEjdbCollection::QEjdbCollection(const QString& collectionName):
+    d(new QEjdbCollectionPrivate(this, 0, 0, collectionName))
+{
+
 }
 

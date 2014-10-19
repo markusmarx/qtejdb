@@ -15,7 +15,6 @@ SOURCES += \
     qejdbdatabase.cpp \
     qejdbcollection.cpp \
     qejdbquery.cpp \
-    qejdbcondition.cpp \
     bson/qbsonobject.cpp \
     bson/qbsonvalue.cpp \
     bson/qbsonarray.cpp \
@@ -25,7 +24,6 @@ HEADERS += \
     qejdbdatabase.h \
     qejdbcollection.h \
     qejdbquery.h \
-    qejdbcondition.h \
     bson/qbsonobject.h \
     bson/qbsonvalue.h \
     bson/qbsonarray.h \

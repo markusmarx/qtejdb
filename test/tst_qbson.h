@@ -17,6 +17,7 @@ private Q_SLOTS:
     void tst_list();
     void tst_qbson();
     void tst_stream();
+    void cleanupTestCase();
 
 };
 

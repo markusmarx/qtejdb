@@ -75,16 +75,6 @@ QBsonValue::QBsonValue(const QString &value)
     data->v = value;
 }
 
-/**
- * @brief QBsonValue::QBsonValue construct a bsonvalue with type
- * QBsonValue::STRING
- * @param value string value to store.
- */
-QBsonValue::QBsonValue(const char* value)
-    : data(new QBsonValueData(QBsonValue::String))
-{
-    data->v = value;
-}
 
 /**
  * @brief QBsonValue construct a bsonvalue with type QBsonValue::BINARY
@@ -134,6 +124,12 @@ QBsonValue::QBsonValue(const QLatin1String &value):
     data(new QBsonValueData(QBsonValue::String))
 {
     data->v = value;
+}
+
+QBsonValue::QBsonValue(const char *value):
+     data(new QBsonValueData(QBsonValue::String))
+{
+    data->v = QLatin1String(value);
 }
 
 /**

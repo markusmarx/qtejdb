@@ -1,51 +1,56 @@
 #include "qejdbquery.h"
-#include <QSharedData>
-#include "qejdbcondition.h"
+#include "qejdbdatabase.h"
+#include "qatomic.h"
+#include "bson/qbsonobject.h"
 
-class QEjdbQueryData : public QSharedData {
+class QEjdbQueryData {
 public:
+
+    QEjdbQueryData(const QEjdbCollection& db):collection(db)
+    {
+        ref = 1;
+    }
     QString m_collectionName;
-    QList<QEjdbCondition> m_conditions;
+
+    QEjdbCollection collection;
+    QAtomicInt ref;
+
 };
 
-QEjdbQuery::QEjdbQuery(QString collectionName) : data(new QEjdbQueryData)
+QEjdbQuery::QEjdbQuery(const QEjdbCollection& db) : data(new QEjdbQueryData(db))
 {
+
 }
 
 QEjdbQuery::QEjdbQuery(const QEjdbQuery &rhs) : data(rhs.data)
 {
+    data->ref.ref();
 }
 
 QEjdbQuery &QEjdbQuery::operator=(const QEjdbQuery &rhs)
 {
-    if (this != &rhs)
-        data.operator=(rhs.data);
+    qAtomicAssign<QEjdbQueryData>(data, rhs.data);
     return *this;
 }
 
 QEjdbQuery::~QEjdbQuery()
 {
+    if (!data->ref.deref()) {
+        delete data;
+    }
 }
 
 /**
- * @brief QEjdbQuery::addCondition
- * @param condition
+ * @brief QEjdbQuery::exec
+ * @param collection
+ * @param query
  * @return
  */
-QEjdbQuery &QEjdbQuery::addCondition(QEjdbCondition &condition)
+QList<QBsonObject> QEjdbQuery::exec(const QBsonObject& query)
 {
-    data->m_conditions.append(condition);
-    return *this;
+    return data->collection.query(query);
 }
 
-/**
- * @brief QEjdbQuery::conditions
- * @return
- */
-QList<QEjdbCondition>& QEjdbQuery::conditions()
-{
-    return data->m_conditions;
-}
 
 QString QEjdbQuery::collectionName() const
 {

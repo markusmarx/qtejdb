@@ -5,12 +5,12 @@
 #include "qbsonvalue.h"
 #include "qbsonoid.h"
 #include <QHash>
+#include <stdarg.h>
 
 
 typedef QHash<QString, QBsonValue> QBsonValueHash;
 class QBsonObjectData;
 class QBsonOid;
-class QEjdbCollection;
 
 class QBsonObject
 {
@@ -23,6 +23,7 @@ public:
 
     QBsonObject(const QByteArray& bson);
     void insert(const QString &name, const QBsonValue &value);
+    QBsonObject append(const QString &name, const QBsonValue &value);
     QBsonValue value(const QString &name);
     bool contains(const QString &name);
     QStringList names();
@@ -31,13 +32,13 @@ public:
     bool remove(const QString& name);
 
 private:
-    friend class QEjdbCollectionPrivate;
     friend class QObjectBsonData;
+    friend class QEjdbCollectionPrivate;
     QBsonObjectData *data;
 
     QBsonObject(void* bsonRec);
 
-    QBsonObjectData* constData() const {return data;};
+    QBsonObjectData* constData() const {return data;}
 
 };
 

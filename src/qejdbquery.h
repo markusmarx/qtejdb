@@ -1,24 +1,24 @@
 #ifndef QEJDBQUERY_H
 #define QEJDBQUERY_H
-
-#include <QSharedDataPointer>
-#include "qejdbcondition.h"
+#include <QList>
 
 class QEjdbQueryData;
-
+class QEjdbCollection;
+class QBsonObject;
 class QEjdbQuery
 {
 public:
-    QEjdbQuery(QString collectionName);
+
+    QEjdbQuery(const QEjdbCollection& query);
     QEjdbQuery(const QEjdbQuery &);
     QEjdbQuery &operator=(const QEjdbQuery &);
     ~QEjdbQuery();
 
-    QEjdbQuery& addCondition(QEjdbCondition &condition);
-    QList<QEjdbCondition> &conditions();
+    QList<QBsonObject> exec(const QBsonObject& query);
+
     QString collectionName() const;
 private:
-    QSharedDataPointer<QEjdbQueryData> data;
+    QEjdbQueryData* data;
 };
 
 #endif // QEJDBQUERY_H

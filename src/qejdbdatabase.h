@@ -5,7 +5,6 @@
 #include <QDir>
 
 #include "qejdbcollection.h"
-#include "qejdbcondition.h"
 
 namespace QEJDB {
 
@@ -32,6 +31,7 @@ namespace QEJDB {
 }
 
 class QEjdbDatabasePrivate;
+class QEjdbQuery;
 class QEjdbDatabase
 {
 
@@ -93,8 +93,8 @@ public:
 
     QEjdbDatabase &operator =(const QEjdbDatabase &other);
 
-    QList<QBsonObject> query(QString collection, QEjdbCondition condition);
 
+    bool removeCollection(const QString &collectionName);
 protected:
     /**
      * @brief QEJDBDatabase constructor

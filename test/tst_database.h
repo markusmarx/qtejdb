@@ -15,6 +15,11 @@ private Q_SLOTS:
 
     void tst_open();
 
+    /**
+     * @brief tst_openWithDir Open the database in a subdirctory.
+     */
+    void tst_openWithDir();
+
     void tst_collection();
 
     void cleanupTestCase();

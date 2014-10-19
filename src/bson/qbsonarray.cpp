@@ -54,10 +54,13 @@ QBsonArray::~QBsonArray()
  * @brief QBsonArray::append append a QBsonValue to the array.
  * @see QList::append()
  * @param value value to append
+ *
+ * @return Returns this QBsonArray.
  */
-void QBsonArray::append(const QBsonValue &value)
+QBsonArray QBsonArray::append(const QBsonValue &value)
 {
     data->list.append(value);
+    return *this;
 }
 
 /**
