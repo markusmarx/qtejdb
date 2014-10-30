@@ -298,11 +298,12 @@ bool QBsonValue::operator ==(const QBsonValue value) const
 
 /**
  * @brief QBsonValue::isObject returns true if type is QBsonValue::Object
+ *
  * @return true if type is QBsonValue::Object otherwise false.
  */
 bool QBsonValue::isObject() const
 {
-    return data->type == QBsonValue::Object;
+    return isValid(QBsonValue::Object);
 }
 
 /**
@@ -311,5 +312,26 @@ bool QBsonValue::isObject() const
  */
 bool QBsonValue::isArray() const
 {
-    return data->type == QBsonValue::Array;
+    return isValid(QBsonValue::Array);
+}
+
+/**
+ * @brief QBsonValue::isValid Returns true when the value is valid else false.
+ * @return true when the value is valid else false.
+ */
+bool QBsonValue::isValid() const
+{
+    return data != 0;
+}
+
+/**
+ * @brief QBsonValue::isValid Returns true if the value is valid and given type.
+ *
+ * @param type value type
+ *
+ * @return true if the value is valid and given type.
+ */
+bool QBsonValue::isValid(QBsonValue::QBsonValueType type) const
+{
+    return isValid() && data->type == type;
 }

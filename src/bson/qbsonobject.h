@@ -17,6 +17,7 @@ class QBsonObject
 public:
 
     QBsonObject();
+    QBsonObject(const QString &name, const QBsonValue &value);
     QBsonObject(const QBsonObject &);
     QBsonObject &operator=(const QBsonObject &);
     ~QBsonObject();

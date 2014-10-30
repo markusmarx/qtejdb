@@ -16,8 +16,7 @@ void Tst_Collection::initTestCase()
 {
     QEjdbDatabase::removeDatabaseFiles(".", "test_db");
     QEjdbDatabase::addDatabase(".", "test_db", QEJDB::CREATE | QEJDB::WRITE
-                             | QEJDB::LOCK_NB | QEJDB::TRUNCATE
-                             | QEJDB::LOCK_NB).open();
+                             | QEJDB::LOCK_NB | QEJDB::TRUNCATE).open();
 }
 
 void Tst_Collection::tst_simpleCRUD()
@@ -29,7 +28,7 @@ void Tst_Collection::tst_simpleCRUD()
 
     col.save(obj);
 
-    QBsonObject obj2 = col.load(obj.value("_id").toId().toString());
+    QBsonObject obj2 = col.load(obj.value("_id").toString());
     QCOMPARE(obj.value("_id").toId(), obj2.value("_id").toId());
 
     QBsonObject obj3;
@@ -64,28 +63,27 @@ void Tst_Collection::tst_simpleQuery()
     QEjdbDatabase db = QEjdbDatabase::database();
 
 
-
     for (int i = 0; i < 1000; i++) {
         //qDebug() << i;
        QEjdbCollection col = db.collection("testcollection");
        QList<QBsonObject> list;
        QEjdbQuery query(col);
        QBsonObject q = QBsonObject().append(
-                           "test", QBsonObject().append("$begin", "tes"));
+                           "test", QBsonObject("$begin", "tes"));
        list = query.exec(q);
 
-        QCOMPARE(list.size(), 1);
+       QCOMPARE(list.size(), 1);
 
     }
 
     QEjdbQuery query(db.collection("testcollection"));
-    QList<QBsonObject> list = query.exec(QBsonObject().append("test", "tes"));
+    QList<QBsonObject> list = query.exec(QBsonObject("test", "tes"));
     QCOMPARE(list.size(), 0);
 
 
-    list = query.exec(QBsonObject().append(
+    list = query.exec(QBsonObject(
                           "test",
-                            QBsonObject().append(
+                            QBsonObject(
                               "$in", QBsonArray().append("test").append("tes")
                             )
                           )
@@ -93,13 +91,15 @@ void Tst_Collection::tst_simpleQuery()
 
     QCOMPARE(list.size(), 1);
 
-    list = query.exec(QBsonObject().append(
+
+
+    list = query.exec(QBsonObject(
                           "test",
-                            QBsonObject().append(
-                                "$in", QBsonArray().append("te").append("tes")
-                            )
+                          QBsonObject(
+                              "$in", QBsonArray().append("te").append("tes"))
                           )
                       );
+
 
     QCOMPARE(list.size(), 0);
 

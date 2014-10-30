@@ -292,6 +292,11 @@ QBsonObject::QBsonObject() : data(new QBsonObjectData)
 
 }
 
+QBsonObject::QBsonObject(const QString &name, const QBsonValue &value): data(new QBsonObjectData)
+{
+    append(name, value);
+}
+
 /**
  * @brief QBsonObject::QBsonObject construct a QBsonObject from stream.
  * @param bson

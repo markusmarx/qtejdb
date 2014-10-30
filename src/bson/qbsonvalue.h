@@ -54,10 +54,14 @@ public:
     bool operator ==(const QBsonValue value) const;
     bool isObject() const;
     bool isArray() const;
+    bool isValid() const;
 
 private:
     QBsonValueData *data;
 
+    bool isValid(QBsonValue::QBsonValueType type) const;
 };
+
+
 
 #endif // QBSONVALUE_H
