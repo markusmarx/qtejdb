@@ -31,12 +31,6 @@ HEADERS += \
     bson/qbsonoid.h \
     bson/qbsonobject_p.h \
 
-include(ejdb.pri)
-
-
-INCLUDEPATH += $$PWD/../3rdparty/ejdb/tcejdb
+include(../../3rdparty/ejdb/tcejdb/ejdb.pri)
 
 QMAKE_CFLAGS += -std=gnu99
-
-OTHER_FILES += \
-    ejdb.pri
