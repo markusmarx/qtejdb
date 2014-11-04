@@ -145,7 +145,11 @@ QEjdbCollection QEjdbDatabasePrivate::collection(QString collectionName)
 
 QEjdbCollection QEjdbDatabasePrivate::createCollection(QString collectionName)
 {
-    EJCOLL *col = ejdbcreatecoll(m_db, collectionName.toLatin1(), NULL);
+    EJCOLLOPTS opts;
+    opts.compressed = true;
+    opts.large = true;
+    opts.records = 1280000;
+    EJCOLL *col = ejdbcreatecoll(m_db, collectionName.toLatin1(), &opts);
     return storeCollection(col, collectionName);
 }
 
