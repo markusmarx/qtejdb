@@ -1,14 +1,18 @@
 #include "qejdbdatabase.h"
 #include <QDebug>
 #include <QDir>
+#include <QFile>
 #include <QReadLocker>
 #include <QReadWriteLock>
 #include "bson/qbsonobject.h"
 #include "qejdbquery.h"
 
+
 #include "qatomic.h"
 #include "ejdb.h"
 #include "bson.h"
+#include "qejdbworker.h"
+#include "bson/qbsonobject.h"
 
 
 /**
@@ -39,18 +43,28 @@ Q_GLOBAL_STATIC(QEjdbConnectionDict, ejdbDict)
 class QEjdbDatabasePrivate {
 public:
     QAtomicInt ref;
-    QEjdbDatabasePrivate(QEjdbDatabase *d, QString path, QString database, int mode):
-        q(d), m_dbPath(QDir(path)), m_dbName(database), m_db(0), m_mode(mode){
+    QEjdbWorker *m_worker;
+    QEjdbDatabasePrivate(QEjdbDatabase *d, QUrl url, int mode):
+        q(d)
+    {
         ref = 1;
+        m_worker = QEjdbWorker::createFromUrl(url, mode);
+
     }
+
+    ~QEjdbDatabasePrivate()
+    {
+        delete m_worker;
+    }
+
     bool open();
     bool close();
     bool isOpen();
     QEjdbCollection collection(QString collectionName);
     QEjdbCollection storeCollection(EJCOLL *col, QString collectionName);
-    QEjdbCollection createCollection(QString collectionName);
-    bool removeCollection(const QString& collectionName);
-    bool containsCollection(QString collectionName);
+    bool createCollection(const QString &collectionName);
+    bool removeCollection(const QString &collectionName);
+    bool containsCollection(const QString &collectionName);
 
     static void removeDatabase(const QString &name);
     static void addDatabase(const QEjdbDatabase &db, const QString &name);
@@ -73,11 +87,6 @@ private:
     QString m_dbName;
 
     /**
-     * @brief m_db pointer to ejdb.
-     */
-    EJDB* m_db;
-
-    /**
      * @brief m_mode database open mode
      */
     int m_mode;
@@ -87,99 +96,42 @@ private:
      */
     QHash<QString, QEjdbCollection> m_collections;
 
+
+
 };
 
 bool QEjdbDatabasePrivate::open() {
 
-    if (isOpen()) close();
+    if (isOpen()) return false;
 
-    m_db = ejdbnew();
-
-    bool res = ejdbopen(m_db, m_dbPath.absoluteFilePath(m_dbName).toLatin1(), m_mode);
-
-    if (!res) return false;
-    return true;
+    return m_worker->open();
 }
 
 bool QEjdbDatabasePrivate::close()
 {
-    bool res;
-
-    if (!isOpen()) return false;
-
-    if (!ejdbclose(m_db)) res = false;
-    ejdbdel(m_db);
-
-    return res;
+    return m_worker->close();
 }
 
 bool QEjdbDatabasePrivate::isOpen()
 {
-    return m_db && ejdbisopen(m_db);
+    return m_worker->isOpen();
+}
+
+bool QEjdbDatabasePrivate::containsCollection(const QString &collectionName)
+{
+    return m_worker->containsCollection(collectionName);
 }
 
 
-bool QEjdbDatabasePrivate::containsCollection(QString collectionName)
+bool QEjdbDatabasePrivate::createCollection(const QString &collectionName)
 {
-    EJCOLL *col = ejdbgetcoll(m_db, collectionName.toLatin1());
-
-    return col != 0;
-}
-
-
-QEjdbCollection QEjdbDatabasePrivate::collection(QString collectionName)
-{
-    if (!containsCollection(collectionName)) {
-        return QEjdbCollection(collectionName);
-    }
-
-    if (m_collections.contains(collectionName)) {
-        QEjdbCollection ptr = m_collections.value(collectionName);
-        return ptr;
-    }
-
-    EJCOLL *col = ejdbgetcoll(m_db, collectionName.toLatin1());
-
-    return storeCollection(col, collectionName);
-}
-
-QEjdbCollection QEjdbDatabasePrivate::createCollection(QString collectionName)
-{
-    EJCOLLOPTS opts;
-    opts.compressed = true;
-    opts.large = true;
-    opts.records = 1280000;
-    EJCOLL *col = ejdbcreatecoll(m_db, collectionName.toLatin1(), &opts);
-    return storeCollection(col, collectionName);
+    return m_worker->createCollection(collectionName);
 }
 
 bool QEjdbDatabasePrivate::removeCollection(const QString &collectionName)
 {
-    if (containsCollection(collectionName)) {
-        if (!ejdbrmcoll(this->m_db, collectionName.toLatin1(), true)) {
-            return false;
-        }
-        m_collections.remove(collectionName);
-        return true;
-    }
-    return false;
+    return m_worker->removeCollection(collectionName);
 }
-
-QEjdbCollection QEjdbDatabasePrivate::storeCollection(EJCOLL *col, QString collectionName)
-{
-
-    if (m_collections.contains(collectionName)) {
-        //todo exception handling
-
-    } else{
-        QEjdbCollection ptr(m_db, col, collectionName);
-        m_collections.insert(collectionName, ptr);
-        return ptr;
-    }
-    return QEjdbCollection(collectionName);
-}
-
-
 
 void QEjdbDatabasePrivate::removeDatabase(const QString &name)
 {
@@ -227,23 +179,23 @@ QEjdbDatabase QEjdbDatabasePrivate::database(const QString& name, bool open)
 
 QT_STATIC_CONST_IMPL char *QEjdbDatabase::defaultConnection = "qejdb_default_connection";
 
-QEjdbDatabase::QEjdbDatabase(QString path, QString database, int mode):d(new QEjdbDatabasePrivate(this, path, database, mode))
+QEjdbDatabase::QEjdbDatabase(QString url, int mode):d(new QEjdbDatabasePrivate(this, QUrl(url), mode))
 {
 }
 
-QEjdbDatabase QEjdbDatabase::addDatabase(QString path, QString database, int mode, QString connectionName)
+QEjdbDatabase QEjdbDatabase::addDatabase(QString url, int mode, QString connectionName)
 {
-    QEjdbDatabase db(path, database, mode);
+    QEjdbDatabase db(url, mode);
     QEjdbDatabasePrivate::addDatabase(db, connectionName);
     return db;
 }
 
-void QEjdbDatabase::removeDatabase(QString connectionName)
+void QEjdbDatabase::removeDatabase(const QString &connectionName)
 {
     QEjdbDatabasePrivate::removeDatabase(connectionName);
 }
 
-bool QEjdbDatabase::removeDatabaseFiles(QString path, QString database)
+bool QEjdbDatabase::removeDatabaseFiles(const QString &path, const QString &database)
 {
     // set filter for databasefiles and remove
     QStringList filter;
@@ -260,7 +212,7 @@ bool QEjdbDatabase::removeDatabaseFiles(QString path, QString database)
     return true;
 }
 
-QEjdbDatabase QEjdbDatabase::database(QString connectionName)
+QEjdbDatabase QEjdbDatabase::database(const QString &connectionName)
 {
     return QEjdbDatabasePrivate::database(connectionName, true);
 }
@@ -278,6 +230,34 @@ QEjdbDatabase &QEjdbDatabase::operator=(const QEjdbDatabase &other)
     return *this;
 }
 
+bool QEjdbDatabase::save(const QString &collectionName, QBsonObject &bson)
+{
+    return d->m_worker->save(collectionName, bson);
+}
+
+QBsonObject QEjdbDatabase::load(const QString &collectionName, const QString &oid)
+{
+    return d->m_worker->load(collectionName, oid);
+}
+
+bool QEjdbDatabase::remove(const QString &collectionName, const QString &oid)
+{
+    return d->m_worker->remove(collectionName, oid);
+}
+
+bool QEjdbDatabase::remove(const QString &collectionName, QBsonObject obj)
+{
+    if (!obj.contains("_id")) return false;
+
+    QString oid = obj.value("_id").toString();
+
+    return remove(collectionName, oid);
+}
+
+QList<QBsonObject> QEjdbDatabase::query(const QString &collectionName, const QBsonObject& query)
+{
+    return d->m_worker->query(collectionName, query);
+}
 
 QEjdbDatabase::QEjdbDatabase()
 {
@@ -305,13 +285,13 @@ bool QEjdbDatabase::isOpen()
     return d->isOpen();
 }
 
-
-QEjdbCollection QEjdbDatabase::collection(QString collectionName)
+bool QEjdbDatabase::containsCollection(const QString &collectionName)
 {
-    return d->collection(collectionName);
+    return d->containsCollection(collectionName);
 }
 
-QEjdbCollection QEjdbDatabase::createCollection(QString collectionName)
+
+bool QEjdbDatabase::createCollection(const QString &collectionName)
 {
     return d->createCollection(collectionName);
 }

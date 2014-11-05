@@ -3,13 +3,13 @@
 #include <QList>
 
 class QEjdbQueryData;
-class QEjdbCollection;
+class QEjdbDatabase;
 class QBsonObject;
 class QEjdbQuery
 {
 public:
 
-    QEjdbQuery(const QEjdbCollection& query);
+    QEjdbQuery(const QString &collectionName, const QEjdbDatabase& query);
     QEjdbQuery(const QEjdbQuery &);
     QEjdbQuery &operator=(const QEjdbQuery &);
     ~QEjdbQuery();

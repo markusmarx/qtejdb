@@ -2,7 +2,9 @@
 #define QBSONOBJECT_P_H
 #include "qatomic.h"
 #define TCNUMBUFSIZ 32
-class QBsonObject;
+
+QT_FORWARD_DECLARE_CLASS(QBsonObject);
+
 class QBsonObjectData  {
 
 public:

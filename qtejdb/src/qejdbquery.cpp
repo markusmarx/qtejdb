@@ -6,18 +6,18 @@
 class QEjdbQueryData {
 public:
 
-    QEjdbQueryData(const QEjdbCollection& db):collection(db)
+    QEjdbQueryData(const QString &collectionName, const QEjdbDatabase& db):m_collectionName(collectionName), m_db(db)
     {
         ref = 1;
     }
     QString m_collectionName;
 
-    QEjdbCollection collection;
+    QEjdbDatabase m_db;
     QAtomicInt ref;
 
 };
 
-QEjdbQuery::QEjdbQuery(const QEjdbCollection& db) : data(new QEjdbQueryData(db))
+QEjdbQuery::QEjdbQuery(const QString &collectionName, const QEjdbDatabase& db) : data(new QEjdbQueryData(collectionName, db))
 {
 
 }
@@ -48,7 +48,7 @@ QEjdbQuery::~QEjdbQuery()
  */
 QList<QBsonObject> QEjdbQuery::exec(const QBsonObject& query)
 {
-    return data->collection.query(query);
+    return data->m_db.query(data->m_collectionName, query);
 }
 
 

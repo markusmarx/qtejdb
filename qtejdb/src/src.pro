@@ -11,6 +11,8 @@ TARGET = qtejdb
 TEMPLATE = lib
 CONFIG += dll
 
+QMAKE_CFLAGS += -std=gnu99
+
 SOURCES += \
     qejdbdatabase.cpp \
     qejdbcollection.cpp \
@@ -19,6 +21,7 @@ SOURCES += \
     bson/qbsonvalue.cpp \
     bson/qbsonarray.cpp \
     bson/qbsonoid.cpp \
+    qejdbworker.cpp
 
 
 HEADERS += \
@@ -30,7 +33,10 @@ HEADERS += \
     bson/qbsonarray.h \
     bson/qbsonoid.h \
     bson/qbsonobject_p.h \
+    qejdbworker.h
 
+INCLUDEPATH += ../../3rdparty/ejdb/tcejdb
 include(../../3rdparty/ejdb/tcejdb/ejdb.pri)
 
-QMAKE_CFLAGS += -std=gnu99
+OTHER_FILES += \
+    qtejdb.pri

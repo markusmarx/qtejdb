@@ -14,7 +14,7 @@ Tst_Performance::Tst_Performance(QObject *parent) :
 void Tst_Performance::initTestCase()
 {
     QEjdbDatabase::removeDatabaseFiles(".", "test_db");
-    QEjdbDatabase::addDatabase(".", "test_db", QEJDB::CREATE | QEJDB::WRITE
+    QEjdbDatabase::addDatabase("file:test_db", QEJDB::CREATE | QEJDB::WRITE
                              | QEJDB::LOCK_NB | QEJDB::TRUNCATE
                              | QEJDB::LOCK_NB | QEJDB::SYNC).open();
 }
@@ -31,7 +31,7 @@ void Tst_Performance::cleanupTestCase()
 void Tst_Performance::tst_insQryTsd()
 {
     QEjdbDatabase m_db = QEjdbDatabase::database();
-    QEjdbCollection col = m_db.createCollection("testcollection");
+    m_db.createCollection("testcollection");
 
     QString json = QString("{'name': 'test'\n 'num': '10'\n 'description': 'test test test test test test test'}");
 
@@ -71,7 +71,7 @@ void Tst_Performance::tst_insQryTsd()
 
         for (int i = 0; i < iteration; i++) {
             obj.remove("_id");
-            col.save(obj);
+            m_db.save("testcollection", obj);
             if (i == 1) id = obj.value("_id").toString();
         }
         qDebug() << iteration << " inserts costs " << t.elapsed() << "ms per insert " << (double)t.elapsed()/iteration << "ms";

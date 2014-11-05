@@ -11,7 +11,7 @@ Tst_Database::Tst_Database(QObject *parent) :
 void Tst_Database::tst_open()
 {
 
-    QEjdbDatabase db = QEjdbDatabase::addDatabase(".", "test.db", QEJDB::CREATE | QEJDB::WRITE
+    QEjdbDatabase db = QEjdbDatabase::addDatabase("file:test.db", QEJDB::CREATE | QEJDB::WRITE
                                           | QEJDB::LOCK_NB | QEJDB::TRUNCATE | QEJDB::LOCK_NB);
     bool open = db.open();
     QCOMPARE(open, true);
@@ -28,7 +28,7 @@ void Tst_Database::tst_openWithDir()
     QDir testDir;
     testDir.mkdir("testdir");
 
-    QEjdbDatabase db = QEjdbDatabase::addDatabase("testdir", "test.db", QEJDB::CREATE | QEJDB::WRITE
+    QEjdbDatabase db = QEjdbDatabase::addDatabase("file:testdir/test.db", QEJDB::CREATE | QEJDB::WRITE
                                           | QEJDB::LOCK_NB | QEJDB::TRUNCATE | QEJDB::LOCK_NB);
     bool open = db.open();
     QCOMPARE(open, true);
@@ -50,7 +50,7 @@ void Tst_Database::tst_openWithDir()
 
 void Tst_Database::tst_collection()
 {
-     QEjdbDatabase db = QEjdbDatabase::addDatabase(".", "test.db", QEJDB::CREATE | QEJDB::WRITE
+     QEjdbDatabase db = QEjdbDatabase::addDatabase("file:test.db", QEJDB::CREATE | QEJDB::WRITE
                                            | QEJDB::LOCK_NB | QEJDB::TRUNCATE
                                            | QEJDB::LOCK_NB);
 
@@ -59,17 +59,16 @@ void Tst_Database::tst_collection()
     }
 
 
-    QEjdbCollection col = db.collection("testCollection");
-    QCOMPARE(col.isValid(), false);
+    bool col = db.containsCollection("testCollection");
+    QVERIFY(!col);
 
     col = db.createCollection("testCollection2");
-    col = db.collection("testCollection2");
+    QVERIFY(col);
 
-    QCOMPARE(QString("testCollection2"), col.collectionName());
     QCOMPARE(db.removeCollection("testCollection2"), true);
 
-    QEjdbCollection col1 = db.collection("testCollection2");
-    QCOMPARE(false, col1.isValid());
+
+    QCOMPARE(db.containsCollection(QStringLiteral("testCollection2")), false);
 
     QEjdbDatabase::removeDatabase();
 

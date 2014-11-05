@@ -3,6 +3,7 @@
 #include <QString>
 #include <QSharedPointer>
 #include <QDir>
+#include <QUrl>
 
 #include "qejdbcollection.h"
 
@@ -66,41 +67,43 @@ public:
      */
     bool isOpen();
 
-
-    /**
-     * @brief collection
-     * @param collectionName
-     * @return
-     */
-    QEjdbCollection collection(QString collectionName);
-
     /**
      * @brief createCollection
      * @param collectionName
      * @return
      */
-    QEjdbCollection createCollection(QString collectionName);
+    bool createCollection(const QString &collectionName);
 
-    static QEjdbDatabase addDatabase(QString path, QString database, int mode, QString connectionName = QLatin1String(defaultConnection));
+    bool containsCollection(const QString &collectionName);
 
-    static QEjdbDatabase database(QString connectionName = QLatin1String(defaultConnection));
+    static QEjdbDatabase addDatabase(QString url, int mode, QString connectionName = QLatin1String(defaultConnection));
 
-    static void removeDatabase(QString connectionName  = QLatin1String(defaultConnection));
+    static QEjdbDatabase database(const QString &connectionName = QLatin1String(defaultConnection));
 
-    static bool removeDatabaseFiles(QString path, QString database);
+    static void removeDatabase(const QString &connectionName  = QLatin1String(defaultConnection));
+
+    static bool removeDatabaseFiles(const QString &path, const QString &database);
 
     QEjdbDatabase(const QEjdbDatabase &other);
 
     QEjdbDatabase &operator =(const QEjdbDatabase &other);
 
+    bool save(const QString &collectionName, QBsonObject &bson);
+    QBsonObject load(const QString &collectionName, const QString &oid);
+
+    bool remove(const QString &collectionName, const QString &oid);
+    bool remove(const QString &collectionName, QBsonObject obj);
 
     bool removeCollection(const QString &collectionName);
+
+    QList<QBsonObject> query(const QString &collectionName, const QBsonObject &query);
 protected:
     /**
      * @brief QEJDBDatabase constructor
-     * @param connectionName
+     * @param url
+     * @param mode
      */
-    QEjdbDatabase(QString path, QString databaseName, int mode);
+    QEjdbDatabase(QString url, int mode);
 
 
 private:

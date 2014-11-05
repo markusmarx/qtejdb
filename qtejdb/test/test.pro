@@ -18,19 +18,21 @@ SOURCES += main.cpp \
     tst_database.cpp \
     tst_collection.cpp \
     tst_performance.cpp \
-    tst_qbson.cpp
+    tst_qbson.cpp \
+    tst_worker.cpp
 
 HEADERS += \
     tst_database.h \
     tst_collection.h \
     tst_performance.h \
-    tst_qbson.h
+    tst_qbson.h \
+    tst_worker.h
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../src/release/ -lqtejdb
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../src/debug/ -lqtejdb
 else:unix: LIBS += -L$$PWD/../src/ -lqtejdb -lz
 
-INCLUDEPATH += $$PWD/../3rdparty/ejdb/tcejdb
+INCLUDEPATH += $$PWD/../../3rdparty/ejdb/tcejdb
 INCLUDEPATH += $$PWD/../src
 DEPENDPATH += $$PWD/../src
 

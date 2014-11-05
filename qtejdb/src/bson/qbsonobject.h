@@ -35,6 +35,8 @@ public:
 private:
     friend class QObjectBsonData;
     friend class QEjdbCollectionPrivate;
+    friend class QEjdbFileWorker;
+
     QBsonObjectData *data;
 
     QBsonObject(void* bsonRec);

@@ -3,20 +3,22 @@
 # Project created by QtCreator 2014-11-04T19:26:17
 #
 #-------------------------------------------------
-
+QT       += websockets
 QT       -= gui
 
-TARGET = src
-TEMPLATE = lib
+TARGET = qtejdbsrv
+TEMPLATE = app
 
-DEFINES += SRC_LIBRARY
+CONFIG += app_bundle
 
-SOURCES +=
+SOURCES += \
+    main.cpp \
+    echoserver.cpp
 
 HEADERS += \
-    server_global.h
+    server_global.h \
+    echoserver.h
 
-unix {
-    target.path = /usr/lib
-    INSTALLS += target
-}
+include(../../qtejdb/src/qtejdb.pri)
+
+DESTDIR = ../../bin

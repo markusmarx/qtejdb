@@ -15,20 +15,21 @@ Tst_Collection::Tst_Collection(QObject *parent) :
 void Tst_Collection::initTestCase()
 {
     QEjdbDatabase::removeDatabaseFiles(".", "test_db");
-    QEjdbDatabase::addDatabase(".", "test_db", QEJDB::CREATE | QEJDB::WRITE
+    QEjdbDatabase::addDatabase("file:test_db", QEJDB::CREATE | QEJDB::WRITE
                              | QEJDB::LOCK_NB | QEJDB::TRUNCATE).open();
 }
 
 void Tst_Collection::tst_simpleCRUD()
 {
     QEjdbDatabase m_db = QEjdbDatabase::database();
-    QEjdbCollection col = m_db.createCollection("testcollection");
+    m_db.createCollection("testcollection");
     QBsonObject obj = createTestObject();
+
     obj.insert("test", QBsonValue("test"));
 
-    col.save(obj);
+    m_db.save("testcollection", obj);
 
-    QBsonObject obj2 = col.load(obj.value("_id").toString());
+    QBsonObject obj2 = m_db.load("testcollection", obj.value("_id").toString());
     QCOMPARE(obj.value("_id").toId(), obj2.value("_id").toId());
 
     QBsonObject obj3;
@@ -41,9 +42,9 @@ void Tst_Collection::tst_simpleCRUD()
     obj3.insert("inline", obj4);
     //qDebug() << obj3;
 
-    col.save(obj3);
+    m_db.save("testcollection", obj3);
 
-    QBsonObject obj5 = col.load(obj3.value("_id").toString());
+    QBsonObject obj5 = m_db.load("testcollection", obj3.value("_id").toString());
     //qDebug() << obj5;
 
     QCOMPARE(obj3.value("_id").toString(), obj5.value("_id").toString());
@@ -52,7 +53,7 @@ void Tst_Collection::tst_simpleCRUD()
 
     //qDebug() << obj5;
 
-    QCOMPARE(col.remove(obj5), true);
+    QCOMPARE(m_db.remove("testcollection", obj5), true);
 
     //obj5 = col.load(obj3.value("_id").toString());
 
@@ -65,9 +66,8 @@ void Tst_Collection::tst_simpleQuery()
 
     for (int i = 0; i < 1000; i++) {
         //qDebug() << i;
-       QEjdbCollection col = db.collection("testcollection");
        QList<QBsonObject> list;
-       QEjdbQuery query(col);
+       QEjdbQuery query("testcollection", db);
        QBsonObject q = QBsonObject().append(
                            "test", QBsonObject("$begin", "tes"));
        list = query.exec(q);
@@ -76,7 +76,7 @@ void Tst_Collection::tst_simpleQuery()
 
     }
 
-    QEjdbQuery query(db.collection("testcollection"));
+    QEjdbQuery query("testcollection", db);
     QList<QBsonObject> list = query.exec(QBsonObject("test", "tes"));
     QCOMPARE(list.size(), 0);
 
@@ -135,12 +135,12 @@ QBsonObject Tst_Collection::createTestObject()
 void Tst_Collection::tst_dataTypes()
 {
     QEjdbDatabase m_db = QEjdbDatabase::database();
-    QEjdbCollection col = m_db.createCollection("datatypes");
+    m_db.createCollection("datatypes");
     QBsonObject testObj = createTestObject();
 
-    col.save(testObj);
+    m_db.save("datatypes", testObj);
 
-    QBsonObject loaded = col.load(testObj.value("_id").toString());
+    QBsonObject loaded = m_db.load("datatypes", testObj.value("_id").toString());
 
     QCOMPARE(QString("test"), loaded.value("string").toString());
     QCOMPARE(10, loaded.value("int").toInt());
