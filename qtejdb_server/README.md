@@ -13,7 +13,7 @@ A simple server implementation with small footprint based on Qt and QtEjdb.
 
 ###Commandline Args
 
-confFile        path to a configuration file
+*confFile* path to a configuration file
 
 ###Configuration XML
 
