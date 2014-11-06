@@ -1,3 +1,6 @@
 [submodule "3rdparty/ejdb"]
 	path = 3rdparty/ejdb
 	url = https://github.com/markusmarx/ejdb.git
+[submodule "3rdparty/qtargparser"]
+	path = 3rdparty/qtargparser
+	url = https://github.com/markusmarx/qtargparser
