@@ -26,7 +26,9 @@ namespace QEJDB {
         /**< Lock without blocking. */
         LOCK_NB     = 1 << 5,
         /**< Synchronize every transaction. */
-        SYNC        = 1 << 6
+        SYNC        = 1 << 6,
+        DEFAULT     =  CREATE | WRITE
+                       | LOCK_NB | TRUNCATE
     };
 
 }

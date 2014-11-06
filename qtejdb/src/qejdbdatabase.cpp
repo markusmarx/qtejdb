@@ -44,7 +44,7 @@ class QEjdbDatabasePrivate {
 public:
     QAtomicInt ref;
     QEjdbWorker *m_worker;
-    QEjdbDatabasePrivate(QEjdbDatabase *d, QUrl url, int mode):
+    QEjdbDatabasePrivate(QEjdbDatabase *d, const QUrl &url, int mode):
         q(d)
     {
         ref = 1;
@@ -226,7 +226,12 @@ QEjdbDatabase::QEjdbDatabase(const QEjdbDatabase &other):d(other.d)
 
 QEjdbDatabase &QEjdbDatabase::operator=(const QEjdbDatabase &other)
 {
-    qAtomicAssign<QEjdbDatabasePrivate>(d, other.d);
+    if (d) {
+        qAtomicAssign<QEjdbDatabasePrivate>(d, other.d);
+    } else {
+        d = other.d;
+        d->ref.ref();
+    }
     return *this;
 }
 
