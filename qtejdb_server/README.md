@@ -1,12 +1,21 @@
-#QtEjdb Server Documentation
+#README
 
+##What is QtEjdb Server?
 A simple server implementation with small footprint based on Qt and QtEjdb.
 
-##Commandline Args
+##Requirements
+
+* Qt Framework Version 5
+
+##Installation
+
+##Documentation
+
+###Commandline Args
 
 confFile        path to a configuration file
 
-##Configuration XML
+###Configuration XML
 
 ```xml
 <QtEjdbDatabase name="string" vendor="vendor" app="applicationname">
@@ -21,3 +30,8 @@ confFile        path to a configuration file
 
 </QtEjdbConfiguration>
 ```
+
+##Licence
+
+LGPL v3
+
