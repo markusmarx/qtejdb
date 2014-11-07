@@ -2,6 +2,7 @@
 #define TST_DATABASE_H
 
 #include <QObject>
+#include "qejdbdatabase.h"
 
 class Tst_Database : public QObject
 {
@@ -23,7 +24,8 @@ private Q_SLOTS:
     void tst_collection();
 
     void cleanupTestCase();
-
+private:
+    QEjdbDatabase m_db2;
 };
 
 #endif // TST_DATABASE_H

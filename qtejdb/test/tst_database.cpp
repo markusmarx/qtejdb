@@ -1,5 +1,4 @@
 #include "tst_database.h"
-#include "qejdbdatabase.h"
 #include <QTest>
 #include <QDebug>
 
@@ -13,6 +12,8 @@ void Tst_Database::tst_open()
 
     QEjdbDatabase db = QEjdbDatabase::addDatabase("file:test.db", QEJDB::CREATE | QEJDB::WRITE
                                           | QEJDB::LOCK_NB | QEJDB::TRUNCATE | QEJDB::LOCK_NB);
+    m_db2 = db;
+
     bool open = db.open();
     QCOMPARE(open, true);
 
