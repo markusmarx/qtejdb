@@ -4,3 +4,6 @@
 [submodule "3rdparty/qtargparser"]
 	path = 3rdparty/qtargparser
 	url = https://github.com/markusmarx/qtargparser
+[submodule "3rdparty/qtrcp2"]
+	path = 3rdparty/qtrcp2
+	url = https://github.com/markusmarx/QtRpc2
