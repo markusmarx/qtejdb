@@ -33,11 +33,22 @@ public:
     void setDatabaseName(const QString &databaseName);
 
     /**
+     * @brief databaseName Returns databaseName value
+     * @return databaseName value
+     */
+    QString databaseName() const;
+
+    /**
      *
      * @brief addServerListener
      * @param serverListener
      */
     void addServerListener(ServerListener *serverListener);
+
+    /**
+     * @brief run start the serverconfiguration
+     */
+    bool run();
 
 signals:
 
@@ -45,10 +56,6 @@ signals:
 
 public slots:
 
-    /**
-     * @brief run start the serverconfiguration
-     */
-    void run();
 
 private:
 

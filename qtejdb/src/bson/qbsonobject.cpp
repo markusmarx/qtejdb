@@ -187,7 +187,7 @@ void QBsonObjectData::convert2QBson(bson *bson, QBsonObject& obj)
  *
  * @return bson
  */
-QByteArray QBsonObjectData::toBinary()
+QByteArray QBsonObjectData::toBinary() const
 {
 
     bson bs = convert2Bson(*this);
@@ -209,7 +209,7 @@ void QBsonObjectData::fromBinary(const QByteArray& binary, QBsonObject& obj)
 
 }
 
-bson QBsonObjectData::convert2Bson(QBsonObjectData &obj, bson* bs)
+bson QBsonObjectData::convert2Bson(const QBsonObjectData &obj, bson* bs)
 {
     bson bsrec;
 
@@ -352,7 +352,7 @@ bool QBsonObject::contains(const QString &name)
     return data->values.contains(name);
 }
 
-QStringList QBsonObject::names()
+QStringList QBsonObject::names() const
 {
     return data->values.keys();
 }
@@ -362,7 +362,7 @@ QBsonValueHash QBsonObject::values()
     return data->values;
 }
 
-QByteArray QBsonObject::toBinary()
+QByteArray QBsonObject::toBinary() const
 {
     return data->toBinary();
 }
@@ -387,7 +387,12 @@ bool QBsonObject::remove(const QString &name)
  */
 QBsonObject::QBsonObject(const QBsonObject &rhs): data(rhs.data)
 {
-    data->ref.ref();
+
+    if (!data) {
+        data = new QBsonObjectData();
+    } else {
+        data->ref.ref();
+    }
 }
 
 /**
@@ -410,6 +415,23 @@ QBsonObject::~QBsonObject()
 
 QDebug operator<<(QDebug dbg, const QBsonObject &c)
 {
-    dbg << "test";
+    dbg << c.names();
     return dbg.space();
+}
+
+
+QDataStream &operator<<(QDataStream &d, const QBsonObject &object)
+{
+
+    d << object.toBinary();
+    return d;
+}
+
+
+QDataStream &operator>>(QDataStream &d, QBsonObject &object)
+{
+    QByteArray ba;
+    d >> ba;
+    object = QBsonObject(ba);
+    return d;
 }

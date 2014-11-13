@@ -27,9 +27,9 @@ public:
     QBsonObject append(const QString &name, const QBsonValue &value);
     QBsonValue value(const QString &name);
     bool contains(const QString &name);
-    QStringList names();
+    QStringList names() const;
     QBsonValueHash values();
-    QByteArray toBinary();
+    QByteArray toBinary() const;
     bool remove(const QString& name);
 
 private:
@@ -48,5 +48,8 @@ private:
 Q_DECLARE_METATYPE(QBsonObject)
 
 QDebug operator<<(QDebug dbg, const QBsonObject &c);
+
+QDataStream& operator<<(QDataStream& d, const QBsonObject& object);
+QDataStream& operator>>(QDataStream& d, QBsonObject& object);
 
 #endif // QBSONOBJECT_H

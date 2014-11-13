@@ -1,32 +1,23 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2014-11-04T19:26:17
+# Project created by QtCreator 2014-11-13T10:31:15
 #
 #-------------------------------------------------
-QT       += websockets
+
+QT       += core testlib
+
 QT       -= gui
 
-TARGET = qtejdbsrv
+TARGET = test
+CONFIG   += console testcase
+CONFIG   -= app_bundle
+
 TEMPLATE = app
 
-CONFIG += app_bundle
 
-SOURCES += \
-    main.cpp \
-    serverconfiguration.cpp \
-    serverlistener.cpp \
-    websocketlistener.cpp \
+SOURCES += main.cpp \
+    tst_connection.cpp \
     qejdbdatabaseservice.cpp
-
-HEADERS += \
-    server_global.h \
-    serverconfiguration.h \
-    serverlistener.h \
-    websocketlistener.h \
-    qejdbdatabaseservice.h
-
-include(../../3rdparty/qtargparser/QtArg/qtarg.pri)
-#include(../../qtejdb/src/qtejdb.pri)
 
 DESTDIR = ../../bin
 
@@ -46,3 +37,7 @@ else:unix: LIBS += -L$$PWD/../../3rdparty/qtrcp2/build/lib/ -lqtrpc2
 INCLUDEPATH += $$PWD/../../3rdparty/qtrcp2/include
 INCLUDEPATH += $$PWD/../../3rdparty/qtrcp2/lib
 DEPENDPATH += $$PWD/../../3rdparty/qtrcp2/lib
+
+HEADERS += \
+    tst_connection.h \
+    qejdbdatabaseservice.h

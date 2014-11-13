@@ -1,27 +1,46 @@
 #include <QtCore/QCoreApplication>
-#include "echoserver.h"
+#include "qejdbdatabaseservice.h"
 #include "serverconfiguration.h"
 #include "websocketlistener.h"
 #include <QtArg/Arg>
 #include <QtArg/CmdLine>
 #include <QtArg/Help>
-
+#include <Server>
+#include <ServerProtocolListenerTcp>
 #include <QDebug>
 
-ServerConfiguration *parseCmd(int argc, char *argv[]);
+ServerConfiguration *parseCmd(QCoreApplication *app, int argc, char *argv[]);
 
 int main(int argc, char *argv[])
 {
-    ServerConfiguration *config = parseCmd(argc, argv);
+    QCoreApplication a(argc, argv);
+    ServerConfiguration *config = parseCmd(&a, argc, argv);
 
     if (!config) {
         return 0;
     }
 
-    QCoreApplication a(argc, argv);
-    config->run();
-    QObject::connect(config, &ServerConfiguration::shutdown, &a, &QCoreApplication::quit);
-    return a.exec();
+    if (config->run()) {
+        QObject::connect(config, &ServerConfiguration::shutdown, &a, &QCoreApplication::quit);
+        QtRpc::Server srv;
+
+        //Create a TCP listener object
+        QtRpc::ServerProtocolListenerTcp tcp(&srv);
+
+        //Listen on port 10123 on all network interfaces
+        if(!tcp.listen(QHostAddress::Any, 10123))
+        {
+            //This function returns false if the port is busy
+            qCritical() << "Failed to listen on port 10123!";
+
+        }
+
+        srv.registerService<QEjdbDatabaseService>("QEjdbDatabase");
+
+        return a.exec();
+    } else {
+        return -1;
+    }
 
 }
 
@@ -32,7 +51,7 @@ int main(int argc, char *argv[])
  *
  * @return configuration instance
  */
-ServerConfiguration *parseCmd(int argc, char *argv[])
+ServerConfiguration *parseCmd(QCoreApplication *app, int argc, char *argv[])
 {
     QtArgCmdLine cmd( argc, argv );
     QtArg configFile( QLatin1Char('c'), QLatin1String( "config" ),
@@ -75,7 +94,8 @@ ServerConfiguration *parseCmd(int argc, char *argv[])
        return 0;
     }
 
-    ServerConfiguration *config = new ServerConfiguration;
+    ServerConfiguration *config = new ServerConfiguration(app);
+    config->setObjectName("serverConfig");
     config->setDatabaseName(dbName.value().toString());
     config->setDatabasePath(dbPath.value().toString());
     WebSocketListener *wsListener = new WebSocketListener(port.value().toInt(), config);

@@ -264,15 +264,17 @@ QList<QBsonObject> QEjdbDatabase::query(const QString &collectionName, const QBs
     return d->m_worker->query(collectionName, query);
 }
 
-QEjdbDatabase::QEjdbDatabase()
+QEjdbDatabase::QEjdbDatabase():d(0)
 {
 
 }
 
 QEjdbDatabase::~QEjdbDatabase()
 {
-    if (!d->ref.deref())
+    if (!d->ref.deref()) {
         delete d;
+        d = 0;
+    }
 }
 
 bool QEjdbDatabase::open()

@@ -3,21 +3,24 @@
 
 #include <QObject>
 #include "serverlistener.h"
+#include "serverconfiguration.h"
 
-QT_FORWARD_DECLARE_CLASS(EchoServer)
+QT_FORWARD_DECLARE_CLASS(QThread)
 
 class WebSocketListener : public ServerListener
 {
     Q_OBJECT
 public:
-    explicit WebSocketListener(qint16 port, QObject *parent = 0);
+    explicit WebSocketListener(qint16 port, ServerConfiguration *config);
 
 signals:
 
 public slots:
-
+    void startServer();
 private:
-    EchoServer *m_server;
+    ServerConfiguration *m_config;
+    QThread *m_workerThread;
+
 
 };
 

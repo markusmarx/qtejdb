@@ -14,10 +14,10 @@ public:
     }
 
     QBsonValueHash values;
-    QByteArray toBinary();
+    QByteArray toBinary() const;
 
     static void fromBinary(const QByteArray& binary, QBsonObject& obj);
-    static bson convert2Bson(QBsonObjectData &obj, bson* bson = 0);
+    static bson convert2Bson(const QBsonObjectData &obj, bson* bson = 0);
     static void convert2Bson2(const char* attr, QBsonValue value, bson &bsrec);
     static void convert2BsonEntry(bson *bson, const char* attr, QBsonValue &value);
 
