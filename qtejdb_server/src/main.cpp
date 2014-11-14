@@ -1,7 +1,7 @@
 #include <QtCore/QCoreApplication>
 #include "qejdbdatabaseservice.h"
 #include "serverconfiguration.h"
-#include "websocketlistener.h"
+#include "rcptcplistener.h"
 #include <QtArg/Arg>
 #include <QtArg/CmdLine>
 #include <QtArg/Help>
@@ -22,20 +22,6 @@ int main(int argc, char *argv[])
 
     if (config->run()) {
         QObject::connect(config, &ServerConfiguration::shutdown, &a, &QCoreApplication::quit);
-        QtRpc::Server srv;
-
-        //Create a TCP listener object
-        QtRpc::ServerProtocolListenerTcp tcp(&srv);
-
-        //Listen on port 10123 on all network interfaces
-        if(!tcp.listen(QHostAddress::Any, 10123))
-        {
-            //This function returns false if the port is busy
-            qCritical() << "Failed to listen on port 10123!";
-
-        }
-
-        srv.registerService<QEjdbDatabaseService>("QEjdbDatabase");
 
         return a.exec();
     } else {
@@ -98,7 +84,7 @@ ServerConfiguration *parseCmd(QCoreApplication *app, int argc, char *argv[])
     config->setObjectName("serverConfig");
     config->setDatabaseName(dbName.value().toString());
     config->setDatabasePath(dbPath.value().toString());
-    WebSocketListener *wsListener = new WebSocketListener(port.value().toInt(), config);
+    RcpTcpListener *wsListener = new RcpTcpListener(port.value().toInt(), config);
     config->addServerListener(wsListener);
 
     return config;

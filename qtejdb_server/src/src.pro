@@ -15,15 +15,15 @@ SOURCES += \
     main.cpp \
     serverconfiguration.cpp \
     serverlistener.cpp \
-    websocketlistener.cpp \
-    qejdbdatabaseservice.cpp
+    qejdbdatabaseservice.cpp \
+    rcptcplistener.cpp
 
 HEADERS += \
     server_global.h \
     serverconfiguration.h \
     serverlistener.h \
-    websocketlistener.h \
-    qejdbdatabaseservice.h
+    qejdbdatabaseservice.h \
+    rcptcplistener.h
 
 include(../../3rdparty/qtargparser/QtArg/qtarg.pri)
 #include(../../qtejdb/src/qtejdb.pri)

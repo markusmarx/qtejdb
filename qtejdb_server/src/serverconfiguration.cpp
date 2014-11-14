@@ -29,18 +29,20 @@ void ServerConfiguration::addServerListener(ServerListener *serverListener)
 
 bool ServerConfiguration::run()
 {
+    bool success = true;
     QString dbUrl = "file:"+m_databasePath+QDir::separator()+m_databaseName;
     qDebug() << "open database " << dbUrl;
     m_database = QEjdbDatabase::addDatabase(dbUrl,
                                QEJDB::CREATE | QEJDB::WRITE
                                | QEJDB::LOCK_NB | QEJDB::TRUNCATE, m_databaseName);
-
-    if (!m_database.open()) {
-        qWarning() << "database not opened.";
-        return false;
+    if (m_database.open()) {
+        foreach (ServerListener* listener, m_listener) {
+            listener->start();
+        }
     } else {
-
+        qWarning() << "database not opened.";
+        success = false;
     }
-    return true;
 
+    return success;
 }

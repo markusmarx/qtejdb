@@ -1,33 +1,30 @@
-#include "websocketlistener.h"
+#include "rcptcplistener.h"
 #include "qejdbdatabaseservice.h"
 #include <Server>
-#include <ServerProtocolListenerTcp>
 #include <QDebug>
 #include <QThread>
 
 
-WebSocketListener::WebSocketListener(qint16 port, ServerConfiguration *config) :
-    ServerListener(config), m_config(config)
+RcpTcpListener::RcpTcpListener(qint16 port, ServerConfiguration *config) :
+    ServerListener(config), m_config(config), m_port(port)
 {
 
-    connect(this, &ServerListener::start, this, &WebSocketListener::startServer, Qt::QueuedConnection);
-
-    //m_workerThread = new QThread(this);
+    connect(this, &ServerListener::start, this, &RcpTcpListener::startServer, Qt::QueuedConnection);
 
 }
 
-void WebSocketListener::startServer()
+void RcpTcpListener::startServer()
 {
     //Create a server object with default threading options
-    QtRpc::Server srv;
+    m_server = new QtRpc::Server;
 
     qDebug() << "start server " << m_config->databaseName();
 
     //Create a TCP listener object
-    QtRpc::ServerProtocolListenerTcp tcp(&srv);
+    m_listener = new ServerProtocolListenerTcp(m_server);
 
     //Listen on port 10123 on all network interfaces
-    if(!tcp.listen(QHostAddress::Any, 10123))
+    if(!m_listener->listen(QHostAddress::Any, 10123))
     {
         //This function returns false if the port is busy
         qCritical() << "Failed to listen on port 10123!";
@@ -40,7 +37,7 @@ void WebSocketListener::startServer()
     //Register a service. The template argument is the ServiceProxy class to use
     //The string argument is the name used to connect to the service
     //A new instance of the BasicService class is created each time a client connects
-    srv.registerService<QEjdbDatabaseService>("QEjdbDatabase");
+    m_server->registerService<QEjdbDatabaseService>("QEjdbDatabase");
 
 
 }
