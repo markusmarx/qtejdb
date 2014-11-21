@@ -13,7 +13,7 @@ public:
     QEjdbWorker();
     virtual ~QEjdbWorker() {}
 
-    virtual bool open() = 0;
+    virtual void open() = 0;
     virtual bool isOpen() = 0;
     virtual bool close() = 0;
 
@@ -27,6 +27,13 @@ public:
 
     virtual QList<QBsonObject> query(const QString &collectionName, const QBsonObject &query) = 0;
 
+    /**
+     * @brief createFromUrl creates a worker instance from url.
+     *
+     * @param url
+     * @param mode
+     * @return
+     */
     static QEjdbWorker *createFromUrl(const QUrl &url, int mode);
 
 };
@@ -36,7 +43,14 @@ class QEjdbFileWorker: public QEjdbWorker
 public:
     QEjdbFileWorker(const QUrl &url, int mode);
     ~QEjdbFileWorker() {}
-    virtual bool open();
+
+    /**
+     * @brief open open the database under the given file path.
+     *
+     * @throw QEjdbException if database could not opened.
+     * @return void
+     */
+    virtual void open();
     virtual bool isOpen();
     virtual bool close();
 
@@ -51,7 +65,6 @@ public:
     virtual QList<QBsonObject> query(const QString &collectionName, const QBsonObject &query);
 private:
     QString m_path;
-
     int m_mode;
 
     /**
@@ -63,5 +76,7 @@ private:
     EJCOLL *getCollection(const QString &collectionName);
 
 };
+
+
 
 #endif // QEJDBWORKER_H

@@ -4,6 +4,7 @@
 #include <QCoreApplication>
 
 QTRPC_REGISTER_METATYPE(QEjdbDatabaseService::ResultData)
+
 QTRPC_REGISTER_METATYPE(QBsonObject)
 
 QEjdbDatabaseService::QEjdbDatabaseService(QObject *parent) :
@@ -28,6 +29,11 @@ ReturnValue QEjdbDatabaseService::save(QString collectionName, QBsonObject obj)
 ReturnValue QEjdbDatabaseService::createCollection(QString collectionName)
 {
     return ReturnValue(m_database.createCollection(collectionName));
+}
+
+ReturnValue QEjdbDatabaseService::removeCollection(QString collectionName)
+{
+    return ReturnValue(m_database.removeCollection(collectionName));
 }
 
 

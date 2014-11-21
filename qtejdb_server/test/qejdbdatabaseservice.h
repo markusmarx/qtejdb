@@ -19,6 +19,7 @@ signals:
 
     ReturnValue save(QString collection, QBsonObject obj);
     ReturnValue createCollection(QString collectionName);
+    ReturnValue removeCollection(QString collectionName);
 
 public slots:
 

@@ -38,7 +38,7 @@ private:
     /**
      * @brief m_port
      */
-    int16 m_port;
+    qint16 m_port;
 
 };
 

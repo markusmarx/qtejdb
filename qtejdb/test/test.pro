@@ -28,6 +28,14 @@ HEADERS += \
     tst_qbson.h \
     tst_worker.h
 
+
+# QtRpc2 lib
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../3rdparty/qtrcp2/build/lib/release/ -lqtrpc2
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../3rdparty/qtrcp2/build/lib/debug/ -lqtrpc2
+else:unix: LIBS += -L$$PWD/../../3rdparty/qtrcp2/build/lib/ -lqtrpc2
+
+# QEjdb lib
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../src/release/ -lqtejdb
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../src/debug/ -lqtejdb
 else:unix: LIBS += -L$$PWD/../src/ -lqtejdb -lz
@@ -41,3 +49,5 @@ else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/../src/debu
 else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../src/release/qtejdb.lib
 else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/../src/debug/qtejdb.lib
 else:unix: PRE_TARGETDEPS += $$PWD/../src/libqtejdb.a
+
+

@@ -21,7 +21,10 @@ SOURCES += \
     bson/qbsonvalue.cpp \
     bson/qbsonarray.cpp \
     bson/qbsonoid.cpp \
-    qejdbworker.cpp
+    qejdbworker.cpp \
+    qejdbfileworker.cpp \
+    qejdbrpcworker.cpp \
+    qejdbexception.cpp
 
 
 HEADERS += \
@@ -33,10 +36,22 @@ HEADERS += \
     bson/qbsonarray.h \
     bson/qbsonoid.h \
     bson/qbsonobject_p.h \
-    qejdbworker.h
+    qejdbworker.h \
+    qejdbrpcworker.h \
+    qejdbexception.h
 
 INCLUDEPATH += ../../3rdparty/ejdb/tcejdb
 include(../../3rdparty/ejdb/tcejdb/ejdb.pri)
+
+# QtRpc2 lib
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../3rdparty/qtrcp2/build/lib/release/ -lqtrpc2
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../3rdparty/qtrcp2/build/lib/debug/ -lqtrpc2
+else:unix: LIBS += -L$$PWD/../../3rdparty/qtrcp2/build/lib/ -lqtrpc2
+
+INCLUDEPATH += $$PWD/../../3rdparty/qtrcp2/include
+INCLUDEPATH += $$PWD/../../3rdparty/qtrcp2/lib
+DEPENDPATH += $$PWD/../../3rdparty/qtrcp2/build/lib
 
 OTHER_FILES += \
     qtejdb.pri

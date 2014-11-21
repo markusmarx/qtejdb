@@ -30,6 +30,7 @@ public slots:
 
     ReturnValue save(QString collectionName, QBsonObject obj);
     ReturnValue createCollection(QString collectionName);
+    ReturnValue removeCollection(QString collectionName);
 private:
     QEjdbDatabase m_database;
 

@@ -6,6 +6,7 @@
 #include <QUrl>
 
 #include "qejdbcollection.h"
+#include "qejdbexception.h"
 
 namespace QEJDB {
 
@@ -47,15 +48,13 @@ public:
      */
     ~QEjdbDatabase();
 
-
     /**
-     * @brief openDatabase open database.
-     * @param path
-     * @param databaseName
-     * @param mode
-     * @return
+     * @brief open Connect a database. If a connection already opened nothing happened.
+     * If a connection could not opened a QEjdbException is thrown.
+     *
+     * @throw QEjdbException
      */
-    bool open();
+    void open();
 
     /**
      * @brief closeDatabase close database.
@@ -69,6 +68,8 @@ public:
      */
     bool isOpen();
 
+
+
     /**
      * @brief createCollection
      * @param collectionName
@@ -78,6 +79,14 @@ public:
 
     bool containsCollection(const QString &collectionName);
 
+    /**
+     * @brief addDatabase Add a database connection to the pool.
+     *
+     * @param url
+     * @param mode
+     * @param connectionName
+     * @return
+     */
     static QEjdbDatabase addDatabase(QString url, int mode, QString connectionName = QLatin1String(defaultConnection));
 
     static QEjdbDatabase database(const QString &connectionName = QLatin1String(defaultConnection));
@@ -106,6 +115,7 @@ protected:
      * @param mode
      */
     QEjdbDatabase(QString url, int mode);
+
 
 
 private:

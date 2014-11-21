@@ -57,9 +57,10 @@ public:
         delete m_worker;
     }
 
-    bool open();
+
+    void open();
     bool close();
-    bool isOpen();
+    bool isOpen() const;
     QEjdbCollection collection(QString collectionName);
     QEjdbCollection storeCollection(EJCOLL *col, QString collectionName);
     bool createCollection(const QString &collectionName);
@@ -96,15 +97,19 @@ private:
      */
     QHash<QString, QEjdbCollection> m_collections;
 
-
+    inline void checkConnection() const
+    {
+        if (!isOpen()) {
+            throw QEjdbException(QEjdbException::NOTCONNECTED, "database is not connected.");
+        }
+    }
 
 };
 
-bool QEjdbDatabasePrivate::open() {
+void QEjdbDatabasePrivate::open() {
 
-    if (isOpen()) return false;
-
-    return m_worker->open();
+    if (isOpen()) return;
+    m_worker->open();
 }
 
 bool QEjdbDatabasePrivate::close()
@@ -112,24 +117,27 @@ bool QEjdbDatabasePrivate::close()
     return m_worker->close();
 }
 
-bool QEjdbDatabasePrivate::isOpen()
+bool QEjdbDatabasePrivate::isOpen() const
 {
     return m_worker->isOpen();
 }
 
 bool QEjdbDatabasePrivate::containsCollection(const QString &collectionName)
 {
+    checkConnection();
     return m_worker->containsCollection(collectionName);
 }
 
 
 bool QEjdbDatabasePrivate::createCollection(const QString &collectionName)
 {
+    checkConnection();
     return m_worker->createCollection(collectionName);
 }
 
 bool QEjdbDatabasePrivate::removeCollection(const QString &collectionName)
 {
+    checkConnection();
     return m_worker->removeCollection(collectionName);
 }
 
@@ -157,8 +165,8 @@ void QEjdbDatabasePrivate::addDatabase(const QEjdbDatabase &db, const QString &n
 
     }
     dict->insert(name, db);
-    //db.d->connName = name;
 }
+
 
 QEjdbDatabase QEjdbDatabasePrivate::database(const QString& name, bool open)
 {
@@ -169,9 +177,7 @@ QEjdbDatabase QEjdbDatabasePrivate::database(const QString& name, bool open)
     QEjdbDatabase db = dict->value(name);
     dict->lock.unlock();
     if (!db.isOpen() && open) {
-        if (!db.open())
-            qWarning() << "QEjdbDatabasePrivate::database: unable to open database";
-
+        db.open();
     }
     return db;
 }
@@ -277,7 +283,7 @@ QEjdbDatabase::~QEjdbDatabase()
     }
 }
 
-bool QEjdbDatabase::open()
+void QEjdbDatabase::open()
 {
    return d->open();
 }

@@ -6,7 +6,10 @@ SOURCES += \
     $$PWD/bson/qbsonvalue.cpp \
     $$PWD/bson/qbsonarray.cpp \
     $$PWD/bson/qbsonoid.cpp \
-    $$PWD/qejdbworker.cpp
+    $$PWD/qejdbworker.cpp \
+    $$PWD/qejdbfileworker.cpp \
+    $$PWD/qejdbrpcworker.cpp
+
 
 HEADERS += \
     $$PWD/qejdbdatabase.h \
@@ -17,7 +20,8 @@ HEADERS += \
     $$PWD/bson/qbsonarray.h \
     $$PWD/bson/qbsonoid.h \
     $$PWD/bson/qbsonobject_p.h \
-    $$PWD/qejdbworker.h
+    $$PWD/qejdbworker.h \
+
 
 include($$PWD/../../3rdparty/ejdb/tcejdb/ejdb.pri)
 
