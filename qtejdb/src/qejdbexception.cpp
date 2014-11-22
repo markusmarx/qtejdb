@@ -1,6 +1,6 @@
 #include "qejdbexception.h"
 
-QEjdbException::QEjdbException(int code, const char *msg):m_code(code), m_msg(msg)
+QEjdbException::QEjdbException(int code, const QString &msg):m_code(code), m_msg(msg)
 {
 }
 

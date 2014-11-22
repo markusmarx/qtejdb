@@ -14,7 +14,8 @@ QEjdbWorker *QEjdbWorker::createFromUrl(const QUrl &url, int mode)
     QEjdbWorker *worker;
     if (url.isLocalFile()) {
         worker = new QEjdbFileWorker(url, mode);
-    } else if (url.scheme() == QStringLiteral("rcp")) {
+    } else if (url.scheme() == QStringLiteral("tcp")
+               || url.scheme() == QStringLiteral("socket")) {
         worker = new QEjdbRpcWorker(url, mode);
     }
 

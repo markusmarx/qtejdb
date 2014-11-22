@@ -35,6 +35,10 @@ win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../3rdparty/qtrcp2/buil
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../3rdparty/qtrcp2/build/lib/debug/ -lqtrpc2
 else:unix: LIBS += -L$$PWD/../../3rdparty/qtrcp2/build/lib/ -lqtrpc2
 
+INCLUDEPATH += $$PWD/../../3rdparty/qtrcp2/include
+INCLUDEPATH += $$PWD/../../3rdparty/qtrcp2/lib
+DEPENDPATH += $$PWD/../../3rdparty/qtrcp2/build/lib
+
 # QEjdb lib
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../src/release/ -lqtejdb
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../src/debug/ -lqtejdb

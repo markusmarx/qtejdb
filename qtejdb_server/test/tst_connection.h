@@ -3,15 +3,15 @@
 
 #include <QObject>
 
-class tst_connection : public QObject
+class Tst_Connection : public QObject
 {
     Q_OBJECT
 public:
-    explicit tst_connection(QObject *parent = 0);
+    explicit Tst_Connection(QObject *parent = 0);
 
 signals:
 
-public slots:
+private slots:
 
     void tst_simple();
 

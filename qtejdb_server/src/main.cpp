@@ -63,7 +63,7 @@ ServerConfiguration *parseCmd(QCoreApplication *app, int argc, char *argv[])
 
     cmd.addArg(configFile);
     cmd.addArg(help);
-    cmd.addArg(port);
+    //cmd.addArg(port);
     cmd.addArg(dbName);
     cmd.addArg(dbPath);
 
@@ -84,7 +84,7 @@ ServerConfiguration *parseCmd(QCoreApplication *app, int argc, char *argv[])
     config->setObjectName("serverConfig");
     config->setDatabaseName(dbName.value().toString());
     config->setDatabasePath(dbPath.value().toString());
-    RcpTcpListener *wsListener = new RcpTcpListener(port.value().toInt(), config);
+    RcpSocketListener *wsListener = new RcpSocketListener(config);
     config->addServerListener(wsListener);
 
     return config;

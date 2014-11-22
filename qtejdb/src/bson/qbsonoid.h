@@ -17,7 +17,6 @@ public:
     QBsonOid(const QString& id);
     QBsonOid(const QLatin1String& id);
     QBsonOid(const char* id);
-    QBsonOid(const QString id);
     QBsonOid(const QBsonOid &);
 
     QBsonOid &operator=(const QBsonOid &);

@@ -45,10 +45,9 @@ public:
     QAtomicInt ref;
     QEjdbWorker *m_worker;
     QEjdbDatabasePrivate(QEjdbDatabase *d, const QUrl &url, int mode):
-        q(d)
+        q(d), m_worker(QEjdbWorker::createFromUrl(url, mode))
     {
         ref = 1;
-        m_worker = QEjdbWorker::createFromUrl(url, mode);
 
     }
 
@@ -106,7 +105,8 @@ private:
 
 };
 
-void QEjdbDatabasePrivate::open() {
+void QEjdbDatabasePrivate::open()
+{
 
     if (isOpen()) return;
     m_worker->open();

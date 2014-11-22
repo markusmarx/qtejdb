@@ -12,11 +12,11 @@
 int main(int argc, char *argv[])
 {
     try {
-        QTest::qExec(new Tst_QBson, argc, argv);
+        //QTest::qExec(new Tst_QBson, argc, argv);
         QTest::qExec(new Tst_Database, argc, argv);
-        QTest::qExec(new Tst_Collection(), argc, argv);
-        QTest::qExec(new Tst_Performance, argc, argv);
-        QTest::qExec(new Tst_Worker, argc, argv);
+        //QTest::qExec(new Tst_Collection(), argc, argv);
+        //QTest::qExec(new Tst_Performance, argc, argv);
+        //QTest::qExec(new Tst_Worker, argc, argv);
     } catch(QEjdbException &ex) {
         qDebug() << ex;
     }

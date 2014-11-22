@@ -5,15 +5,16 @@
 #include "serverlistener.h"
 #include "serverconfiguration.h"
 #include <ServerProtocolListenerTcp>
+#include <ServerProtocolListenerSocket>
 #include <Server>
 
 QT_FORWARD_DECLARE_CLASS(QThread)
 
-class RcpTcpListener : public ServerListener
+class RcpSocketListener : public ServerListener
 {
     Q_OBJECT
 public:
-    explicit RcpTcpListener(qint16 port, ServerConfiguration *config);
+    explicit RcpSocketListener(ServerConfiguration *config);
 
 signals:
 
@@ -28,8 +29,8 @@ private:
     /**
      * @brief m_listener tcp listener.
      */
-    QtRpc::ServerProtocolListenerTcp *m_listener;
-
+    //QtRpc::ServerProtocolListenerTcp *m_listener;
+    QtRpc::ServerProtocolListenerSocket *m_listener;
     /**
      * @brief m_server server.
      */

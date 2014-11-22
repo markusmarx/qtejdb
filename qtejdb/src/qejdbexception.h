@@ -14,16 +14,20 @@ public:
         NOTCONNECTED = 1
     };
 
-    QEjdbException(const int code, const char *msg);
+    QEjdbException(const int code, const QString &msg);
+    ~QEjdbException() throw() {}
+
     void raise() const { throw *this; }
     QEjdbException *clone() const { return new QEjdbException(*this); }
+
+
 
     int code() const
     {
         return m_code;
     }
 
-    const char *message() const
+    QString message() const
     {
         return m_msg;
     }
@@ -31,7 +35,7 @@ public:
 
 private:
     int m_code;
-    const char *m_msg;
+    QString m_msg;
 };
 
 

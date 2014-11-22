@@ -3,11 +3,13 @@
 #include "qejdbworker.h"
 #include <ClientProxy>
 #include "bson/qbsonobject.h"
+
 class QEjdbRpcClientService: public QtRpc::ClientProxy
 {
     Q_OBJECT
 
     QTRPC_CLIENTPROXY(QEjdbRpcClientService)
+
 public:
     explicit QEjdbRpcClientService(QObject *parent = 0);
 
@@ -16,8 +18,9 @@ signals:
     ReturnValue save(QString collection, QBsonObject obj);
     ReturnValue createCollection(QString collectionName);
     ReturnValue removeCollection(QString collectionName);
+    ReturnValue containsCollection(QString collectionName);
 
-public slots:
+public slots: 
 
 };
 
@@ -54,8 +57,12 @@ public:
 
 private:
     QEjdbRpcClientService *m_clientService;
+
+    QUrl m_url;
+
+    void checkReturnValue(const ReturnValue &val);
 };
 
-
+QTRPC_REGISTER_METATYPE(QBsonObject)
 
 #endif // QEJDBRPCWORKER_H

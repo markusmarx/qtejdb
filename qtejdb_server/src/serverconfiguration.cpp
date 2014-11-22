@@ -34,12 +34,14 @@ bool ServerConfiguration::run()
     qDebug() << "open database " << dbUrl;
     m_database = QEjdbDatabase::addDatabase(dbUrl,
                                QEJDB::CREATE | QEJDB::WRITE
-                               | QEJDB::LOCK_NB | QEJDB::TRUNCATE, m_databaseName);
-    if (m_database.open()) {
+                               | QEJDB::LOCK_NB | QEJDB::TRUNCATE,
+                                            m_databaseName);
+    try {
+        m_database.open();
         foreach (ServerListener* listener, m_listener) {
             listener->start();
         }
-    } else {
+    } catch(QEjdbException &ex) {
         qWarning() << "database not opened.";
         success = false;
     }

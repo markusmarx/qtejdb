@@ -5,10 +5,9 @@
 #-------------------------------------------------
 
 QT       += core testlib
-
 QT       -= gui
 
-TARGET = test
+TARGET = test_qejdbserver
 CONFIG   += console testcase
 CONFIG   -= app_bundle
 
@@ -16,10 +15,7 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp \
-    tst_connection.cpp \
-    qejdbdatabaseservice.cpp
-
-DESTDIR = ../../bin
+    tst_connection.cpp
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../qtejdb/src/release/ -lqtejdb
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../qtejdb/src/debug/ -lqtejdb
@@ -39,5 +35,4 @@ INCLUDEPATH += $$PWD/../../3rdparty/qtrcp2/lib
 DEPENDPATH += $$PWD/../../3rdparty/qtrcp2/lib
 
 HEADERS += \
-    tst_connection.h \
-    qejdbdatabaseservice.h
+    tst_connection.h

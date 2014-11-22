@@ -22,18 +22,25 @@ ReturnValue QEjdbDatabaseService::auth(QString user, QString passwd)
 
 ReturnValue QEjdbDatabaseService::save(QString collectionName, QBsonObject obj)
 {
+    qDebug() << "save bson";
     m_database.save(collectionName, obj);
-    return ReturnValue(true);
+    return ReturnValue(obj.value("_id").toString());
 }
 
 ReturnValue QEjdbDatabaseService::createCollection(QString collectionName)
 {
+    qDebug() << "create collection";
     return ReturnValue(m_database.createCollection(collectionName));
 }
 
 ReturnValue QEjdbDatabaseService::removeCollection(QString collectionName)
 {
     return ReturnValue(m_database.removeCollection(collectionName));
+}
+
+ReturnValue QEjdbDatabaseService::containsCollection(QString collectionName)
+{
+    return ReturnValue(m_database.containsCollection(collectionName));
 }
 
 
