@@ -1,0 +1,4 @@
+#ifndef QEJDBRESULT_P_H
+#define QEJDBRESULT_P_H
+
+#endif // QEJDBRESULT_P_H
