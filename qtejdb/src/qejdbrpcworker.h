@@ -19,6 +19,7 @@ signals:
     ReturnValue createCollection(QString collectionName);
     ReturnValue removeCollection(QString collectionName);
     ReturnValue containsCollection(QString collectionName);
+    ReturnValue load(const QString &collectionName, const QString &oid);
 
 public slots: 
 

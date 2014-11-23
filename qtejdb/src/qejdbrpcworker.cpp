@@ -67,7 +67,8 @@ bool QEjdbRpcWorker::save(const QString &collectionName, QBsonObject &bson)
 
 QBsonObject QEjdbRpcWorker::load(const QString &collectionName, const QString &oid)
 {
-
+    ReturnValue retValue = m_clientService->load(collectionName, oid);
+    return retValue.value<QBsonObject>();
 }
 
 bool QEjdbRpcWorker::remove(const QString &collectionName, const QString &oid)

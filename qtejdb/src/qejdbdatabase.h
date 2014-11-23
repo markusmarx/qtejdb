@@ -88,23 +88,15 @@ public:
      * @return
      */
     static QEjdbDatabase addDatabase(QString url, int mode, QString connectionName = QLatin1String(defaultConnection));
-
     static QEjdbDatabase database(const QString &connectionName = QLatin1String(defaultConnection));
-
     static void removeDatabase(const QString &connectionName  = QLatin1String(defaultConnection));
-
     static bool removeDatabaseFiles(const QString &path, const QString &database);
-
     QEjdbDatabase(const QEjdbDatabase &other);
-
     QEjdbDatabase &operator =(const QEjdbDatabase &other);
-
     bool save(const QString &collectionName, QBsonObject &bson);
     QBsonObject load(const QString &collectionName, const QString &oid);
-
     bool remove(const QString &collectionName, const QString &oid);
     bool remove(const QString &collectionName, QBsonObject obj);
-
     bool removeCollection(const QString &collectionName);
 
     QList<QBsonObject> query(const QString &collectionName, const QBsonObject &query);

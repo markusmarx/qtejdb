@@ -44,6 +44,21 @@ ReturnValue QEjdbDatabaseService::containsCollection(QString collectionName)
 }
 
 
+/**
+ * @brief QEjdbDatabaseService::load Load a BsonObject by id.
+ *
+ * @param collectionName name of collection
+ * @param oid id of object
+ *
+ * @return ReturnValue
+ */
+ReturnValue QEjdbDatabaseService::load(const QString &collectionName, const QString &oid)
+{
+    QBsonObject obj = m_database.load(collectionName, oid);
+    return ReturnValue(QVariant::fromValue(obj));
+}
+
+
 QDataStream &operator<<(QDataStream &d, const QEjdbDatabaseService::ResultData &object)
 {
     d << object.count;

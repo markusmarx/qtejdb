@@ -1,7 +1,7 @@
 #include <QtCore/QCoreApplication>
 #include "qejdbdatabaseservice.h"
 #include "serverconfiguration.h"
-#include "rcptcplistener.h"
+#include "rcpsocketlistener.h"
 #include <QtArg/Arg>
 #include <QtArg/CmdLine>
 #include <QtArg/Help>
