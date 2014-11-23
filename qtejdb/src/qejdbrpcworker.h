@@ -20,6 +20,8 @@ signals:
     ReturnValue removeCollection(QString collectionName);
     ReturnValue containsCollection(QString collectionName);
     ReturnValue load(const QString &collectionName, const QString &oid);
+    ReturnValue remove(const QString &collectionName, const QString &oid);
+    ReturnValue query(const QString &collectionName, const QBsonObject &query);
 
 public slots: 
 
@@ -65,5 +67,6 @@ private:
 };
 
 QTRPC_REGISTER_METATYPE(QBsonObject)
+QTRPC_REGISTER_METATYPE(QList<QBsonObject>)
 
 #endif // QEJDBRPCWORKER_H

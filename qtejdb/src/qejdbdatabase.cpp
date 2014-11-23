@@ -258,10 +258,8 @@ bool QEjdbDatabase::remove(const QString &collectionName, const QString &oid)
 
 bool QEjdbDatabase::remove(const QString &collectionName, QBsonObject obj)
 {
-    if (!obj.contains("_id")) return false;
-
+    if (!obj.contains("_id") || !obj.value("_id").isValid()) return false;
     QString oid = obj.value("_id").toString();
-
     return remove(collectionName, oid);
 }
 

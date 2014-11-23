@@ -31,6 +31,9 @@ public:
     QBsonValueHash values();
     QByteArray toBinary() const;
     bool remove(const QString& name);
+    bool isEmpty() const;
+
+    bool operator==(QBsonObject &obj);
 
 private:
     friend class QObjectBsonData;
@@ -46,10 +49,15 @@ private:
 };
 
 Q_DECLARE_METATYPE(QBsonObject)
+Q_DECLARE_METATYPE(QList<QBsonObject>)
 
 QDebug operator<<(QDebug dbg, const QBsonObject &c);
 
 QDataStream& operator<<(QDataStream& d, const QBsonObject& object);
 QDataStream& operator>>(QDataStream& d, QBsonObject& object);
+
+QDataStream& operator<<(QDataStream& d, const QList<QBsonObject>& objectList);
+QDataStream& operator>>(QDataStream& d, QList<QBsonObject>& objectList);
+
 
 #endif // QBSONOBJECT_H

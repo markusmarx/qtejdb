@@ -55,7 +55,8 @@ void Tst_Collection::tst_simpleCRUD()
 
     QCOMPARE(m_db.remove("testcollection", obj5), true);
 
-    //obj5 = col.load(obj3.value("_id").toString());
+    obj5 = m_db.load("testcollection", obj5.value("_id").toString());
+    QVERIFY(obj5.isEmpty());
 
 }
 

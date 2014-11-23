@@ -33,6 +33,8 @@ public slots:
     ReturnValue removeCollection(QString collectionName);
     ReturnValue containsCollection(QString collectionName);
     ReturnValue load(const QString &collectionName, const QString &oid);
+    ReturnValue remove(const QString &collectionName, const QString &oid);
+    ReturnValue query(const QString &collectionName, const QBsonObject &query);
 private:
     QEjdbDatabase m_database;
 

@@ -4,8 +4,8 @@
 #include <QCoreApplication>
 
 QTRPC_REGISTER_METATYPE(QEjdbDatabaseService::ResultData)
-
 QTRPC_REGISTER_METATYPE(QBsonObject)
+QTRPC_REGISTER_METATYPE(QList<QBsonObject>)
 
 QEjdbDatabaseService::QEjdbDatabaseService(QObject *parent) :
     ServiceProxy(parent)
@@ -17,6 +17,7 @@ QEjdbDatabaseService::QEjdbDatabaseService(QObject *parent) :
 
 ReturnValue QEjdbDatabaseService::auth(QString user, QString passwd)
 {
+    Q_UNUSED(user);Q_UNUSED(passwd);
     return ReturnValue(true);
 }
 
@@ -58,11 +59,35 @@ ReturnValue QEjdbDatabaseService::load(const QString &collectionName, const QStr
     return ReturnValue(QVariant::fromValue(obj));
 }
 
+/**
+ * @brief QEjdbDatabaseService::remove Remove a bsonobject by id.
+ *
+ * @param collectionName name of collection where the bson is stored.
+ * @param oid id of bson.
+ *
+ * @return true if bson was deleted else false.
+ */
+ReturnValue QEjdbDatabaseService::remove(const QString &collectionName, const QString &oid)
+{
+    qDebug() << "collectionName:" << collectionName << ", oid:" << oid;
+    bool ret = m_database.remove(collectionName, oid);
+    return ReturnValue(ret);
+}
+
+ReturnValue QEjdbDatabaseService::query(const QString &collectionName, const QBsonObject &query)
+{
+    qDebug() << "collectionName:" << collectionName << ", query:" << query;
+    QList<QBsonObject> resultList = m_database.query(collectionName, query);
+    qDebug() << "found" << resultList.size() << "items";
+    return ReturnValue(QVariant::fromValue(resultList));
+}
+
 
 QDataStream &operator<<(QDataStream &d, const QEjdbDatabaseService::ResultData &object)
 {
     d << object.count;
     d << object.result;
+    return d;
 }
 
 
@@ -70,4 +95,5 @@ QDataStream &operator>>(QDataStream &d, QEjdbDatabaseService::ResultData &object
 {
     d >> object.count;
     d >> object.result;
+    return d;
 }

@@ -170,7 +170,10 @@ void QBsonObjectData::convert2QBson2(QBsonObject &obj, bson_iterator *it)
  */
 void QBsonObjectData::convert2QBson(bson *bson, QBsonObject& obj)
 {
-
+    if (bson == 0) {
+        qWarning() << "bson structure is empty.";
+        return;
+    }
     bson_iterator it;
 
     BSON_ITERATOR_FROM_BUFFER(&it, bson->data);
@@ -379,6 +382,30 @@ bool QBsonObject::remove(const QString &name)
     return data->values.remove(name) > 0;
 }
 
+/**
+ * @brief QBsonObject::isEmpty test if the bson contains any value.
+ *
+ * @return true if the bson contains values otherwise false.
+ */
+bool QBsonObject::isEmpty() const
+{
+    return data->values.isEmpty();
+}
+
+
+/**
+ * @brief QBsonObject::operator ==c compare two BsonObjects
+ * @param obj
+ * @return
+ */
+bool QBsonObject::operator==(QBsonObject &obj)
+{
+
+    //QHash<QString, QBsonValue>::Iterator it = obj.values().iterator;
+    return false;
+
+}
+
 
 
 /**
@@ -422,7 +449,6 @@ QDebug operator<<(QDebug dbg, const QBsonObject &c)
 
 QDataStream &operator<<(QDataStream &d, const QBsonObject &object)
 {
-
     d << object.toBinary();
     return d;
 }
@@ -433,5 +459,33 @@ QDataStream &operator>>(QDataStream &d, QBsonObject &object)
     QByteArray ba;
     d >> ba;
     object = QBsonObject(ba);
+    return d;
+}
+
+
+QDataStream &operator<<(QDataStream &d, const QList<QBsonObject> &objectList)
+{
+    d << objectList.size();
+
+    QList<QBsonObject>::const_iterator it;
+    for (it = objectList.begin(); it != objectList.end(); it++) {
+        d << *it;
+    }
+
+    return d;
+}
+
+
+QDataStream &operator>>(QDataStream &d, QList<QBsonObject> &objectList)
+{
+    int size;
+    d >> size;
+
+    for (int i = 0; i < size; i++) {
+        QBsonObject ob;
+        d >> ob;
+        objectList.append(ob);
+    }
+
     return d;
 }

@@ -68,7 +68,6 @@ void Tst_QBson::tst_stream()
 
     QByteArray stream = b2.toBinary();
 
-
     QBsonObject b3(stream);
      //bson_print_raw(b3.toBinary().constData(), 1);
     QCOMPARE(b3.value("name1").toString(), QString("test1"));
@@ -95,6 +94,49 @@ void Tst_QBson::tst_stream()
         QBsonObject bs1(stream);
         stream = bs.toBinary();
     }
+
+    QByteArray streamArray;
+    QDataStream dw(&streamArray, QIODevice::WriteOnly);
+    dw << b3;
+    QDataStream dr(&streamArray, QIODevice::ReadOnly);
+    QBsonObject b4;
+    dr >> b4;
+
+    QCOMPARE(b4.values().size(), b3.values().size());
+    QCOMPARE(b4.value("name1").toString(), QString("test1"));
+    QCOMPARE(b4.value("name2").toInt(), 10);
+    QCOMPARE(b4.value("name3").toDouble(), 10.1111);
+    QCOMPARE(b4.value("name4").toObject().
+             value("name1").toString(),
+             QString("test1"));
+    QCOMPARE(b4.value("name5").toDateTime(), d);
+    QCOMPARE(b4.value("name6").toBinary().size(), ba.size());
+    QCOMPARE(b4.value("name7").toBool(), true);
+    QCOMPARE(b4.value("name8").toId().toString(), b2.value("name8").toId().toString());
+
+    QList<QBsonObject> lw;
+    lw.append(b4);
+    streamArray.clear();
+    QList<QBsonObject> lr;
+    QDataStream dwL(&streamArray, QIODevice::WriteOnly);
+    dwL << lw;
+
+    QDataStream drL(&streamArray, QIODevice::ReadOnly);
+    drL >> lr;
+
+    QCOMPARE(1, lr.size());
+    b4 = lr.first();
+    QCOMPARE(b4.values().size(), b3.values().size());
+    QCOMPARE(b4.value("name1").toString(), QString("test1"));
+    QCOMPARE(b4.value("name2").toInt(), 10);
+    QCOMPARE(b4.value("name3").toDouble(), 10.1111);
+    QCOMPARE(b4.value("name4").toObject().
+             value("name1").toString(),
+             QString("test1"));
+    QCOMPARE(b4.value("name5").toDateTime(), d);
+    QCOMPARE(b4.value("name6").toBinary().size(), ba.size());
+    QCOMPARE(b4.value("name7").toBool(), true);
+    QCOMPARE(b4.value("name8").toId().toString(), b2.value("name8").toId().toString());
 
 }
 
