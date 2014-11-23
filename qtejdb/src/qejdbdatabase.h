@@ -7,6 +7,7 @@
 
 #include "qejdbcollection.h"
 #include "qejdbexception.h"
+#include "qejdbresult.h"
 
 namespace QEJDB {
 
@@ -99,7 +100,7 @@ public:
     bool remove(const QString &collectionName, QBsonObject obj);
     bool removeCollection(const QString &collectionName);
 
-    QList<QBsonObject> query(const QString &collectionName, const QBsonObject &query);
+    QEjdbResult query(const QString &collectionName, const QBsonObject &query);
 protected:
     /**
      * @brief QEJDBDatabase constructor

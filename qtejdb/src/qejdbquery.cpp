@@ -46,7 +46,7 @@ QEjdbQuery::~QEjdbQuery()
  * @param query
  * @return
  */
-QList<QBsonObject> QEjdbQuery::exec(const QBsonObject& query)
+QEjdbResult QEjdbQuery::exec(const QBsonObject& query)
 {
     return data->m_db.query(data->m_collectionName, query);
 }

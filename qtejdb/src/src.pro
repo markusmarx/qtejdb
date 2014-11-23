@@ -24,7 +24,8 @@ SOURCES += \
     qejdbworker.cpp \
     qejdbfileworker.cpp \
     qejdbrpcworker.cpp \
-    qejdbexception.cpp
+    qejdbexception.cpp \
+    qejdbresult.cpp
 
 
 HEADERS += \
@@ -38,7 +39,9 @@ HEADERS += \
     bson/qbsonobject_p.h \
     qejdbworker.h \
     qejdbrpcworker.h \
-    qejdbexception.h
+    qejdbexception.h \
+    qejdbresult.h \
+    qejdbresult_p.h
 
 INCLUDEPATH += ../../3rdparty/ejdb/tcejdb
 include(../../3rdparty/ejdb/tcejdb/ejdb.pri)

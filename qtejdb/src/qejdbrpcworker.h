@@ -56,7 +56,7 @@ public:
     virtual QBsonObject load(const QString &collectionName, const QString &oid);
     virtual bool remove(const QString &collectionName, const QString &oid);
 
-    virtual QList<QBsonObject> query(const QString &collectionName, const QBsonObject &query);
+    virtual QEjdbResult query(const QString &collectionName, const QBsonObject &query);
 
 private:
     QEjdbRpcClientService *m_clientService;
@@ -68,5 +68,7 @@ private:
 
 QTRPC_REGISTER_METATYPE(QBsonObject)
 QTRPC_REGISTER_METATYPE(QList<QBsonObject>)
+QTRPC_REGISTER_METATYPE(QEjdbResult)
+
 
 #endif // QEJDBRPCWORKER_H

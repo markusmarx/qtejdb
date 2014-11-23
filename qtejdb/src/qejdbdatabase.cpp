@@ -263,7 +263,7 @@ bool QEjdbDatabase::remove(const QString &collectionName, QBsonObject obj)
     return remove(collectionName, oid);
 }
 
-QList<QBsonObject> QEjdbDatabase::query(const QString &collectionName, const QBsonObject& query)
+QEjdbResult QEjdbDatabase::query(const QString &collectionName, const QBsonObject& query)
 {
     return d->m_worker->query(collectionName, query);
 }

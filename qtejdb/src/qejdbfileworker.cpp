@@ -1,6 +1,8 @@
 #include "qejdbworker.h"
 #include "bson/qbsonobject_p.h"
 #include "qejdbexception.h"
+#include "qejdbresult.h"
+#include "qejdbresult_p.h"
 
 QEjdbFileWorker::QEjdbFileWorker(const QUrl &url, int mode):
     m_path(url.toLocalFile()), m_mode(mode), m_db(0)
@@ -104,7 +106,7 @@ bool QEjdbFileWorker::remove(const QString &collectionName, const QString &oidSt
     return ejdbrmbson(col, &oid);
 }
 
-QList<QBsonObject> QEjdbFileWorker::query(const QString &collectionName, const QBsonObject &query)
+QEjdbResult QEjdbFileWorker::query(const QString &collectionName, const QBsonObject &query)
 {
     bson bq1;
     bson_init_as_query(&bq1);
@@ -141,8 +143,11 @@ QList<QBsonObject> QEjdbFileWorker::query(const QString &collectionName, const Q
     ejdbquerydel(q);
     bson_destroy(&bq1);
 
+    QEjdbResult result;
 
-    return resultList;
+    result.d()->values = resultList;
+
+    return result;
 
 }
 

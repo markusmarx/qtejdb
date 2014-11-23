@@ -5,6 +5,8 @@
 class QEjdbQueryData;
 class QEjdbDatabase;
 class QBsonObject;
+class QEjdbResult;
+
 class QEjdbQuery
 {
 public:
@@ -14,7 +16,7 @@ public:
     QEjdbQuery &operator=(const QEjdbQuery &);
     ~QEjdbQuery();
 
-    QList<QBsonObject> exec(const QBsonObject& query);
+    QEjdbResult exec(const QBsonObject& query);
 
     QString collectionName() const;
 private:

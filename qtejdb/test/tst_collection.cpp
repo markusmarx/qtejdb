@@ -67,22 +67,23 @@ void Tst_Collection::tst_simpleQuery()
 
     for (int i = 0; i < 1000; i++) {
         //qDebug() << i;
-       QList<QBsonObject> list;
+
        QEjdbQuery query("testcollection", db);
        QBsonObject q = QBsonObject().append(
                            "test", QBsonObject("$begin", "tes"));
-       list = query.exec(q);
 
-       QCOMPARE(list.size(), 1);
+       QEjdbResult result = query.exec(q);
+
+       QCOMPARE(result.count(), 1);
 
     }
 
     QEjdbQuery query("testcollection", db);
-    QList<QBsonObject> list = query.exec(QBsonObject("test", "tes"));
-    QCOMPARE(list.size(), 0);
+    QEjdbResult result = query.exec(QBsonObject("test", "tes"));
+    QCOMPARE(result.count(), 0);
 
 
-    list = query.exec(QBsonObject(
+    result = query.exec(QBsonObject(
                           "test",
                             QBsonObject(
                               "$in", QBsonArray().append("test").append("tes")
@@ -90,11 +91,9 @@ void Tst_Collection::tst_simpleQuery()
                           )
                       );
 
-    QCOMPARE(list.size(), 1);
+    QCOMPARE(result.count(), 1);
 
-
-
-    list = query.exec(QBsonObject(
+    result = query.exec(QBsonObject(
                           "test",
                           QBsonObject(
                               "$in", QBsonArray().append("te").append("tes"))
@@ -102,7 +101,7 @@ void Tst_Collection::tst_simpleQuery()
                       );
 
 
-    QCOMPARE(list.size(), 0);
+    QCOMPARE(result.count(), 0);
 
 
 }

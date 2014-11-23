@@ -77,10 +77,10 @@ bool QEjdbRpcWorker::remove(const QString &collectionName, const QString &oid)
     return retValue.toBool();
 }
 
-QList<QBsonObject> QEjdbRpcWorker::query(const QString &collectionName, const QBsonObject &query)
+QEjdbResult QEjdbRpcWorker::query(const QString &collectionName, const QBsonObject &query)
 {
     ReturnValue retValue = m_clientService->query(collectionName, query);
-    return retValue.value<QList<QBsonObject> >();
+    return retValue.value<QEjdbResult>();
 }
 
 void QEjdbRpcWorker::checkReturnValue(const QtRpc::ReturnValue &val)

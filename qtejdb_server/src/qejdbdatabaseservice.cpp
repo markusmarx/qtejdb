@@ -6,6 +6,7 @@
 QTRPC_REGISTER_METATYPE(QEjdbDatabaseService::ResultData)
 QTRPC_REGISTER_METATYPE(QBsonObject)
 QTRPC_REGISTER_METATYPE(QList<QBsonObject>)
+QTRPC_REGISTER_METATYPE(QEjdbResult)
 
 QEjdbDatabaseService::QEjdbDatabaseService(QObject *parent) :
     ServiceProxy(parent)
@@ -77,8 +78,8 @@ ReturnValue QEjdbDatabaseService::remove(const QString &collectionName, const QS
 ReturnValue QEjdbDatabaseService::query(const QString &collectionName, const QBsonObject &query)
 {
     qDebug() << "collectionName:" << collectionName << ", query:" << query;
-    QList<QBsonObject> resultList = m_database.query(collectionName, query);
-    qDebug() << "found" << resultList.size() << "items";
+    QEjdbResult resultList = m_database.query(collectionName, query);
+    qDebug() << "found" << resultList.count() << "items";
     return ReturnValue(QVariant::fromValue(resultList));
 }
 

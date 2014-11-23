@@ -32,8 +32,8 @@ void Tst_Connection::tst_simple()
     QBsonObject loadedBsonObj = db.load("testCollection", bsonObj.value("_id").toString());
     QCOMPARE(loadedBsonObj.value("_id").toString(), loadedBsonObj.value("_id").toString());
 
-    QList<QBsonObject> resultList = db.query("testCollection", QBsonObject("test", QBsonObject("$begin", "tes")));
-    QCOMPARE(resultList.size(), 1);
+    QEjdbResult resultList = db.query("testCollection", QBsonObject("test", QBsonObject("$begin", "tes")));
+    QCOMPARE(resultList.count(), 1);
     QCOMPARE(resultList.first().value("_id").toString(), loadedBsonObj.value("_id").toString());
 
     QVERIFY(db.remove("testCollection", bsonObj.value("_id").toString()));
