@@ -4,7 +4,7 @@
 #include <QUrl>
 #include <QHash>
 
-#include "bson/qbsonobject.h"
+#include "qbsonobject.h"
 #include "ejdb.h"
 #include "qejdbresult.h"
 
@@ -64,6 +64,8 @@ public:
     virtual bool remove(const QString &collectionName, const QString &oid);
 
     virtual QEjdbResult query(const QString &collectionName, const QBsonObject &query);
+
+    int mode() const;
 private:
     QString m_path;
     int m_mode;

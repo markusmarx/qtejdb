@@ -2,7 +2,7 @@
 #define QEJDBRPCWORKER_H
 #include "qejdbworker.h"
 #include <ClientProxy>
-#include "bson/qbsonobject.h"
+#include "qbsonobject.h"
 
 class QEjdbRpcClientService: public QtRpc::ClientProxy
 {

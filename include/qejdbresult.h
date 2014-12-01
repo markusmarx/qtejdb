@@ -1,7 +1,7 @@
 #ifndef QEJDBRESULT_H
 #define QEJDBRESULT_H
 #include <QtGlobal>
-#include "bson/qbsonobject.h"
+#include "qbsonobject.h"
 
 QT_FORWARD_DECLARE_CLASS(QEjdbFileWorker)
 QT_FORWARD_DECLARE_CLASS(QEjdbRpcWorker)
