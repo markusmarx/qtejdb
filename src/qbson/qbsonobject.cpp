@@ -327,9 +327,10 @@ QBsonObject::QBsonObject(void *bsonRec):
  * @param name name of element.
  * @param value value of element.
  */
-void QBsonObject::insert(const QString &name, const QBsonValue &value)
+QBsonObject &QBsonObject::insert(const QString &name, const QBsonValue &value)
 {
     data->values.insert(name, value);
+    return *this;
 }
 
 /**
@@ -339,7 +340,7 @@ void QBsonObject::insert(const QString &name, const QBsonValue &value)
  * @param value value
  * @return Returns this bsonobject.
  */
-QBsonObject QBsonObject::append(const QString &name, const QBsonValue &value)
+QBsonObject &QBsonObject::append(const QString &name, const QBsonValue &value)
 {
     insert(name, value);
     return *this;

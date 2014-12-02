@@ -23,8 +23,8 @@ public:
     ~QBsonObject();
 
     QBsonObject(const QByteArray& bson);
-    void insert(const QString &name, const QBsonValue &value);
-    QBsonObject append(const QString &name, const QBsonValue &value);
+    QBsonObject &insert(const QString &name, const QBsonValue &value);
+    QBsonObject &append(const QString &name, const QBsonValue &value);
     QBsonValue value(const QString &name);
     bool contains(const QString &name);
     QStringList names() const;
