@@ -164,6 +164,88 @@ void Tst_QEjdbCollection::tst_dataTypes()
     //qDebug() << testObj;
 }
 
+/**
+ * Test joins single and array values.
+ *
+ * @brief Tst_QEjdbCollection::tst_joins
+ */
+void Tst_QEjdbCollection::tst_joins()
+{
+    QEjdbDatabase m_db = QEjdbDatabase::database();
+    m_db.createCollection("cars");
+    m_db.createCollection("orders");
+
+    // create 3 cars
+    QBsonObject car1;
+    car1.append("model", "Honda Accord");
+    car1.append("year", 2005);
+    m_db.save("cars", car1);
+
+    QBsonObject car2;
+    car2.append("model", "Toyota Corolla");
+    car2.append("year", 2011);
+    m_db.save("cars", car2);
+
+    QBsonObject car3;
+    car3.append("model", "Toyota Camry");
+    car3.append("year", 2008);
+    m_db.save("cars", car3);
+
+    // create 2 orders
+    // first with single car
+    QBsonObject order1;
+    order1
+        .append("car", car1.value("_id"))
+        .append("customer", "indy")
+        .append("pickupDate", QBsonValue(QDateTime(QDate(2013, 11, 5))));
+    m_db.save("orders", order1);
+
+    // second with car array on same attibute
+    QBsonObject order2;
+    order2
+        .append("car",
+                QBsonArray()
+                .append(car1.value("_id"))
+                .append(car2.value("_id"))
+                .append(car3.value("_id"))
+        )
+        .append("customer", "indy")
+        .append("pickupDate", QBsonValue(QDateTime(QDate(2013, 11, 5))));
+
+    m_db.save("orders", order2);
+
+    // load first order and check car id
+    order1 = m_db.load("orders", order1.value("_id").toString());
+    QCOMPARE(car1.value("_id").toString(), order1.value("car").toString());
+
+    // do a join an car attribute
+    QBsonObject query("$do", QBsonObject(
+                          "car", QBsonObject(
+                              "$join", "cars")
+                          )
+                      );
+
+    QEjdbResult result = m_db.query("orders", query);
+
+    // check result
+    QCOMPARE(2, result.count());
+
+    // check single car on first order
+    QCOMPARE(QString("Honda Accord"),
+             result.first().value("car").toObject().value("model").toString());
+
+    // check car array on second order
+    QBsonArray carArray = result.values().at(1).value("car").toArray();
+    QCOMPARE(3, carArray.size());
+    QCOMPARE(QString("Honda Accord"),
+             carArray.value(0).toObject().value("model").toString());
+    QCOMPARE(QString("Toyota Corolla"),
+             carArray.value(1).toObject().value("model").toString());
+    QCOMPARE(QString("Toyota Camry"),
+             carArray.value(2).toObject().value("model").toString());
+
+}
+
 
 
 void Tst_QEjdbCollection::cleanupTestCase()

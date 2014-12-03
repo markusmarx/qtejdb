@@ -18,6 +18,7 @@ private slots:
     void tst_simpleCRUD();
     void tst_simpleQuery();
     void tst_dataTypes();
+    void tst_joins();
     void cleanupTestCase();
 
 private:

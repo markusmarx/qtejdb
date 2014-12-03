@@ -346,7 +346,7 @@ QBsonObject &QBsonObject::append(const QString &name, const QBsonValue &value)
     return *this;
 }
 
-QBsonValue QBsonObject::value(const QString &name)
+const QBsonValue QBsonObject::value(const QString &name) const
 {
     return data->values.value(name);
 }

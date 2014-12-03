@@ -9,7 +9,19 @@
 class QEjdbCollectionPrivate
 {
 public:
-
+    
+    /**
+     * @brief 
+     * @details [long description]
+     * 
+     * @param d [description]
+     * @param db [description]
+     * @param col [description]
+     * @param collectionName [description]
+     * @param b [description]
+     * @param l [description]
+     * @param e [description]
+     */
     QEjdbCollectionPrivate(QEjdbCollection *d, EJDB *db,  EJCOLL *col,  QString collectionName)
         :q(d),m_db(db), m_col(col), m_collectionName(collectionName)
     {
