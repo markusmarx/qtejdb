@@ -99,6 +99,13 @@ QBsonObject QEjdbFileWorker::load(const QString &collectionName, const QString &
     return obj;
 }
 
+QEjdbResult QEjdbFileWorker::loadAll(const QString &collectionName)
+{
+    QBsonObject allQuery;
+
+    return query(collectionName, allQuery);
+}
+
 bool QEjdbFileWorker::remove(const QString &collectionName, const QString &oidStr)
 {
     bson_oid_t oid;

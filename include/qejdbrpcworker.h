@@ -36,7 +36,9 @@ public:
      * @param url
      * @param mode
      */
-    QEjdbRpcWorker(const QUrl &url, int mode);
+    explicit QEjdbRpcWorker(const QUrl &url, int mode);
+
+    ~QEjdbRpcWorker();
 
     /**
      * @brief open connect to the server
@@ -54,6 +56,7 @@ public:
 
     virtual bool save(const QString &collectionName, QBsonObject &bson);
     virtual QBsonObject load(const QString &collectionName, const QString &oid);
+    virtual QEjdbResult loadAll(const QString &collectionName);
     virtual bool remove(const QString &collectionName, const QString &oid);
 
     virtual QEjdbResult query(const QString &collectionName, const QBsonObject &query);

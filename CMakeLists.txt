@@ -22,3 +22,5 @@ add_subdirectory(test/tst_qtejdb)
 
 add_subdirectory(src/qtejdb_server)
 add_subdirectory(test/tst_qtejdbserver)
+
+add_subdirectory(src/qtejdb_model)

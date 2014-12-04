@@ -82,6 +82,11 @@ QBsonObject QEjdbRpcWorker::load(const QString &collectionName, const QString &o
     return retValue.value<QBsonObject>();
 }
 
+QEjdbResult QEjdbRpcWorker::loadAll(const QString &collectionName)
+{
+    return query(collectionName, QBsonObject());
+}
+
 bool QEjdbRpcWorker::remove(const QString &collectionName, const QString &oid)
 {
     ReturnValue retValue = m_clientService->remove(collectionName, oid);

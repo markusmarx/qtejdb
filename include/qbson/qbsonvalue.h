@@ -56,6 +56,9 @@ public:
     bool isArray() const;
     bool isValid() const;
 
+    QVariant toVariant() const;
+
+    static QBsonValue fromVariant(QVariant variant);
 private:
     QBsonValueData *data;
 

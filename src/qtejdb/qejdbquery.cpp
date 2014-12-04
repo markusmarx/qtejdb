@@ -10,6 +10,7 @@ public:
     {
         ref = 1;
     }
+
     QString m_collectionName;
 
     QEjdbDatabase m_db;

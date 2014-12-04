@@ -57,7 +57,7 @@ QBsonArray::~QBsonArray()
  *
  * @return Returns this QBsonArray.
  */
-QBsonArray QBsonArray::append(const QBsonValue &value)
+QBsonArray& QBsonArray::append(const QBsonValue &value)
 {
     data->list.append(value);
     return *this;
@@ -68,10 +68,13 @@ QBsonArray QBsonArray::append(const QBsonValue &value)
  * @see QList::insert()
  * @param i insertion index.
  * @param value value to insert.
+ *
+ * @return this QBsonArray.
  */
-void QBsonArray::insert(int i, const QBsonValue &value)
+QBsonArray& QBsonArray::insert(int i, const QBsonValue &value)
 {
     data->list.insert(i, value);
+    return *this;
 }
 
 /**

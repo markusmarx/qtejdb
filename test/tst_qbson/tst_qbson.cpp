@@ -1,6 +1,7 @@
 #include "tst_qbson.h"
 #include "qbson/qbsonobject.h"
 #include "qbson/qbsonoid.h"
+#include "qbson/qbsonarray.h"
 #include <QString>
 #include <QTest>
 #include <QElapsedTimer>
@@ -17,6 +18,10 @@ void Tst_QBson::tst_qbson()
     QDateTime d;
     char t[] = {12,12,12,23,23,23};
     QBsonObject b2;
+    QBsonArray bsonArray;
+    bsonArray.append(QBsonValue(1))
+            .append(QBsonValue("name")).insert(0, QBsonValue(d));
+
 
     for (int i = 0; i < 1000; i++) {
 
@@ -29,6 +34,7 @@ void Tst_QBson::tst_qbson()
         b2.insert("name7", QBsonValue(true));
 
         b2.insert("name8", QBsonValue(QBsonOid()));
+        b2.insert("name9", QBsonValue(bsonArray));
     }
 
     QBsonObject b3 = b2;
@@ -41,8 +47,40 @@ void Tst_QBson::tst_qbson()
     QCOMPARE(b3.value("name5").toDateTime(), d);
     QCOMPARE(b3.value("name6").toBinary(), QByteArray(t));
     QCOMPARE(b3.value("name7").toBool(), true);
-    QCOMPARE(b3.value("name8").toId().toString(), b2.value("name8").toId().toString());
-
+    QCOMPARE(b3.value("name8").toId(), b2.value("name8").toId());
+    QCOMPARE(b3.value("name9").toArray().size(), bsonArray.size());
+    QCOMPARE(b3.value("name9").toArray().value(0).toDateTime(), d);
+    QCOMPARE(b3.value("name9").toArray().value(1).toInt(), 1);
+    QCOMPARE(b3.value("name9").toArray().value(2).toString(), QString("name"));
+    QCOMPARE(
+                QBsonValue::fromVariant(b3.value("name1").toVariant()).toString()
+                , QString("test1") );
+    QCOMPARE(
+                QBsonValue::fromVariant(b3.value("name2").toVariant()).toInt()
+                , 10 );
+    QCOMPARE(
+                QBsonValue::fromVariant(b3.value("name3").toVariant()).toDouble()
+                , 10.1111 );
+    QCOMPARE(
+                QBsonValue::fromVariant(
+                    b3.value("name4").toVariant()).toObject()
+                        .value("name1").toString()
+                , QString("test1") );
+    QCOMPARE(
+                QBsonValue::fromVariant(b3.value("name5").toVariant()).toDateTime()
+                , d );
+    QCOMPARE(
+                QBsonValue::fromVariant(b3.value("name6").toVariant()).toBinary()
+                , QByteArray(t));
+    QCOMPARE(
+                QBsonValue::fromVariant(b3.value("name7").toVariant()).toBool()
+                , true );
+    QCOMPARE(
+                QBsonValue::fromVariant(b3.value("name8").toVariant()).toId()
+                ,  b2.value("name8").toId());
+    QCOMPARE(
+                QBsonValue::fromVariant(b3.value("name9").toVariant()).toArray().size()
+                ,  3);
 }
 
 void Tst_QBson::tst_stream()

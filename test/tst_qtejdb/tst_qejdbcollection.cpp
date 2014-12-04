@@ -54,11 +54,13 @@ void Tst_QEjdbCollection::tst_simpleCRUD()
     QCOMPARE(obj3.value("inline").toObject().value("test"), obj5.value("inline").toObject().value("test"));
 
     //qDebug() << obj5;
+    QCOMPARE(2, m_db.loadAll("testcollection").count());
 
     QCOMPARE(m_db.remove("testcollection", obj5), true);
-
     obj5 = m_db.load("testcollection", obj5.value("_id").toString());
     QVERIFY(obj5.isEmpty());
+
+    QCOMPARE(1, m_db.loadAll("testcollection").count());
 
 }
 

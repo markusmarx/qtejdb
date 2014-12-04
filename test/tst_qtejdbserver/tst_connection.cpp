@@ -49,6 +49,10 @@ void Tst_Connection::tst_simple()
     QCOMPARE(resultList.values().last().value("_id").toString(), loadedBsonObj.value("_id").toString());
     std::cout << "load 100 items in " << elpTimer.restart() << " msec" << std::endl;
 
+    resultList = db.loadAll("testCollection");
+    QCOMPARE(resultList.count(), 100);
+    QCOMPARE(resultList.values().last().value("_id").toString(), loadedBsonObj.value("_id").toString());
+
     QVERIFY(db.remove("testCollection", bsonObj.value("_id").toString()));
     loadedBsonObj = db.load("testCollection", bsonObj.value("_id").toString());
     QVERIFY(loadedBsonObj.isEmpty());

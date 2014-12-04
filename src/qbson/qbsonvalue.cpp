@@ -47,6 +47,17 @@ QBsonValue::QBsonValue(int value)
  * QBsonValue::LONG
  * @param value long value to store.
  */
+QBsonValue::QBsonValue(qlonglong value)
+    : data(new QBsonValueData(QBsonValue::Long))
+{
+    data->v.setValue(value);
+}
+
+/**
+ * @brief QBsonValue::QBsonValue construct a bsonvalue with type
+ * QBsonValue::LONG
+ * @param value long value to store.
+ */
 QBsonValue::QBsonValue(long value)
     : data(new QBsonValueData(QBsonValue::Long))
 {
@@ -322,6 +333,55 @@ bool QBsonValue::isArray() const
 bool QBsonValue::isValid() const
 {
     return data != 0;
+}
+
+/**
+ * @brief QBsonValue::toVariant convert the value to a qvariant. if the value
+ * could not convert a invalid qvariant is returned.
+ *
+ * @return QVariant()
+ */
+QVariant QBsonValue::toVariant() const
+{
+    return data->v;
+}
+
+/**
+ * @brief QBsonValue::fromVariant converts a variant value to bsonvalue or
+ * a default constructed QBsonValue if vaiant could not converted.
+ * @param variant variant to convert
+ * @return
+ */
+QBsonValue QBsonValue::fromVariant(QVariant variant)
+{
+    if (!variant.isValid()) return QBsonValue();
+    switch (variant.type()) {
+    case QVariant::Bool:
+        return QBsonValue(variant.toBool());
+    case QVariant::ByteArray:
+        return QBsonValue(variant.toByteArray());
+    case QVariant::String:
+        return QBsonValue(variant.toString());
+    case QVariant::LongLong:
+        return QBsonValue(variant.toLongLong());
+    case QVariant::Int:
+        return QBsonValue(variant.toInt());
+    case QVariant::Double:
+        return QBsonValue(variant.toDouble());
+    case QVariant::DateTime:
+        return QBsonValue(variant.toDateTime());
+    }
+    if (variant.canConvert<QBsonObject>()) {
+        return QBsonValue(variant.value<QBsonObject>());
+    }
+    if (variant.canConvert<QBsonOid>()) {
+        return QBsonValue(variant.value<QBsonOid>());
+    }
+    if (variant.canConvert<QBsonArray>()) {
+        return QBsonValue(variant.value<QBsonArray>());
+    }
+
+    return QBsonValue();
 }
 
 /**

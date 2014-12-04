@@ -44,8 +44,10 @@ class QEjdbDatabasePrivate {
 public:
     QAtomicInt ref;
     QEjdbWorker *m_worker;
-    QEjdbDatabasePrivate(QEjdbDatabase *d, const QUrl &url, int mode):
-        q(d), m_worker(QEjdbWorker::createFromUrl(url, mode))
+    QEjdbDatabasePrivate(
+            QEjdbDatabase *d, const QUrl &url, int mode, const QString &connectionName
+    ):q(d), m_worker(QEjdbWorker::createFromUrl(url, mode))
+      ,m_connectionName(connectionName)
     {
         ref = 1;
 
@@ -65,6 +67,10 @@ public:
     bool createCollection(const QString &collectionName);
     bool removeCollection(const QString &collectionName);
     bool containsCollection(const QString &collectionName);
+
+    QString connectionName() const {
+        return m_connectionName;
+    }
 
     static void removeDatabase(const QString &name);
     static void addDatabase(const QEjdbDatabase &db, const QString &name);
@@ -95,6 +101,11 @@ private:
      * @brief m_collections
      */
     QHash<QString, QEjdbCollection> m_collections;
+
+    /**
+     * @brief m_connectionName name of the connection stored in dictionary.
+     */
+    QString m_connectionName;
 
     inline void checkConnection() const
     {
@@ -185,7 +196,9 @@ QEjdbDatabase QEjdbDatabasePrivate::database(const QString& name, bool open)
 
 QT_STATIC_CONST_IMPL char *QEjdbDatabase::defaultConnection = "qejdb_default_connection";
 
-QEjdbDatabase::QEjdbDatabase(QString url, int mode):d(new QEjdbDatabasePrivate(this, QUrl(url), mode))
+QEjdbDatabase::QEjdbDatabase(
+        QString url, int mode, const QString &connectionName
+):d(new QEjdbDatabasePrivate(this, QUrl(url), mode, connectionName))
 {
 }
 
@@ -194,14 +207,14 @@ QEjdbDatabase::QEjdbDatabase(QString url, int mode):d(new QEjdbDatabasePrivate(t
  */
 QEjdbDatabase QEjdbDatabase::addDatabase(QString url, int mode, QString connectionName)
 {
-    QEjdbDatabase db(url, mode);
+    QEjdbDatabase db(url, mode, connectionName);
     QEjdbDatabasePrivate::addDatabase(db, connectionName);
     return db;
 }
 
 QEjdbDatabase QEjdbDatabase::addDatabase(QString url, QString connectionName)
 {
-    QEjdbDatabase db(url, 0);
+    QEjdbDatabase db(url, 0, connectionName);
     QEjdbDatabasePrivate::addDatabase(db, connectionName);
     return db;
 }
@@ -233,6 +246,17 @@ QEjdbDatabase QEjdbDatabase::database(const QString &connectionName)
     return QEjdbDatabasePrivate::database(connectionName, true);
 }
 
+/**
+ * @brief QEjdbDatabase::connectionName Returns connection name stored with
+ * addDatabase
+ *
+ * @return connectonName
+ */
+QString QEjdbDatabase::connectionName() const
+{
+    return d->connectionName();
+}
+
 
 QEjdbDatabase::QEjdbDatabase(const QEjdbDatabase &other):d(other.d)
 {
@@ -259,6 +283,11 @@ bool QEjdbDatabase::save(const QString &collectionName, QBsonObject &bson)
 QBsonObject QEjdbDatabase::load(const QString &collectionName, const QString &oid)
 {
     return d->m_worker->load(collectionName, oid);
+}
+
+QEjdbResult QEjdbDatabase::loadAll(const QString &collectionName)
+{
+    return d->m_worker->loadAll(collectionName);
 }
 
 bool QEjdbDatabase::remove(const QString &collectionName, const QString &oid)

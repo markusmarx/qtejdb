@@ -15,7 +15,7 @@ Tst_QEjdbDatabase::Tst_QEjdbDatabase(QObject *parent) :
 void Tst_QEjdbDatabase::tst_open()
 {
 
-    QEjdbDatabase db = QEjdbDatabase::addDatabase("file:test.db");
+    QEjdbDatabase db = QEjdbDatabase::addDatabase("file:test.db", "testName");
     m_db2 = db;
 
     try {
@@ -25,8 +25,9 @@ void Tst_QEjdbDatabase::tst_open()
     }
 
     QCOMPARE(db.isOpen(), true);
+    QCOMPARE(db.connectionName(), QString("testName"));
 
-    QEjdbDatabase::removeDatabase();
+    QEjdbDatabase::removeDatabase("testName");
 
 }
 

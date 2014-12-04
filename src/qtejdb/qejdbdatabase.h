@@ -97,18 +97,21 @@ public:
     QEjdbDatabase &operator =(const QEjdbDatabase &other);
     bool save(const QString &collectionName, QBsonObject &bson);
     QBsonObject load(const QString &collectionName, const QString &oid);
+    QEjdbResult loadAll(const QString &collectionName);
     bool remove(const QString &collectionName, const QString &oid);
     bool remove(const QString &collectionName, QBsonObject obj);
     bool removeCollection(const QString &collectionName);
 
     QEjdbResult query(const QString &collectionName, const QBsonObject &query);
+    QString connectionName() const;
+
 protected:
     /**
      * @brief QEJDBDatabase constructor
      * @param url
      * @param mode
      */
-    QEjdbDatabase(QString url, int mode);
+    QEjdbDatabase(QString url, int mode, const QString &connectionName);
 
 
 

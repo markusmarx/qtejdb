@@ -34,8 +34,8 @@ int main(int argc, char *argv[])
         QTest::qExec(t1.data(), argc, argv);
         QTest::qExec(t2.data(), argc, argv);
         QTest::qExec(t3.data(), argc, argv);
-        //QTest::qExec(t4.data(), argc, argv);
-        //QTest::qExec(t5.data(), argc, argv);
+        QTest::qExec(t4.data(), argc, argv);
+        QTest::qExec(t5.data(), argc, argv);
 
 
     } catch(QEjdbException &ex) {

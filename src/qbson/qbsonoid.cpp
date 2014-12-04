@@ -2,13 +2,19 @@
 #include <QSharedData>
 #include "qatomic.h"
 #include "bson.h"
+#include <QDebug>
+
 /**
  * @brief The QBsonOidData class bson id wrapper.
  */
 class QBsonOidData {
 public:
 
-
+    /**
+     * @brief QBsonOidData generate a valid bson id. Bson Id is a
+     * 12-byte array.
+     * @link http://docs.mongodb.org/manual/reference/object-id/
+     */
     QBsonOidData()
     {
         ref = 1;
@@ -124,4 +130,11 @@ bool QBsonOid::operator ==(const QBsonOid &id) const
 QBsonOid::operator QString()
 {
     return data->id;
+}
+
+
+QDebug operator<<(QDebug dbg, const QBsonOid &oid)
+{
+    dbg << oid.toString();
+    return dbg.space();
 }
