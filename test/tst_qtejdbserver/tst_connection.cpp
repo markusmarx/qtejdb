@@ -18,7 +18,7 @@ void Tst_Connection::tst_simple()
 {
 
     QEjdbDatabase db = QEjdbDatabase::addDatabase(
-                "socket:qtejdbtest", 0);
+                "socket:qtejdbtest");
 
     db.open();
     QVERIFY(db.isOpen());

@@ -62,8 +62,8 @@ void Tst_QEjdbDatabase::tst_openWithDir()
 
         // it works.
     }
-
     QEjdbDatabase::removeDatabase();
+    QEjdbDatabase::removeDatabase(QStringLiteral("connection2"));
 
     testDir.cd("testdir");
     QFile testDb(testDir.filePath("test.db"));
@@ -134,12 +134,16 @@ void Tst_QEjdbDatabase::tst_workers()
     Q_ASSERT(worker);
     Q_ASSERT(dynamic_cast<QEjdbFileWorker*>(worker));
     QVERIFY(dynamic_cast<QEjdbFileWorker*>(worker)->mode() != 0);
+
+    delete worker;
     //
     // create  rpc worker
     //
     worker = QEjdbWorker::createFromUrl(QUrl("tcp://localhost:9090"), 0);
     Q_ASSERT(worker);
     Q_ASSERT(dynamic_cast<QEjdbRpcWorker*>(worker));
+
+    delete worker;
 
 }
 
@@ -150,4 +154,3 @@ void Tst_QEjdbDatabase::cleanupTestCase()
     //delete this;
 }
 
-QTEST_MAIN(Tst_QEjdbDatabase)

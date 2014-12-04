@@ -1,34 +1,31 @@
-#include "tst_performance.h"
+#include "tst_qejdbperformance.h"
 #include "qejdbdatabase.h"
-#include "bson/qbsonobject.h"
-#include "bson/qbsonarray.h"
+#include "qbson/qbsonobject.h"
+#include "qbson/qbsonarray.h"
 #include <QTest>
 #include <QElapsedTimer>
 #include <QDebug>
 
-Tst_Performance::Tst_Performance(QObject *parent) :
-    QObject(parent)
+Tst_QEjdbPerformance::Tst_QEjdbPerformance(QString url, QObject *parent) :
+    QObject(parent), m_url(url)
 {
 }
 
-void Tst_Performance::initTestCase()
+void Tst_QEjdbPerformance::initTestCase()
 {
     QEjdbDatabase::removeDatabaseFiles(".", "test_db");
-    QEjdbDatabase::addDatabase("file:test_db", QEJDB::CREATE | QEJDB::WRITE
-                             | QEJDB::LOCK_NB | QEJDB::TRUNCATE
-                             | QEJDB::LOCK_NB | QEJDB::SYNC).open();
+    QEjdbDatabase::addDatabase(m_url).open();
 }
 
-void Tst_Performance::cleanupTestCase()
+void Tst_QEjdbPerformance::cleanupTestCase()
 {
 
     QEjdbDatabase::removeDatabase();
     QEjdbDatabase::removeDatabaseFiles(".", "test_db");
 
-    delete this;
 }
 
-void Tst_Performance::tst_insQryTsd()
+void Tst_QEjdbPerformance::tst_insQryTsd()
 {
     QEjdbDatabase m_db = QEjdbDatabase::database();
     m_db.createCollection("testcollection");

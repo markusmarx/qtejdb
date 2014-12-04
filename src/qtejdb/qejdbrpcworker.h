@@ -36,7 +36,9 @@ public:
      * @param url
      * @param mode
      */
-    QEjdbRpcWorker(const QUrl &url, int mode);
+    explicit QEjdbRpcWorker(const QUrl &url, int mode);
+
+    ~QEjdbRpcWorker();
 
     /**
      * @brief open connect to the server

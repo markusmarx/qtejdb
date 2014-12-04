@@ -14,6 +14,7 @@ void QEjdbFileWorker::open()
     m_db = ejdbnew();
 
     if (!ejdbopen(m_db, m_path.toLatin1(), m_mode)) {
+        ejdbdel(m_db);
         throw QEjdbException(QEjdbException::CONNECTIONERROR, ejdberrmsg(ejdbecode(m_db)));
     }
 

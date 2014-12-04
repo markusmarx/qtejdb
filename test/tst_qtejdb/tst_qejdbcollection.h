@@ -8,7 +8,7 @@ class Tst_QEjdbCollection : public QObject
 {
     Q_OBJECT
 public:
-    explicit Tst_QEjdbCollection(QObject *parent = 0);
+    explicit Tst_QEjdbCollection(QString url, QObject *parent = 0);
 
     QBsonObject createTestObject();
 signals:
@@ -22,6 +22,7 @@ private slots:
     void cleanupTestCase();
 
 private:
+    QString m_url;
 
 
 };

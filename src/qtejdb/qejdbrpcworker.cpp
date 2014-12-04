@@ -7,6 +7,17 @@ QEjdbRpcWorker::QEjdbRpcWorker(const QUrl &url, int mode)
 {
 }
 
+QEjdbRpcWorker::~QEjdbRpcWorker()
+{
+    if (isOpen()) {
+        if (!close()) {
+            qWarning() << "client service was not correct closed.";
+        }
+    }
+
+    delete m_clientService;
+}
+
 void QEjdbRpcWorker::open()
 {
 

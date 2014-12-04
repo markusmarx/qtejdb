@@ -7,8 +7,8 @@
 #include "qbson/qbsonarray.h"
 
 
-Tst_QEjdbCollection::Tst_QEjdbCollection(QObject *parent) :
-    QObject(parent)
+Tst_QEjdbCollection::Tst_QEjdbCollection(QString url, QObject *parent) :
+    QObject(parent), m_url(url)
 {
 }
 
@@ -18,7 +18,7 @@ Tst_QEjdbCollection::Tst_QEjdbCollection(QObject *parent) :
 void Tst_QEjdbCollection::initTestCase()
 {
     QEjdbDatabase::removeDatabaseFiles(".", "test_db");
-    QEjdbDatabase::addDatabase("file:test_db").open();
+    QEjdbDatabase::addDatabase(m_url).open();
 }
 
 void Tst_QEjdbCollection::tst_simpleCRUD()
@@ -257,4 +257,3 @@ void Tst_QEjdbCollection::cleanupTestCase()
     //delete this;
 }
 
-QTEST_MAIN(Tst_QEjdbCollection)
