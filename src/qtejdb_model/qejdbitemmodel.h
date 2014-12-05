@@ -40,6 +40,7 @@ public:
      void setCollection(const QString &collectionName);
 
      QHash<int, QByteArray> roleNames() const;
+     int columnCount(const QModelIndex &parent) const;
 signals:
 
 public slots:

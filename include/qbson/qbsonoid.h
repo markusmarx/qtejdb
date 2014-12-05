@@ -32,7 +32,4 @@ private:
 };
 
 Q_DECLARE_METATYPE(QBsonOid)
-
-QDebug operator<<(QDebug dbg, const QBsonOid &oid);
-
 #endif // QBSONOID_H

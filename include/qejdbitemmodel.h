@@ -7,6 +7,7 @@
 #include "qbsonobject.h"
 
 class QEjdbItemModelWorker;
+class QBsonModelData;
 
 class QEjdbItemModel : public QAbstractItemModel
 {
@@ -24,9 +25,6 @@ public:
      QModelIndex parent(const QModelIndex &index) const;
 
      int rowCount(const QModelIndex &parent = QModelIndex()) const;
-     int columnCount(const QModelIndex &parent = QModelIndex()) const;
-
-     Qt::ItemFlags flags(const QModelIndex &index) const;
 
      bool setData(const QModelIndex &index, const QVariant &value,
                   int role = Qt::EditRole);
@@ -38,8 +36,11 @@ public:
                      const QModelIndex &parent = QModelIndex());
 
      void setNames(QStringList names, QHash<QString, QString> namesMap);
+     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+     void setCollection(const QString &collectionName);
 
-     void setCollection(QString collectionName);
+     QHash<int, QByteArray> roleNames() const;
+     int columnCount(const QModelIndex &parent) const;
 signals:
 
 public slots:
@@ -47,13 +48,17 @@ public slots:
 private:
     QEjdbDatabase m_db;
 
-    QBsonObject getQBson(const QModelIndex &index) const;
+
 
     QHash<int, QByteArray> m_roleNames;
 
     QHash<int, QByteArray> m_roleNamesMap;
 
     QEjdbItemModelWorker *m_modelWorker;
+
+    QBsonModelData *getQBsonModelData(const QModelIndex &index) const;
+    QBsonObject getQBson(const QModelIndex &index) const;
+
 };
 
 #endif // QEJDBITEMMODEL_H

@@ -74,13 +74,12 @@ public:
     {
         QEjdbResult allDocuments = m_db.loadAll(collectionName);
         QList<QBsonObject>::iterator it;
-        for (it = allDocuments.values().begin();
-             it != allDocuments.values().end(); it++) {
+        for(int i = 0; i < allDocuments.count(); i++) {
             m_loadedBsonList.append(
                         QSharedPointer<QBsonModelData>(
                             new QBsonModelData(
                                 collectionName
-                                , *it)
+                                , allDocuments.values().at(i))
                         )
             );
         }
@@ -123,6 +122,11 @@ QEjdbItemModel::QEjdbItemModel(QEjdbDatabase db, QObject *parent) :
     QAbstractItemModel(parent), m_db(db),
     m_modelWorker(new QEjdbItemModelWorker(m_db))
 {
+}
+
+QEjdbItemModel::~QEjdbItemModel()
+{
+    delete m_modelWorker;
 }
 
 /**
@@ -181,6 +185,11 @@ QModelIndex QEjdbItemModel::parent(const QModelIndex &index) const
     return QModelIndex();
 }
 
+int QEjdbItemModel::rowCount(const QModelIndex &parent) const
+{
+    return m_modelWorker->rowCount();
+}
+
 /**
  * @brief QEjdbItemModel::setData set data at given position.
  *
@@ -211,6 +220,11 @@ bool QEjdbItemModel::insertRows(int position, int rows, const QModelIndex &paren
 bool QEjdbItemModel::removeRows(int position, int rows, const QModelIndex &parent)
 {
     return false;
+}
+
+int QEjdbItemModel::columnCount(const QModelIndex &parent) const
+{
+    return 1;
 }
 
 /**

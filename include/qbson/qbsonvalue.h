@@ -28,6 +28,7 @@ public:
     QBsonValue(const QLatin1String &value);
     QBsonValue(const char *value);
     QBsonValue(double value);
+    QBsonValue(qlonglong value);
     QBsonValue(long value);
     QBsonValue(const QDateTime &value);
     QBsonValue(const QByteArray &value);
@@ -57,7 +58,6 @@ public:
     bool isValid() const;
 
     QVariant toVariant() const;
-
     static QBsonValue fromVariant(QVariant variant);
 private:
     QBsonValueData *data;
