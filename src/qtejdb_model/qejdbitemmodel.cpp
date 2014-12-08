@@ -69,8 +69,11 @@ public:
      * @brief loadCollection loads all documents from collection.
      *
      * @param collectionName collection
+     * @param query query object
      */
-    void loadCollection(const QString &collectionName)
+    void loadCollection(
+            const QString &collectionName,
+            const QBsonObject &query = QBsonObject())
     {
         QEjdbResult allDocuments = m_db.loadAll(collectionName);
         QList<QBsonObject>::iterator it;
@@ -96,10 +99,13 @@ public:
     /**
      * @brief rowCount Returns row count.
      *
+     * @param parentModelData reference to parent or 0 if no parent.
+     *
      * @return row count.
      */
-    int rowCount()
+    int rowCount(QBsonModelData *parentModelData=0)
     {
+        Q_UNUSED(parentModelData)
         return m_loadedBsonList.size();
     }
 
