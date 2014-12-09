@@ -29,6 +29,8 @@ public:
      bool setData(const QModelIndex &index, const QVariant &value,
                   int role = Qt::EditRole);
 
+     bool insertRow(int row, const QModelIndex &parent);
+
      bool insertRows(int position, int rows,
                      const QModelIndex &parent = QModelIndex());
 
