@@ -38,7 +38,7 @@ target_include_directories (qejdb PUBLIC
         ${PROJECT_SOURCE_DIR}/3rdparty/qtrcp2/lib
 )
 
-target_link_libraries(qejdb Qt5::Core)
+target_link_libraries(qejdb Qt5::Core qbson qtrpc2)
 
 set(CMAKE_C_FLAGS "-std=gnu99")
 

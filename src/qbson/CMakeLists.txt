@@ -27,7 +27,7 @@ add_library ( qbson SHARED ${QBSON_SOURCES} )
 
 target_include_directories (qbson PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ../../3rdparty/ejdb/tcejdb/)
 
-target_link_libraries(qbson Qt5::Core)
+target_link_libraries(qbson Qt5::Core z)
 
 set(CMAKE_C_FLAGS "-std=gnu99")
 

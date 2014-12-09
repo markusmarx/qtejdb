@@ -16,6 +16,6 @@ target_include_directories (qejdbmodel PUBLIC
         ../qtejdb
 )
 
-target_link_libraries(qejdbmodel Qt5::Core)
+target_link_libraries(qejdbmodel Qt5::Core qejdb qbson)
 
 file(COPY ${QEJDB_PUBLIC_HEADER} DESTINATION ${PROJECT_SOURCE_DIR}/include)
