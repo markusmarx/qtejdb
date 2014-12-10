@@ -73,11 +73,12 @@ void Tst_QEjdbPerformance::tst_insQryTsd()
         }
         qDebug() << iteration << " inserts costs " << t.elapsed() << "ms per insert " << (double)t.elapsed()/iteration << "ms";
         t.restart();
+
+        m_db.loadAll("testcollection");
+        qDebug() << iteration << "load" << (iteration+1)*j << " documents costs " << t.elapsed() << "ms";
+        t.restart();
     }
 
-   /* QList<QJsonObject> result = m_db.query("testcollection", QEjdbCondition("name", QEjdbCondition::EQUALS, "test"));
-    qDebug() << "found " << result.size() << " data";
-    qDebug() << result.at(0);
-    qDebug() << col.load(id);*/
+
 
 }
