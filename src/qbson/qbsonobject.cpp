@@ -130,6 +130,11 @@ QBsonValue QBsonObjectData::convert2QBsonValue(bson_type bt, bson_iterator *it)
 
 }
 
+void QBsonObjectData::insert(const QString &name, const QBsonValue &value)
+{
+    values.insert(name, value);
+}
+
 /**
  * @brief QBsonObjectData::convert2QBson2 append values from a bson iterator to the array.
  *
@@ -161,6 +166,23 @@ void QBsonObjectData::convert2QBson2(QBsonObject &obj, bson_iterator *it)
     }
 }
 
+
+/**
+ * @brief QBsonObjectData::convert2QJson2 append values from bson iterator to the object.
+ *
+ * @param obj QBsonObject
+ * @param it iterator point to the object.
+ */
+void QBsonObjectData::convert2QBson2(QBsonObjectData *obj, bson_iterator *it)
+{
+    bson_type bt;
+
+    while ((bt = bson_iterator_next(it)) != BSON_EOO) {
+        QString key = BSON_ITERATOR_KEY(it);
+        obj->insert(key, convert2QBsonValue(bt, it));
+    }
+}
+
 /**
  * @brief QBsonObjectData::convert2QBson convert a bson to a QBsonObject. The converter uses the ejdb bson2json function.
  * So all datatypes should supported. Currently this is not fully tested.
@@ -168,7 +190,28 @@ void QBsonObjectData::convert2QBson2(QBsonObject &obj, bson_iterator *it)
  * @param bson pointer to a bson structure.
  * @return converted QBsonObject.
  */
-void QBsonObjectData::convert2QBson(bson *bson, QBsonObject& obj)
+void QBsonObjectData::convert2QBson(bson *bson, QBsonObjectData *obj)
+{
+    if (bson == 0) {
+        qWarning() << "bson structure is empty.";
+        return;
+    }
+    bson_iterator it;
+
+    BSON_ITERATOR_FROM_BUFFER(&it, bson->data);
+
+    convert2QBson2(obj, &it);
+
+}
+
+/**
+ * @brief QBsonObjectData::convert2QBson convert a bson to a QBsonObject. The converter uses the ejdb bson2json function.
+ * So all datatypes should supported. Currently this is not fully tested.
+ *
+ * @param bson pointer to a bson structure.
+ * @return converted QBsonObject.
+ */
+void QBsonObjectData::convert2QBson(bson *bson, QBsonObject &obj)
 {
     if (bson == 0) {
         qWarning() << "bson structure is empty.";
@@ -210,6 +253,15 @@ void QBsonObjectData::fromBinary(const QByteArray& binary, QBsonObject& obj)
     bson_finish(&bs);
     convert2QBson(&bs, obj);
 
+}
+
+void QBsonObjectData::fromBinary(const QByteArray &binary, QBsonObjectData *obj)
+{
+    const char* data = binary.constData();
+    bson bs;
+    bson_init_with_data(&bs, data);
+    bson_finish(&bs);
+    convert2QBson(&bs, obj);
 }
 
 bson QBsonObjectData::convert2Bson(const QBsonObjectData &obj, bson* bs)
@@ -285,8 +337,6 @@ void QBsonObjectData::convert2Bson2(const char* attr, QBsonValue value, bson &bs
 
 }
 
-
-
 /**
  * @brief QBsonObject::QBsonObject construct a new Empty QBsonObject
  */
@@ -315,26 +365,29 @@ QBsonObject::QBsonObject(const QByteArray& bson):
  *
  * @param bsonRec bson record.
  */
-QBsonObject::QBsonObject(void *bsonRec):
-    data(new QBsonObjectData)
+QBsonObject::QBsonObject(void *bsonRec)
+    :data(new QBsonObjectData())
 {
+
     QBsonObjectData::convert2QBson((bson*)bsonRec, *this);
 }
 
 /**
- * @brief QBsonObject::insert insert a name QBsonValue pair.
+ @brief QBsonObject::insert insert the value to the QBsonObject instance.
+ * Overwrites value if key exist.
  *
  * @param name name of element.
  * @param value value of element.
  */
 QBsonObject &QBsonObject::insert(const QString &name, const QBsonValue &value)
 {
-    data->values.insert(name, value);
+    data->insert(name, value);
     return *this;
 }
 
 /**
  * @brief QBsonObject::append append the value to the QBsonObject instance.
+ * Overwrites value if key exist.
  *
  * @param name  value name
  * @param value value
@@ -342,6 +395,7 @@ QBsonObject &QBsonObject::insert(const QString &name, const QBsonValue &value)
  */
 QBsonObject &QBsonObject::append(const QString &name, const QBsonValue &value)
 {
+    //data->deleteCache();
     insert(name, value);
     return *this;
 }
@@ -449,6 +503,7 @@ QDebug operator<<(QDebug dbg, const QBsonObject &c)
 
 QDataStream &operator<<(QDataStream &d, const QBsonObject &object)
 {
+
     d << object.toBinary();
     return d;
 }

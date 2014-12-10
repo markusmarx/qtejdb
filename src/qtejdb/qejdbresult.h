@@ -12,6 +12,7 @@ class QEjdbResult
     friend class QEjdbFileWorker;
     friend class QEjdbRpcWorker;
     friend QDataStream& operator>>(QDataStream& d, QEjdbResult& object);
+    friend QDataStream& operator<<(QDataStream& d, const QEjdbResult& object);
 
 public:
     explicit QEjdbResult();
@@ -22,14 +23,19 @@ public:
 
     bool isEmpty();
 
-    QList<QBsonObject> values() const;
+    const QList<QBsonObject> values() const;
+
     QBsonObject first();
+    QBsonObject next();
+    bool hasNext();
     int count();
 
 protected:
     QEjdbResultData *d();
+    QLinkedList<QVariant> valuesPrivate() const;
 private:
     QEjdbResultData *data;
+
 
 };
 

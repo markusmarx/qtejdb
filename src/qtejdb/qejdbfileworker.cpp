@@ -130,17 +130,15 @@ QEjdbResult QEjdbFileWorker::query(const QString &collectionName, const QBsonObj
     uint32_t count;
     TCLIST *res = ejdbqryexecute(coll, q, &count, 0, NULL);
 
-    QList<QBsonObject> resultList;
+    QLinkedList<QVariant> resultList;
 
     for (int i = 0; i < TCLISTNUM(res); ++i) {
         void *bsdata = TCLISTVALPTR(res, i);
         int size = bson_size2(bsdata);
-        bson *bs = bson_create_from_buffer(bsdata, size);
-        QBsonObject obj;
-        QBsonObjectData::convert2QBson(bs, obj);
+        //bson *bs = bson_create_from_buffer(bsdata, size);
 
-        resultList.append(obj);
-        bson_del(bs);
+        resultList.append(QByteArray((char*)bsdata, size));
+        //bson_del(bs);
 
     }
 
