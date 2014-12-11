@@ -34,13 +34,13 @@ public:
     bool isEmpty() const;
 
     bool operator==(QBsonObject &obj);
+protected:
+    QBsonObjectData *data;
 
 private:
-    friend class QObjectBsonData;
+    friend class QBsonObjectData;
     friend class QEjdbCollectionPrivate;
     friend class QEjdbFileWorker;
-
-    QBsonObjectData *data;
 
     QBsonObject(void* bsonRec);
 

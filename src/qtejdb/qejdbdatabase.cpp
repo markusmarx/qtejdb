@@ -314,7 +314,7 @@ QEjdbDatabase::QEjdbDatabase():d(0)
 
 QEjdbDatabase::~QEjdbDatabase()
 {
-    if (!d->ref.deref()) {
+    if (d && !d->ref.deref()) {
         delete d;
         d = 0;
     }

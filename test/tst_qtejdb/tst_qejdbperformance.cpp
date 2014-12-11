@@ -28,6 +28,7 @@ void Tst_QEjdbPerformance::cleanupTestCase()
 void Tst_QEjdbPerformance::tst_insQryTsd()
 {
     QEjdbDatabase m_db = QEjdbDatabase::database();
+    m_db.removeCollection("testcollection");
     m_db.createCollection("testcollection");
 
     QString json = QString("{'name': 'test'\n 'num': '10'\n 'description': 'test test test test test test test'}");
@@ -69,15 +70,16 @@ void Tst_QEjdbPerformance::tst_insQryTsd()
         for (int i = 0; i < iteration; i++) {
             obj.remove("_id");
             m_db.save("testcollection", obj);
-            if (i == 1) id = obj.value("_id").toString();
         }
         qDebug() << iteration << " inserts costs " << t.elapsed() << "ms per insert " << (double)t.elapsed()/iteration << "ms";
         t.restart();
+
+        QEjdbResult r = m_db.loadAll("testcollection");
+        QCOMPARE(r.values().count(), (j+1)*iteration);
+        qDebug() << iteration << "load" << (j+1)*iteration << " documents costs " << t.elapsed() << "ms";
+        t.restart();
     }
 
-   /* QList<QJsonObject> result = m_db.query("testcollection", QEjdbCondition("name", QEjdbCondition::EQUALS, "test"));
-    qDebug() << "found " << result.size() << " data";
-    qDebug() << result.at(0);
-    qDebug() << col.load(id);*/
+
 
 }

@@ -28,8 +28,10 @@ public:
 
 protected:
     QEjdbResultData *d();
+    QLinkedList<QVariant> valuesPrivate() const;
 private:
     QEjdbResultData *data;
+
 
 };
 

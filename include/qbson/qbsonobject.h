@@ -42,7 +42,7 @@ private:
 
     QBsonObjectData *data;
 
-    QBsonObject(void* bsonRec);
+    QBsonObject(void* bsonRec, bool transferable = false);
 
     QBsonObjectData* constData() const {return data;}
 

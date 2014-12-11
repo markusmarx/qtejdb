@@ -1,6 +1,7 @@
 #ifndef QEJDBRESULT_P_H
 #define QEJDBRESULT_P_H
 #include "qbsonobject.h"
+#include <QLinkedList>
 
 class QEjdbResultData  {
 
@@ -8,11 +9,16 @@ public:
     QEjdbResultData()
     {
         ref = 1;
+        currentIt = values.begin();
     }
 
 
-    QList<QBsonObject> values;
+    QLinkedList<QVariant> values;
+    QLinkedList<QVariant>::iterator currentIt;
     QAtomicInt ref;
+
+    QBsonObject nextBsonValue();
+    QBsonObject firstBsonValue();
 
     friend class QBsonObject;
 

@@ -37,14 +37,21 @@ QEjdbResult::~QEjdbResult()
         delete data;
 }
 
-QList<QBsonObject> QEjdbResult::values() const
+const QList<QBsonObject> QEjdbResult::values() const
 {
-    return data->values;
+    QList<QBsonObject> resultBsonList;
+    data->currentIt = data->values.begin();
+
+    for (; data->currentIt != data->values.end();) {
+        resultBsonList.append(data->nextBsonValue());
+    }
+
+    return resultBsonList;
 }
 
 QBsonObject QEjdbResult::first()
 {
-    return data->values.first();
+    return data->firstBsonValue();
 }
 
 int QEjdbResult::count()
@@ -57,18 +64,49 @@ QEjdbResultData *QEjdbResult::d()
     return data;
 }
 
+QLinkedList<QVariant> QEjdbResult::valuesPrivate() const
+{
+    return data->values;
+}
+
 QDataStream &operator<<(QDataStream &d, const QEjdbResult &object)
 {
-    d << object.values();
+    d << object.valuesPrivate();
+    //qDebug() << "<<" <<object.valuesPrivate().size();
     return d;
 }
 
 
 QDataStream &operator>>(QDataStream &d, QEjdbResult &object)
 {
-
-    QList<QBsonObject> values;
+    QLinkedList<QVariant> values;
     d >> values;
     object.d()->values = values;
+    //qDebug() << ">>" << values.size();
     return d;
+}
+
+
+QBsonObject QEjdbResultData::nextBsonValue()
+{
+    QVariant variant = *currentIt;
+
+    if (variant.type() == QVariant::ByteArray) {
+        QBsonObject obj = QBsonObject(variant.toByteArray());
+
+        values.insert(currentIt, QVariant::fromValue(obj));
+        currentIt = values.erase(currentIt);
+        return obj;
+    }
+
+    QBsonObject obj = (*currentIt).value<QBsonObject>();
+    currentIt++;
+    return obj;
+
+}
+
+QBsonObject QEjdbResultData::firstBsonValue()
+{
+    currentIt = values.begin();
+    return nextBsonValue();
 }
