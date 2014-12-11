@@ -246,6 +246,16 @@ void Tst_QEjdbCollection::tst_joins()
     QCOMPARE(QString("Toyota Camry"),
              carArray.value(2).toObject().value("model").toString());
 
+    QByteArray b;
+    QDataStream in(&b, QIODevice::WriteOnly);
+    in << result;
+
+    QEjdbResult resultOutStream;
+    QDataStream out(&b, QIODevice::ReadOnly);
+    out >> resultOutStream;
+
+    QCOMPARE(resultOutStream.values().count(), 2);
+
 }
 
 

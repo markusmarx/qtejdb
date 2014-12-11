@@ -111,7 +111,6 @@ QBsonValue QBsonObjectData::convert2QBsonValue(bson_type bt, bson_iterator *it)
                 convert2QBson2(subObj, &sit);
                 return QBsonValue(subObj);
             } else {
-
                 QBsonArray subArr;
                 convert2QBson2(subArr, &sit);
                 return QBsonValue(subArr);
@@ -162,7 +161,7 @@ void QBsonObjectData::convert2QBson2(QBsonObject &obj, bson_iterator *it)
 
     while ((bt = bson_iterator_next(it)) != BSON_EOO) {
         QString key = BSON_ITERATOR_KEY(it);
-        obj.insert(key, convert2QBsonValue(bt, it));
+        obj.data->values.insert(key, convert2QBsonValue(bt, it));
     }
 }
 
@@ -179,7 +178,7 @@ void QBsonObjectData::convert2QBson2(QBsonObjectData *obj, bson_iterator *it)
 
     while ((bt = bson_iterator_next(it)) != BSON_EOO) {
         QString key = BSON_ITERATOR_KEY(it);
-        obj->insert(key, convert2QBsonValue(bt, it));
+        obj->values.insert(key, convert2QBsonValue(bt, it));
     }
 }
 

@@ -72,6 +72,7 @@ QLinkedList<QVariant> QEjdbResult::valuesPrivate() const
 QDataStream &operator<<(QDataStream &d, const QEjdbResult &object)
 {
     d << object.valuesPrivate();
+    //qDebug() << "<<" <<object.valuesPrivate().size();
     return d;
 }
 
@@ -81,6 +82,7 @@ QDataStream &operator>>(QDataStream &d, QEjdbResult &object)
     QLinkedList<QVariant> values;
     d >> values;
     object.d()->values = values;
+    //qDebug() << ">>" << values.size();
     return d;
 }
 
