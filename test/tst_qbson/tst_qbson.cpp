@@ -83,6 +83,21 @@ void Tst_QBson::tst_qbson()
                 ,  3);
 }
 
+/**
+ * @brief Tst_QBson::tst_failover test fails with ranges or values that dont
+ * exist.
+ */
+void Tst_QBson::tst_failover()
+{
+    QBsonObject obj;
+
+    obj.value("name").toString();
+    obj.value("name").toArray().value(1);
+    obj.value("name").toObject().value("name");
+
+
+}
+
 void Tst_QBson::tst_stream()
 {
     QDateTime d = QDateTime::currentDateTime();

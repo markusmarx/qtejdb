@@ -86,7 +86,8 @@ QBsonValue QBsonObjectData::convert2QBsonValue(bson_type bt, bson_iterator *it)
 
     switch (bt) {
         case BSON_BOOL:
-            return QBsonValue(bson_iterator_bool(it));
+            // iterator return 1 or 0
+            return QBsonValue(bson_iterator_bool(it) ? true: false);
         case BSON_LONG:
             return QBsonValue(bson_iterator_long(it));
         case BSON_INT:
@@ -394,14 +395,17 @@ QBsonObject &QBsonObject::insert(const QString &name, const QBsonValue &value)
  */
 QBsonObject &QBsonObject::append(const QString &name, const QBsonValue &value)
 {
-    //data->deleteCache();
     insert(name, value);
     return *this;
 }
 
 const QBsonValue QBsonObject::value(const QString &name) const
 {
-    return data->values.value(name);
+    if (data->values.contains(name)) {
+        return data->values.value(name);
+    }
+    qWarning() << "bson value" << name << "not exist";
+    return QBsonValue();
 }
 
 bool QBsonObject::contains(const QString &name)

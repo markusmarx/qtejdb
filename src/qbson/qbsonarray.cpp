@@ -3,6 +3,7 @@
 #include "qatomic.h"
 #include <QLinkedList>
 #include "qbsonvalue.h"
+#include <QDebug>
 
 class QBsonArrayData {
 public:
@@ -73,19 +74,34 @@ QBsonArray& QBsonArray::append(const QBsonValue &value)
  */
 QBsonArray& QBsonArray::insert(int i, const QBsonValue &value)
 {
-    data->list.insert(i, value);
+    if (inRange(i)) {
+        data->list.insert(i, value);
+    }
+    return *this;
+}
+
+QBsonArray &QBsonArray::remove(int i)
+{
+    if (inRange(i)) {
+        data->list.removeAt(i);
+    }
     return *this;
 }
 
 /**
- * @brief QBsonArray::value return QBsonValue at given index.
+ * @brief QBsonArray::value return QBsonValue at given index. If index out of
+ * range a invalid QBsonValue is returned.
  * @see QList::at(int)
  * @param i index
  * @return
  */
 QBsonValue QBsonArray::value(int i)
 {
-    return data->list.at(i);
+    if (inRange(i)) {
+        return data->list.at(i);
+    }
+    qWarning() << "QBsonArray out of range for index" << i;
+    return QBsonValue();
 }
 
 /**
@@ -100,4 +116,14 @@ QList<QBsonValue> QBsonArray::values() const
 int QBsonArray::size() const
 {
     return data->list.size();
+}
+
+/**
+ * @brief QBsonArray::inRange test if i is in range.
+ * @param i
+ * @return
+ */
+bool QBsonArray::inRange(int i)
+{
+    return (i >= 0 && i < data->list.count());
 }

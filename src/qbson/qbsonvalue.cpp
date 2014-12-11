@@ -5,6 +5,7 @@
 #include "qbsonoid.h"
 #include <QVariant>
 #include "qatomic.h"
+#include <QDebug>
 
 class QBsonValueData {
 
@@ -186,8 +187,10 @@ QBsonValue &QBsonValue::operator=(const QBsonValue &rhs)
 QBsonValue::~QBsonValue()
 {
     // delete shared instance when not in used.
-    if (!data->ref.deref())
+    if (data && !data->ref.deref()) {
         delete data;
+        data = 0;
+    }
 }
 
 QBsonValue::QBsonValueType QBsonValue::type() const
@@ -196,110 +199,163 @@ QBsonValue::QBsonValueType QBsonValue::type() const
 }
 
 /**
- * @brief QBsonValue::toString return the value as string.
+ * @brief QBsonValue::toString return the value as string. If QBsonValue is
+ * invalid or could not convert to String then an empty QString is returned.
  * @see QVariant::toString()
  * @return QString
  */
 QString QBsonValue::toString() const
 {
-    switch(data->type) {
-        case QBsonValue::Id:
-            return toId().toString();
-        default:
-            return data->v.toString();
+    if (isValid()) {
+        switch(data->type) {
+            case QBsonValue::Id:
+                return toId().toString();
+            default: {
+                if (data->v.canConvert(QVariant::String)) {
+                    return data->v.toString();
+                }
+            }
+        }
     }
-
-
+    return QString();
 }
 
 /**
- * @brief QBsonValue::toDouble return the value as double.
+ * @brief QBsonValue::toDouble return the value as double. If QBsonValue is
+ * invlalid or could not convert to double a 0 is returned.
  * @see QVariant::toDouble()
  * @return double
  */
 double QBsonValue::toDouble() const
 {
-    return data->v.toDouble();
+    if (isValid(QBsonValue::Double)) {
+        return data->v.toDouble();
+    }
+    qWarning() << "QBsonValue cannot convert to double";
+    return 0;
 }
 
 /**
- * @brief QBsonValue::toInt return the value as int.
+ * @brief QBsonValue::toInt return the value as int. If QBsonValue is invalid
+ * or could not convert to int a 0 is returned.
  * @see QVariant::toInt()
  * @return int
  */
 int QBsonValue::toInt() const
 {
-    return data->v.toInt();
+    if (isValid(QBsonValue::Integer)) {
+        return data->v.toInt();
+    }
+    qWarning() << "QBsonValue cannot convert to int";
+    return 0;
 }
 
 /**
- * @brief QBsonValue::toLong return the value as long.
+ * @brief QBsonValue::toLong return the value as long. If QBsonValue is invalid
+ * or could not convert to long 0 is returned.
  * @see QVariant::toLongLong()
  * @return long
  */
 long QBsonValue::toLong() const
 {
-    return data->v.toLongLong();
+    if (isValid(QBsonValue::Long)) {
+        return data->v.toLongLong();
+    }
+    qWarning() << "QBsonValue cannot convert to long";
+    return 0;
 }
 
 /**
- * @brief QBsonValue::toBinary() return the value as QByteArray.
+ * @brief QBsonValue::toBinary() return the value as QByteArray. If QBsonValue
+ * is invalid or could not convert to QByteArray returns an empty binary.
  * @see QVariant::toByteArray()
  * @return QByteArray
  */
 QByteArray QBsonValue::toBinary() const
 {
-    return data->v.toByteArray();
+    if (isValid(QBsonValue::Binary)) {
+        return data->v.toByteArray();
+    }
+    qWarning() << "QBsonValue cannot convert to QByteArray";
+    return QByteArray();
 }
 
 /**
- * @brief QBsonValue::toBsonObject() return the value as QBsonObject.
+ * @brief QBsonValue::toBsonObject() return the value as QBsonObject. If
+ * QBsonValue is invalid or could not convert to QBsonObject returns an
+ * empty QBsonObject.
  * @see QVariant::value()
  * @return QBsonObject
  */
 QBsonObject QBsonValue::toObject() const
 {
-    return data->v.value<QBsonObject>();
+    if (isValid(QBsonValue::Object)) {
+        return data->v.value<QBsonObject>();
+    }
+    qWarning() << "QBsonValue cannot convert to QBsonObject";
+    return QBsonObject();
 }
 
 /**
- * @brief QBsonValue::toDateTime() return the value as QDateTime.
+ * @brief QBsonValue::toDateTime() return the value as QDateTime. If QBsonValue
+ * is invalid of could not convert to QDateTime returns a default QDateTime().
+ *
  * @see QVariant::toDateTime()
  * @return QDateTime
  */
 QDateTime QBsonValue::toDateTime() const
 {
-    return data->v.toDateTime();
+    if (isValid(QBsonValue::DateTime)) {
+        return data->v.toDateTime();
+    }
+    qWarning() << "QBsonValue cannot convert to QDateTime";
+    return QDateTime();
 }
 
 /**
- * @brief QBsonValue::toArray() return the value as QBsonArray.
+ * @brief QBsonValue::toArray() return the value as QBsonArray. If QBsonValue
+ * is invalid of could not convert to QBsonArray returns a empty QBsonArray.
  * @see QVariant::value()
  * @return QBsonArray
  */
 QBsonArray QBsonValue::toArray() const
 {
-    return data->v.value<QBsonArray>();
+    if (isValid(QBsonValue::Array)) {
+        return data->v.value<QBsonArray>();
+    }
+    qWarning() << "QBsonValue cannot convert to array";
+    return QBsonArray();
 }
 
 /**
- * @brief QBsonValue::toBool return the value as bool.
+ * @brief QBsonValue::toBool return the value as bool. If QBsonValue is invalid
+ * or could not convert to boolean returns a false boolean.
+ *
  * @see QVariant::toBool()
  * @return bool
  */
 bool QBsonValue::toBool() const
 {
-    return data->v.toBool();
+    if (isValid(QBsonValue::Bool)) {
+        return data->v.toBool();
+    }
+    qWarning() << "QBsonValue cannot convert to bool";
+    return false;
 }
 
 /**
- * @brief QBsonValue::toId return the value as QBsonOid.
+ * @brief QBsonValue::toId return the value as QBsonOid. If BsonValue is invalid
+ * or could not convert to a QBsonOid return a invalid QBsonOid.
  * @see QVariant::value()
  * @return QBsonOid
  */
 QBsonOid QBsonValue::toId() const
 {
-    return data->v.value<QBsonOid>();
+    if (isValid(QBsonValue::Id)) {
+        return data->v.value<QBsonOid>();
+    }
+    qWarning() << "QBsonValue cannot convert to QBsonOid";
+    return QBsonOid();
 }
 
 bool QBsonValue::operator ==(const QBsonValue value) const

@@ -27,6 +27,8 @@ public:
     bool operator ==(const QBsonOid& id) const;
     operator QString();
 
+    static QBsonOid generate();
+
 private:
     QBsonOidData *data;
 };

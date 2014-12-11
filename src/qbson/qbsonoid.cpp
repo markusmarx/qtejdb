@@ -14,16 +14,12 @@ public:
      * @brief QBsonOidData generate a valid bson id. Bson Id is a
      * 12-byte array.
      * @link http://docs.mongodb.org/manual/reference/object-id/
+     * @param generate if true a bson id is generated.
      */
     QBsonOidData()
     {
         ref = 1;
-        // generate a bson id.
-        bson_oid_t oid;
-        bson_oid_gen(&oid);
-        char strOid[25];
-        bson_oid_to_string(&oid, strOid);
-        id = QString(strOid);
+        id = "000000000000000000000000";
     }
 
     QBsonOidData(const QString& id):id(id) { ref = 1;}
@@ -32,7 +28,7 @@ public:
 };
 
 /**
- * @brief QBsonOidData construct a QBsonOid and generate a id.
+ * @brief QBsonOidData construct a empty QBsonOid.
  */
 QBsonOid::QBsonOid():
     data(new QBsonOidData)
@@ -125,6 +121,22 @@ bool QBsonOid::isValid() const
 bool QBsonOid::operator ==(const QBsonOid &id) const
 {
     return data->id == id.toString();
+}
+
+/**
+ * @brief QBsonOid::generate generate a new QBsonOid.
+ *
+ * @return a new QBsonOid
+ */
+QBsonOid QBsonOid::generate()
+{
+    // generate a bson id.
+
+    bson_oid_t oid;
+    bson_oid_gen(&oid);
+    char strOid[25];
+    bson_oid_to_string(&oid, strOid);
+    return QBsonOid(QString(strOid));
 }
 
 QBsonOid::operator QString()
