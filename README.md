@@ -29,12 +29,12 @@ QBsonOid oid = obj.value("_id").toId();
 QBsonObject frodo = qejdb.load( "testcollection", oid);
 ```
 
-- Or load bson by query
+- Or load bson by query. Ejdb query syntax is similar to mongodbs query syntax.
 ``` c++
 QEjdbQuery query("testcollection", qejdb);
 QEjdbResult result = query.exec(
       QBsonObject(
-          "name",QBsonObject("$begin", "Frod")
+          "name", QBsonObject("$begin", "Frod")
       )
 );
 
