@@ -1,4 +1,4 @@
-# A Documentstore for Qt / QML
+# A document store for Qt / QML
 
 QtEjdb is a simple to use document store. It's based on Qt and ejdb.
 
