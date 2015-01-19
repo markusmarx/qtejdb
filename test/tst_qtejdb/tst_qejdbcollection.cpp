@@ -73,8 +73,7 @@ void Tst_QEjdbCollection::tst_simpleQuery()
         //qDebug() << i;
 
        QEjdbQuery query("testcollection", db);
-       QBsonObject q = QBsonObject().append(
-                           "test", QBsonObject("$begin", "tes"));
+       QBsonObject q("test", QBsonObject("$begin", "tes"));
 
        QEjdbResult result = query.exec(q);
 
