@@ -14,8 +14,8 @@ QEjdbWorker *QEjdbWorker::createFromUrl(const QUrl &url, int mode)
     QEjdbWorker *worker;
     if (url.isLocalFile()) {
     	if (mode == 0) {
-    		mode = QEJDB::CREATE | QEJDB::WRITE
-                   | QEJDB::LOCK_NB | QEJDB::TRUNCATE;
+            mode = QEJDB::CREATE | QEJDB::WRITE
+                   | QEJDB::SYNC | QEJDB::LOCK_NB;
     	}
         worker = new QEjdbFileWorker(url, mode);
     } else if (url.scheme() == QStringLiteral("tcp")

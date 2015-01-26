@@ -33,6 +33,8 @@ bool QEjdbFileWorker::close()
 
     if (!ejdbclose(m_db)) res = false;
     ejdbdel(m_db);
+    m_db = 0;
+    m_collectionDict.clear();
     return res;
 }
 
@@ -49,10 +51,10 @@ bool QEjdbFileWorker::createCollection(const QString &collectionName)
     if (containsCollection(collectionName)) return false;
     EJCOLLOPTS opts;
     opts.compressed = true;
-    opts.large = true;
-    opts.records = 1280000;
+    opts.large = false;
+    opts.records = 1000;
     EJCOLL *col = ejdbcreatecoll(m_db, collectionName.toLatin1(), &opts);
-    Q_UNUSED(col);
+
     return col!=0;
 }
 
@@ -78,11 +80,13 @@ bool QEjdbFileWorker::save(const QString &collectionName, QBsonObject &bsonObj)
     EJCOLL *col = getCollection(collectionName);
     // save
     bool res = ejdbsavebson(col, &bsrec, &oid);
+    ejdbsyncoll(col);
     if (!bsonObj.contains("_id")) {
         char oidhex[25];
         bson_oid_to_string(&oid, oidhex);
         bsonObj.insert("_id", QBsonOid(oidhex));
     }
+
     bson_destroy(&bsrec);
     return res;
 }
@@ -135,11 +139,7 @@ QEjdbResult QEjdbFileWorker::query(const QString &collectionName, const QBsonObj
     for (int i = 0; i < TCLISTNUM(res); ++i) {
         void *bsdata = TCLISTVALPTR(res, i);
         int size = bson_size2(bsdata);
-        //bson *bs = bson_create_from_buffer(bsdata, size);
-
         resultList.append(QByteArray((char*)bsdata, size));
-        //bson_del(bs);
-
     }
 
     //Dispose result set
