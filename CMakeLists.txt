@@ -32,3 +32,5 @@ add_subdirectory(src/qtejdb_model)
 add_subdirectory(test/tst_qtejdbmodel)
 add_subdirectory(test/tst_concurrent)
 
+add_subdirectory(src/qtejdb_qtquick)
+
