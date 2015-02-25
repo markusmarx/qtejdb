@@ -185,12 +185,19 @@ QEjdbDatabase QEjdbDatabasePrivate::database(const QString& name, bool open)
     Q_ASSERT(dict);
 
     dict->lock.lockForRead();
-    QEjdbDatabase db = dict->value(name);
-    dict->lock.unlock();
-    if (!db.isOpen() && open) {
-        db.open();
+    if (dict->contains(name)) {
+        QEjdbDatabase db = dict->value(name);
+        dict->lock.unlock();
+        if (!db.isOpen() && open) {
+            db.open();
+        }
+        return db;
     }
-    return db;
+
+    qDebug() << "no database was found under key " + name;
+    throw QEjdbException(QEjdbException::DBKEYNOTEXIST,
+                         "no database was found under key " + name);
+
 }
 
 

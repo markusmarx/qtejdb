@@ -11,7 +11,8 @@ public:
 
     enum {
         CONNECTIONERROR = 0,
-        NOTCONNECTED = 1
+        NOTCONNECTED = 1,
+        DBKEYNOTEXIST = 2
     };
 
     QEjdbException(const int code, const QString &msg);
