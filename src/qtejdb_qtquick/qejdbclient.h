@@ -14,6 +14,7 @@ class QEjdbClient : public QObject, public QQmlParserStatus
 
     Q_PROPERTY(QString uri READ uri WRITE setUri NOTIFY uriChanged)
     Q_PROPERTY(QString connectionName READ connectionName WRITE setConnectionName NOTIFY connectionNameChanged)
+    Q_PROPERTY(bool autoCreateCollection READ autoCreateCollection WRITE setAutoCreateCollection NOTIFY autoCreateCollectionChanged)
 
 public:
     explicit QEjdbClient(QObject *parent = 0);
@@ -27,11 +28,13 @@ public:
 
     QString uri() const;
     QString connectionName() const;
+    bool autoCreateCollection() const;
 
 signals:
 
     void uriChanged(QString arg);
     void connectionNameChanged(QString arg);
+    void autoCreateCollectionChanged(bool arg);
 
 public slots:
 
@@ -39,12 +42,13 @@ public slots:
     void disconnect();
     void setConnectionName(QString arg);
     void setUri(QString arg);
+    void setAutoCreateCollection(bool arg);
 
 private:
 
     /**
-     * @brief m_connectionName stores the connectionName that stores the database
-     * in dictionary @see QEjdbDatabase::addDatabase()
+     * @brief m_connectionName is the key to get database connection
+     * from dictionary @see QEjdbDatabase::addDatabase()
      */
     QString m_connectionName;
 
@@ -58,12 +62,19 @@ private:
         return QEjdbDatabase::database(m_connectionName);
     }
 
+    /**
+     * @brief checkCollection creates the collection of not exist.
+     *
+     * @param db reference to database
+     * @param collection collection Name
+     */
     inline void checkCollection(QEjdbDatabase &db, QString collection)
     {
-        if (!db.containsCollection(collection)) {
+        if (!db.isOpen() && db.containsCollection(collection)) {
             db.createCollection(collection);
         }
     }
+    bool m_autoCreateCollection;
 };
 
 #endif // QEJDBCLIENT_H
