@@ -36,8 +36,8 @@ QJSValue QEjdbClient::save(QString collectionName, const QJSValue &jsValue)
 {
     qDebug() << "save value" << jsValue.property("date").toVariant() << "in" << collectionName;
 
-    QBsonObject bsonObj;// = QEjdbQmlConverter::convert(jsValue);
-    bsonObj.append("name", "test");
+    QBsonObject bsonObj = convert(jsValue);
+
     QEjdbDatabase db = database();
     checkCollection(db, collectionName);
     db.save(collectionName, bsonObj);
@@ -60,6 +60,11 @@ QString QEjdbClient::uri() const
 QString QEjdbClient::connectionName() const
 {
     return m_connectionName;
+}
+
+bool QEjdbClient::autoCreateCollection() const
+{
+    return m_autoCreateCollection;
 }
 
 void QEjdbClient::connect()
@@ -95,5 +100,14 @@ void QEjdbClient::setUri(QString arg)
 
     m_uri = arg;
     emit uriChanged(arg);
+}
+
+void QEjdbClient::setAutoCreateCollection(bool arg)
+{
+    if (m_autoCreateCollection == arg)
+        return;
+
+    m_autoCreateCollection = arg;
+    emit autoCreateCollectionChanged(arg);
 }
 
