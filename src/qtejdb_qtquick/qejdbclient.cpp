@@ -2,6 +2,8 @@
 #include <QJSValue>
 #include <QDebug>
 #include <QUuid>
+#include <QQmlEngine>
+#include <QQmlContext>
 #include "qejdbdatabase.h"
 #include "qejdbexception.h"
 
@@ -35,7 +37,7 @@ QEjdbClient::QEjdbClient(QObject *parent) : QObject(parent)
 
 QEjdbClient::~QEjdbClient()
 {
-
+    disconnect();
 }
 
 /**
@@ -53,6 +55,8 @@ void QEjdbClient::componentComplete()
         m_connectionName = QUuid::createUuid().toString();
     }
 
+    QQmlEngine *engine = QQmlEngine::contextForObject(this)->engine();
+    m_bsonConverter.setJSEngine(engine);
 }
 
 QJSValue QEjdbClient::save(QString collectionName, const QJSValue &jsValue)
@@ -74,8 +78,6 @@ QJSValue QEjdbClient::load(QString collectionName, QJSValue uid)
 {
     QEjdbDatabase db = database();
     checkCollection(db, collectionName);
-    // TODO where can i set the js engine?
-    m_bsonConverter.setJSEngine(uid.engine());
     return QJSValue(convert(db.load(collectionName, uid.toString())));
 }
 
@@ -108,7 +110,7 @@ void QEjdbClient::connect()
 
 void QEjdbClient::disconnect()
 {
-
+    QEjdbDatabase::removeDatabase(m_connectionName);
 }
 
 void QEjdbClient::setConnectionName(QString arg)
