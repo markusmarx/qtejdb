@@ -5,6 +5,29 @@
 #include "qejdbdatabase.h"
 #include "qejdbexception.h"
 
+/**
+ * @class QEjdbClient
+ * @ingroup QtQuick
+ * @brief QEjdbClient handles all communication with the QEjdb database.
+ *
+ * @section mapping How Simple Properties are mapped from QtQuick
+ *
+ * The id property name is renamed to _id in the bson representation and
+ * visa versa. Id value must be a 12 byte array QBsonOid .
+ *
+ *  QBsonValue   | QJsValue
+ * ------------- | -------------
+ * Id            | String
+ * String        | String
+ * Double        | Double
+ * Integer       | Integer
+ * Long          | Integer
+ * Bool          | Bool
+ * DateTime      | DateTime
+ *
+ */
+
+
 QEjdbClient::QEjdbClient(QObject *parent) : QObject(parent)
 {
 
@@ -34,7 +57,7 @@ void QEjdbClient::componentComplete()
 
 QJSValue QEjdbClient::save(QString collectionName, const QJSValue &jsValue)
 {
-    qDebug() << "save value" << jsValue.property("date").toVariant() << "in" << collectionName;
+    qDebug() << "save value" << jsValue.toVariant() << "in" << collectionName;
 
     QBsonObject bsonObj = convert(jsValue);
 
@@ -47,9 +70,13 @@ QJSValue QEjdbClient::save(QString collectionName, const QJSValue &jsValue)
     return resultJs;
 }
 
-QJSValue QEjdbClient::load(QString collectionName, QString uid)
+QJSValue QEjdbClient::load(QString collectionName, QJSValue uid)
 {
-
+    QEjdbDatabase db = database();
+    checkCollection(db, collectionName);
+    // TODO where can i set the js engine?
+    m_bsonConverter.setJSEngine(uid.engine());
+    return QJSValue(convert(db.load(collectionName, uid.toString())));
 }
 
 QString QEjdbClient::uri() const
@@ -102,6 +129,7 @@ void QEjdbClient::setUri(QString arg)
     emit uriChanged(arg);
 }
 
+
 void QEjdbClient::setAutoCreateCollection(bool arg)
 {
     if (m_autoCreateCollection == arg)
@@ -111,3 +139,30 @@ void QEjdbClient::setAutoCreateCollection(bool arg)
     emit autoCreateCollectionChanged(arg);
 }
 
+/**
+ * @internal
+ * @brief QEjdbClient::convert convert a QJsValue to QBsonObject. See @ref mapping
+ * how to property types are mapped.
+ *
+ * @param jsValue a QJSValue instance
+ *
+ * @return QBsonObject converted instance
+ */
+QBsonObject QEjdbClient::convert(const QJSValue &jsValue)
+{
+    return m_bsonConverter.convert(jsValue);
+}
+
+/**
+ * @internal
+ * @brief QEjdbClient::convert convert a QBsonValue to QJsValue. See @ref mapping
+ * how to property types are mapped.
+ *
+ * @param bsonObject a QBsonObject to convert
+ *
+ * @return QJSValue converted value
+ */
+QJSValue QEjdbClient::convert(const QBsonObject &bsonObject)
+{
+    return m_bsonConverter.convert(bsonObject);
+}

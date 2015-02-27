@@ -5,33 +5,14 @@ set(LIBRARY_OUTPUT_PATH  ${PROJECT_BINARY_DIR})
 set(QEJDBQUICK_PUBLIC_HEADER
     qejdbplugin.h
     qejdbclient.h
+    qbsonconverter.h
 )
 
 set(QEJDBQUICK_SOURCES
     qejdbplugin.cpp
     qejdbclient.cpp
+    qbsonconverter.cpp
 )
-
-find_package(Qt5Core REQUIRED)
-if(NOT Qt5Core_FOUND)
-    message(FATAL_ERROR "Qt5Core module is required!")
-endif()
-
-
-find_package(Qt5Gui REQUIRED)
-if(NOT Qt5Gui_FOUND)
-    message(FATAL_ERROR "Qt5Gui module is required!")
-endif()
-
-find_package(Qt5Qml REQUIRED)
-if(NOT Qt5Qml_FOUND)
-    message(FATAL_ERROR "Qt5Qml module is required!")
-endif()
-
-find_package(Qt5Quick REQUIRED)
-if(NOT Qt5Quick_FOUND)
-    message(FATAL_ERROR "Qt5Quick module is required!")
-endif()
 
 add_library ( qejdbplugin SHARED ${QEJDBQUICK_SOURCES} )
 
