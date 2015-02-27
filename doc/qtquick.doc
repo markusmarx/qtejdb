@@ -1,0 +1,46 @@
+/**
+@defgroup QtQuick
+
+@brief QtQuick Plugin to handle all database operations from QtQuick.
+
+@section setup Use the Plugin
+
+First you have to tell QtQuick where to find the plugin.
+
+@code
+
+qmlscene -I plugins test.qml
+
+@endcode
+
+Then import it in yout qml file.
+
+@code
+
+import QtQuick 2.3
+import QEjdb 1.0 as QEjdb
+
+Item {
+    id: main
+    QEjdb.QEjdbClient {
+        id: qejdbClient
+        uri: 'file:testmodel_db2'
+
+        Component.onCompleted: {
+            // connect to database
+            connect();
+
+            // save a object to collection
+            var json = save('testcollection',
+                 {
+                     'name':'test',
+                     'date': new Date()
+                 })
+            console.log(json.id);
+        }
+   }
+}
+
+
+@endcode
+*/

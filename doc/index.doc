@@ -1,0 +1,11 @@
+/**
+    @mainpage
+
+    QEjdb is a document/bson database on top of the <a href="http://qt-project.org/">Qt library</a> (versions 5) and <a href="http://ejdb.org">ejdb</a> database.
+
+
+
+    It is released under the terms of the GNU Lesser General Public License, version 2.1 or later.
+
+    @sa QtQuick
+*/

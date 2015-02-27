@@ -28,7 +28,7 @@ public:
     const QBsonValue value(const QString &name) const;
     bool contains(const QString &name);
     QStringList names() const;
-    QBsonValueHash values();
+    const QBsonValueHash values() const;
     QByteArray toBinary() const;
     bool remove(const QString& name);
     bool isEmpty() const;

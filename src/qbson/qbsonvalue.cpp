@@ -27,7 +27,7 @@ public:
  * @brief QBsonValue construct a bsonvalue with type QBsonValueType::EMPTY
  */
 QBsonValue::QBsonValue()
-    : data(0)
+    : data(new QBsonValueData(QBsonValue::Empty))
 {
 
 }

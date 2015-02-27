@@ -418,7 +418,7 @@ QStringList QBsonObject::names() const
     return data->values.keys();
 }
 
-QBsonValueHash QBsonObject::values()
+const QBsonValueHash QBsonObject::values() const
 {
     return data->values;
 }
