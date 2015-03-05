@@ -5,6 +5,7 @@
 #include <QAbstractItemModel>
 #include "qejdbdatabase.h"
 #include "qbsonobject.h"
+#include <QAbstractListModel>
 
 class QEjdbItemModelWorker;
 class QBsonModelData;
@@ -12,6 +13,7 @@ class QBsonModelData;
 class QEjdbItemModel : public QAbstractItemModel
 {
     Q_OBJECT
+    
 public:
     explicit QEjdbItemModel(QEjdbDatabase db = QEjdbDatabase(), QObject *parent = 0);
 
