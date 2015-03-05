@@ -2,6 +2,11 @@ project(qejdbplugin)
 
 set(LIBRARY_OUTPUT_PATH  ${PROJECT_BINARY_DIR})
 
+set(QEJDBQUICK_QML_SOURCES
+    qmldir
+    QEjdbModel.qml
+)
+
 set(QEJDBQUICK_PUBLIC_HEADER
     qejdbplugin.h
     qejdbclient.h
@@ -14,7 +19,7 @@ set(QEJDBQUICK_SOURCES
     qbsonconverter.cpp
 )
 
-add_library ( qejdbplugin SHARED ${QEJDBQUICK_SOURCES} )
+add_library ( qejdbplugin SHARED ${QEJDBQUICK_SOURCES} ${QEJDBQUICK_QML_SOURCES} )
 
 qt5_use_modules( qejdbplugin Quick Qml)
 
@@ -42,3 +47,9 @@ add_custom_command(TARGET qejdbplugin POST_BUILD
   COMMAND mv -v *.so ${qmldir}/
 )
 
+foreach(file ${QEJDBQUICK_QML_SOURCES} )
+  add_custom_command(TARGET qejdbplugin POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/${file} ${qmldir}/${file}
+    DEPENDS ${file})
+  set(output_files ${output_files} ${qmldir}/${file})
+endforeach()

@@ -6,6 +6,7 @@ set(QEJDB_PUBLIC_HEADER
         qejdbcollection.h
         qejdbworker.h
         qejdbrpcworker.h
+        qejdbitemmodel.h
 )
 
 set(QEJDB_SOURCES
@@ -24,6 +25,7 @@ set(QEJDB_SOURCES
 	qejdbresult.cpp
 	qejdbrpcworker.cpp
 	qejdbworker.cpp
+        qejdbitemmodel.cpp
 )
 
 find_package(Qt5Core)

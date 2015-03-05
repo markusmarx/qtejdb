@@ -86,6 +86,7 @@ public:
                         )
             );
         }
+        
     }
 
     QBsonModelData *modelData(int row)
@@ -132,6 +133,7 @@ QEjdbItemModel::QEjdbItemModel(QEjdbDatabase db, QObject *parent) :
 
 QEjdbItemModel::~QEjdbItemModel()
 {
+
     delete m_modelWorker;
 }
 
@@ -148,9 +150,7 @@ QVariant QEjdbItemModel::data(const QModelIndex &index, int role) const
          return QVariant();
 
     QByteArray nameArr = m_roleNamesMap.value(role);
-
     QBsonValue value = getQBson(index).value(nameArr);
-
     return value.toVariant();
 }
 

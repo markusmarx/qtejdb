@@ -1,2 +1,4 @@
 module QEjdb
 plugin qejdbplugin
+
+QEjdbModel 1.0 QEjdbModel.qml

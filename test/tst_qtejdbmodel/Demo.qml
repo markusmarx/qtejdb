@@ -7,6 +7,10 @@ Window {
     width: 360
     height: 360
 
+    QEjdb.QEjdbModel {
+
+    }
+
     QEjdb.QEjdbClient {
         id: qejdbClient
         uri: 'file:testmodel_db2'
@@ -20,8 +24,8 @@ Window {
                      'object': {
                                     'street': 'Schulze Boysen Str. 10'
                                 },
-                     'array': ['1', 2, '3']
-
+                     'array': ['1', 2, '3'],
+                     'test' : 'test'
                  })
             console.log(json.id);
             console.log(json.date);
@@ -37,7 +41,6 @@ Window {
             json.array.splice(1, 0, "5");
             save('testcollection', json);
             json2 = load('testcollection', json.id);
-
             console.log(json2.object.street);
             console.log(json2.array);
 
