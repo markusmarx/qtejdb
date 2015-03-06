@@ -89,7 +89,18 @@ public:
      * @return
      */
     static QEjdbDatabase addDatabase(QString url, int mode, QString connectionName = QLatin1String(defaultConnection));
+    /**
+     * @brief addDatabase
+     * @param url
+     * @param connectionName
+     * @return
+     */
     static QEjdbDatabase addDatabase(QString url, QString connectionName = QLatin1String(defaultConnection));
+    /**
+     * @brief database
+     * @param connectionName
+     * @return
+     */
     static QEjdbDatabase database(const QString &connectionName = QLatin1String(defaultConnection));
     static void removeDatabase(const QString &connectionName  = QLatin1String(defaultConnection));
     static bool removeDatabaseFiles(const QString &path, const QString &database);
