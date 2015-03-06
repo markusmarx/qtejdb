@@ -23,6 +23,7 @@ public:
     ~QBsonOid();
 
     QString toString() const;
+    uint hash() const;
     bool isValid() const;
     bool operator ==(const QBsonOid& id) const;
     operator QString();

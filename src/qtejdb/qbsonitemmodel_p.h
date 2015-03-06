@@ -4,8 +4,11 @@
 #include <QObject>
 #include <QList>
 #include <QHash>
+#include <QByteArray>
 #include "qbsonobject.h"
-
+/**
+ * @internal
+ */
 class QBsonItemModel : public QObject
 {
     Q_OBJECT
@@ -16,12 +19,20 @@ public:
     explicit QBsonItemModel(QObject *parent = 0);
     ~QBsonItemModel();
 
-    void insert(QBsonObject &bsonObject, const uint &row);
-    void append(QBsonObject &bsonObject);
-    void remove(int row);
-    QBsonObject getByRow(int row);
-    QBsonObject getById(QBsonId bsonId);
+
     void set(QList<QBsonObject> bsonList);
+
+    void insert(QBsonObject &bsonObject, const uint &row);
+    void update(QBsonObject &bsonObject, const uint &row);
+    void append(QBsonObject &bsonObject);
+    void move(int sourceRow, int destinationRow);
+    void remove(int row);
+    void buildRoles();
+    QHash<int, QByteArray> roles();
+
+    QBsonObject row(int row);
+    QBsonObject oid(QBsonId bsonId);
+
     int count();
 
 
@@ -41,6 +52,7 @@ private:
     QList<StorageId> m_bsonList;
     QHash<QBsonId, StorageId> m_bsonId;
     QHash<StorageId, QBsonObject> m_bsonObjects;
+    QHash<int, QByteArray> m_roles;
 
     /**
      * @internal

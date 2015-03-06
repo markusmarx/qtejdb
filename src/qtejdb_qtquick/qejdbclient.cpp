@@ -76,7 +76,7 @@ QJSValue QEjdbClientPrivate::load(QString collectionName, QJSValue uid)
             return QJSValue(convert(db.load(collectionName, uid.toString())));
         }
     }
-    return QJSValue;
+    return QJSValue();
 }
 
 
