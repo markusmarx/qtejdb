@@ -29,8 +29,20 @@
  * Bool          | Bool
  * DateTime      | DateTime
  *
+ *
+ *
  */
 
+/**
+ * @brief QEjdbClientPrivate::save Saves a Json in database. If autoCreateCollection is true
+ * colleciton will created.
+ *
+ * @param collectionName name of collection
+ *
+ * @param jsValue
+ *
+ * @return created Json with id parameter
+ */
 QJSValue QEjdbClientPrivate::save(QString collectionName, const QJSValue &jsValue)
 {
     qDebug() << "save value" << jsValue.toVariant() << "in" << collectionName;
@@ -46,11 +58,25 @@ QJSValue QEjdbClientPrivate::save(QString collectionName, const QJSValue &jsValu
     return resultJs;
 }
 
+/**
+ * @brief QEjdbClientPrivate::load load a Json from database stored in collection
+ * identified by collectionName. If nothing found en empty Json is returned.
+ *
+ * @param collectionName name of collection
+ * @param uid Bson uid
+ *
+ * @return Json Object or empty Json if noting found
+ */
 QJSValue QEjdbClientPrivate::load(QString collectionName, QJSValue uid)
 {
     QEjdbDatabase db = database();
-    checkCollection(db, collectionName);
-    return QJSValue(convert(db.load(collectionName, uid.toString())));
+    if (db.containsCollection(collectionName)) {
+        QBsonOid oid = QBsonOid(uid.toString());
+        if (oid.isValid()) {
+            return QJSValue(convert(db.load(collectionName, uid.toString())));
+        }
+    }
+    return QJSValue;
 }
 
 
@@ -82,16 +108,21 @@ QJSValue QEjdbClientPrivate::convert(const QBsonObject &bsonObject)
     return m_bsonConverter.convert(bsonObject);
 }
 
-
+/**
+ * @brief QEjdbClient::QEjdbClient
+ * @param parent
+ */
 QEjdbClient::QEjdbClient(QObject *parent)
     : QObject(parent), d_ptr(new QEjdbClientPrivate(this))
 {
 
 }
 
+/**
+ * @brief QEjdbClient::~QEjdbClient delete object
+ */
 QEjdbClient::~QEjdbClient()
 {
-    disconnect();
     delete d_ptr;
 }
 
@@ -106,8 +137,11 @@ void QEjdbClient::classBegin()
 void QEjdbClient::componentComplete()
 {
     Q_D(QEjdbClient);
+    d->m_autoCloseConnection = false;
+    d->m_autoCreateCollection = true;
     if (d->m_connectionName.isEmpty()) {
         d->m_connectionName = QUuid::createUuid().toString();
+        d->m_autoCloseConnection = true;
     }
 
     QJSEngine *engine = QtQml::qmlEngine(this);
@@ -147,12 +181,21 @@ QString QEjdbClient::connectionName() const
     return d_ptr->m_connectionName;
 }
 
+/**
+ * @brief QEjdbClient::autoCreateCollection If true a collection that not exist
+ * is created automatically on load, save or query methods.
+ *
+ * @return value of autoCreateCollection
+ */
 bool QEjdbClient::autoCreateCollection() const
 {
 
     return d_ptr->m_autoCreateCollection;
 }
 
+/**
+ * @brief QEjdbClient::connect
+ */
 void QEjdbClient::connect()
 {
     Q_D(QEjdbClient);
@@ -162,43 +205,77 @@ void QEjdbClient::connect()
     QEjdbDatabase db;
 
     db = QEjdbDatabase::addDatabase(d->m_uri, d->m_connectionName);
-    db.open();
 
 }
 
+/**
+ * @brief QEjdbClient::disconnect close database connection and remove database
+ * from dictionary.
+ *
+ * @see QEjdbDatabase::removeDatabase()
+ */
 void QEjdbClient::disconnect()
 {
-    Q_D(QEjdbClient);
-    QEjdbDatabase::removeDatabase(d->m_connectionName);
+    QEjdbDatabase db = d_ptr->database();
+    db.close();
+    QEjdbDatabase::removeDatabase(d_ptr->m_connectionName);
 }
 
-void QEjdbClient::setConnectionName(QString arg)
+/**
+ * @brief QEjdbClient::setConnectionName set connection name that is stored in
+ * database connection dictionary
+ *
+ * @param connectionName name of connection
+ *
+ * @return void
+ *
+ * @see QEjdbDatabase::addDatabase()
+ */
+void QEjdbClient::setConnectionName(QString connectionName)
 {
     Q_D(QEjdbClient);
-    if (d->m_connectionName == arg)
+    if (d->m_connectionName == connectionName)
         return;
 
-    d->m_connectionName = arg;
-    emit connectionNameChanged(arg);
+    d->m_connectionName = connectionName;
+    emit connectionNameChanged(connectionName);
 }
 
-void QEjdbClient::setUri(QString arg)
+/**
+ * @brief QEjdbClient::setUri set uri to connect database.
+ *
+ * @param uri connection uri
+ *
+ * @return void
+ *
+ * @see QEjdbDatabase::addDatabase(QString,QString)
+ */
+void QEjdbClient::setUri(QString uri)
 {
     Q_D(QEjdbClient);
-    if (d->m_uri == arg)
+    if (d->m_uri == uri)
         return;
 
-    d->m_uri = arg;
-    emit uriChanged(arg);
+    d->m_uri = uri;
+    emit uriChanged(uri);
 }
 
-
-void QEjdbClient::setAutoCreateCollection(bool arg)
+/**
+ * @brief QEjdbClient::setAutoCreateCollection If true a collection that not
+ * exist is created automaticaly.
+ *
+ * @param autoCreateCollection true creates a collection or false not.
+ *
+ * @return void
+ *
+ * @see QEjdbClient::autoCreateCollection()
+ */
+void QEjdbClient::setAutoCreateCollection(bool autoCreateCollection)
 {
     Q_D(QEjdbClient);
-    if (d->m_autoCreateCollection == arg)
+    if (d->m_autoCreateCollection == autoCreateCollection)
         return;
 
-    d->m_autoCreateCollection = arg;
-    emit autoCreateCollectionChanged(arg);
+    d->m_autoCreateCollection = autoCreateCollection;
+    emit autoCreateCollectionChanged(autoCreateCollection);
 }

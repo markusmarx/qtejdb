@@ -36,6 +36,13 @@ public:
 
     /**
      * @internal
+     * @brief m_autoCloseConnection if true the connection is closed and database
+     * is removed.
+     */
+    bool m_autoCloseConnection;
+
+    /**
+     * @internal
      * @brief m_bsonConverter wraps the logic to convert QJSValue to QBsonValue
      * and visa versa.
      */
@@ -49,7 +56,7 @@ public:
      */
     inline void checkCollection(QEjdbDatabase &db, QString collection)
     {
-        if (db.isOpen() && !db.containsCollection(collection)) {
+        if (db.isOpen() && !db.containsCollection(collection) && m_autoCreateCollection) {
             db.createCollection(collection);
         }
     }

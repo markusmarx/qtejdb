@@ -25,9 +25,6 @@ public:
     void classBegin();
     void componentComplete();
 
-    Q_INVOKABLE QJSValue save(QString collectionName, const QJSValue &jsValue);
-    Q_INVOKABLE QJSValue load(QString collectionName, QJSValue uid);
-
     QString uri() const;
     QString connectionName() const;
     bool autoCreateCollection() const;
@@ -45,7 +42,8 @@ public slots:
     void setConnectionName(QString arg);
     void setUri(QString arg);
     void setAutoCreateCollection(bool arg);
-
+    QJSValue load(QString collectionName, QJSValue uid);
+    QJSValue save(QString collectionName, const QJSValue &jsValue);
 private:
 
     QBsonObject convert(const QJSValue &jsValue);

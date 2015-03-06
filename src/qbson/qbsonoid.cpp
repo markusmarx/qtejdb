@@ -109,6 +109,16 @@ QString QBsonOid::toString() const
 }
 
 /**
+ * @brief QBsonOid::hash Return the hash from id string. @see qHash()
+ *
+ * @return hash value from string
+ */
+uint QBsonOid::hash() const
+{
+    return qHash(data->id);
+}
+
+/**
  * @brief QBsonOid::isValid true if the id is valid otherwise false.
  *
  * @return true if the id is valid otherwise false.
@@ -131,7 +141,6 @@ bool QBsonOid::operator ==(const QBsonOid &id) const
 QBsonOid QBsonOid::generate()
 {
     // generate a bson id.
-
     bson_oid_t oid;
     bson_oid_gen(&oid);
     char strOid[25];
