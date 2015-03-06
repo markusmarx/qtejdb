@@ -203,6 +203,11 @@ QEjdbDatabase QEjdbDatabasePrivate::database(const QString& name, bool open)
 
 QT_STATIC_CONST_IMPL char *QEjdbDatabase::defaultConnection = "qejdb_default_connection";
 
+/**
+ * @class QEjdbDatabase
+ * @brief QEjdbDatabase
+ */
+
 QEjdbDatabase::QEjdbDatabase(
         QString url, int mode, const QString &connectionName
 ):d(new QEjdbDatabasePrivate(this, QUrl(url), mode, connectionName))
@@ -210,7 +215,11 @@ QEjdbDatabase::QEjdbDatabase(
 }
 
 /**
- * @brief addDatabase 
+ * @brief QEjdbDatabase::addDatabase
+ * @param url
+ * @param mode
+ * @param connectionName
+ * @return
  */
 QEjdbDatabase QEjdbDatabase::addDatabase(QString url, int mode, QString connectionName)
 {
@@ -219,10 +228,18 @@ QEjdbDatabase QEjdbDatabase::addDatabase(QString url, int mode, QString connecti
     return db;
 }
 
+/**
+ * @brief QEjdbDatabasePrivate::addDatabase
+ * @param db
+ * @param name
+ */
 QEjdbDatabase QEjdbDatabase::addDatabase(QString url, QString connectionName)
 {
     QEjdbDatabase db(url, 0, connectionName);
     QEjdbDatabasePrivate::addDatabase(db, connectionName);
+    if (!db.isOpen()) {
+        db.open();
+    }
     return db;
 }
 
