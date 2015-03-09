@@ -278,7 +278,10 @@ QEjdbDatabase QEjdbDatabase::database(const QString &connectionName)
  */
 QString QEjdbDatabase::connectionName() const
 {
-    return d->connectionName();
+    if (d) {
+        return d->connectionName();
+    }
+    return QString();
 }
 
 
@@ -301,22 +304,34 @@ QEjdbDatabase &QEjdbDatabase::operator=(const QEjdbDatabase &other)
 
 bool QEjdbDatabase::save(const QString &collectionName, QBsonObject &bson)
 {
-    return d->m_worker->save(collectionName, bson);
+    if (d) {
+        return d->m_worker->save(collectionName, bson);
+    }
+    return false;
 }
 
 QBsonObject QEjdbDatabase::load(const QString &collectionName, const QString &oid)
 {
-    return d->m_worker->load(collectionName, oid);
+    if (d) {
+        return d->m_worker->load(collectionName, oid);
+    }
+    return QBsonObject();
 }
 
 QEjdbResult QEjdbDatabase::loadAll(const QString &collectionName)
 {
-    return d->m_worker->loadAll(collectionName);
+    if (d) {
+        return d->m_worker->loadAll(collectionName);
+    }
+    return QEjdbResult();
 }
 
 bool QEjdbDatabase::remove(const QString &collectionName, const QString &oid)
 {
-    return d->m_worker->remove(collectionName, oid);
+    if (d) {
+        return d->m_worker->remove(collectionName, oid);
+    }
+    return false;
 }
 
 bool QEjdbDatabase::remove(const QString &collectionName, QBsonObject obj)
@@ -328,7 +343,10 @@ bool QEjdbDatabase::remove(const QString &collectionName, QBsonObject obj)
 
 QEjdbResult QEjdbDatabase::query(const QString &collectionName, const QBsonObject& query)
 {
-    return d->m_worker->query(collectionName, query);
+    if (d) {
+        return d->m_worker->query(collectionName, query);
+    }
+    return QEjdbResult();
 }
 
 QEjdbDatabase::QEjdbDatabase():d(0)
@@ -346,31 +364,46 @@ QEjdbDatabase::~QEjdbDatabase()
 
 void QEjdbDatabase::open()
 {
-   return d->open();
+    if (d) {
+        return d->open();
+    }
 }
 
 bool QEjdbDatabase::close()
 {
-    return d->close();
+    if (d) {
+        return d->close();
+    }
+    return false;
 }
 
 bool QEjdbDatabase::isOpen()
 {
+    if (!d) return false;
     return d->isOpen();
 }
 
 bool QEjdbDatabase::containsCollection(const QString &collectionName)
 {
-    return d->containsCollection(collectionName);
+    if (d) {
+        return d->containsCollection(collectionName);
+    }
+    return false;
 }
 
 
 bool QEjdbDatabase::createCollection(const QString &collectionName)
 {
-    return d->createCollection(collectionName);
+    if (d) {
+        return d->createCollection(collectionName);
+    }
+    return false;
 }
 
 bool QEjdbDatabase::removeCollection(const QString& collectionName )
 {
-    return d->removeCollection(collectionName);
+    if (d) {
+        return d->removeCollection(collectionName);
+    }
+    return false;
 }

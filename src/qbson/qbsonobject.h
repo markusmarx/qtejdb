@@ -32,6 +32,8 @@ public:
     QByteArray toBinary() const;
     bool remove(const QString& name);
     bool isEmpty() const;
+    bool hasOid();
+    QBsonOid oid();
 
     bool operator==(QBsonObject &obj);
 protected:

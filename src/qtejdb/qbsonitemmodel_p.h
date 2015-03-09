@@ -5,9 +5,14 @@
 #include <QList>
 #include <QHash>
 #include <QByteArray>
+#include "qejdbdatabase.h"
 #include "qbsonobject.h"
+#include "qbsonarray.h"
+
+
 /**
  * @internal
+ * Stores bsonobjects in a model.
  */
 class QBsonItemModel : public QObject
 {
@@ -18,34 +23,26 @@ public:
 
     explicit QBsonItemModel(QObject *parent = 0);
     ~QBsonItemModel();
-
-
     void set(QList<QBsonObject> bsonList);
-
+    void set(QList<QBsonValue> bsonList);
     void insert(QBsonObject &bsonObject, const uint &row);
-    void update(QBsonObject &bsonObject, const uint &row);
-    void append(QBsonObject &bsonObject);
+    void update(QString property, QVariant value, const uint &row);
+    void append(QBsonObject bsonObject);
     void move(int sourceRow, int destinationRow);
     void remove(int row);
     void buildRoles();
     QHash<int, QByteArray> roles();
-
     QBsonObject row(int row);
     QBsonObject oid(QBsonId bsonId);
-
     int count();
-
 
 signals:
 
     void itemMoved(uint sourceRow, uint destinationRow);
     void itemInserted(uint row);
-    void itemUpdated(uint row);
-    void itemRemoved(QBsonObject bsonObject);
+    void itemUpdated(QString property, QVariant value, uint row);
+    void itemRemoved(uint row, QBsonObject bsonObject);
     void reset();
-
-public slots:
-
 
 private:
 
@@ -53,6 +50,16 @@ private:
     QHash<QBsonId, StorageId> m_bsonId;
     QHash<StorageId, QBsonObject> m_bsonObjects;
     QHash<int, QByteArray> m_roles;
+
+    /**
+     * @brief internalClear clear all lists.
+     */
+    void internalClear()
+    {
+        m_bsonId.clear();
+        m_bsonList.clear();
+        m_bsonObjects.clear();
+    }
 
     /**
      * @internal
@@ -63,6 +70,7 @@ private:
      */
     inline void internalInsert(QBsonObject &bsonObject, uint row)
     {
+        //TODO create the id if not exist
         if (bsonObject.contains("_id")) {
             QBsonOid id = bsonObject.value("_id").toId();
             StorageId storageId = id.hash();
@@ -116,5 +124,101 @@ private:
     }
 
 };
+
+class QEjdbCollectionSync: public QObject
+{
+    Q_OBJECT
+public:
+    explicit QEjdbCollectionSync(QEjdbDatabase db, QObject *parent = 0);
+    ~QEjdbCollectionSync();
+    QBsonObject query() const;
+    QBsonObject hints() const;
+    QString collection() const;
+    QBsonItemModel* model();
+
+public slots:
+    void fetch();
+    void setQuery(QBsonObject query);
+    void setHints(QBsonObject hints);
+    void setCollection(QString collection);
+
+private slots:
+    void itemRemoved(int row, QBsonObject removedObject);
+    void itemSave(int row);
+    void itemUpdated(QString property, QVariant value, int row);
+
+private:
+    QEjdbDatabase m_db;
+    QBsonItemModel *m_qBsonItemModel;
+    QString m_collection;
+    QBsonObject m_query;
+    QBsonObject m_hints;
+
+    bool isDbValid()
+    {
+        return m_db.isOpen()
+                && m_db.containsCollection(m_collection);
+    }
+};
+
+class QEjdbArrayPropertySync: public QObject
+{
+    Q_OBJECT
+public:
+    explicit QEjdbArrayPropertySync(QEjdbDatabase db, QObject *parent = 0);
+    ~QEjdbArrayPropertySync();
+    QBsonItemModel *model();
+    QBsonObject bsonObject();
+    QString propertyName();
+    QString collection();
+    QString propertyCollection();
+
+public slots:
+
+    void fetch();
+    void setPropertyCollection(QString propertyCollection);
+    void setCollection(QString collection);
+    void setBsonObject(QBsonObject bsonObject, QString propertyName);
+
+private slots:
+    void itemRemoved(int row, QBsonObject removedObject);
+    void itemInserted(int row);
+    void itemMoved(int sourceRow, int destinationRow);
+    void itemUpdated(QString property, QVariant value, int row);
+
+private:
+
+    QEjdbDatabase m_db;
+    QBsonItemModel *m_qBsonItemModel;
+    QBsonObject m_parentObject;
+    QString m_propertyName;
+    QString m_collection;
+    QString m_propertyCollection;
+
+    /**
+     * @brief isDbValid check all required values.
+     */
+    inline bool isDbValid()
+    {
+        return m_db.isOpen()
+                && m_db.containsCollection(m_collection)
+                && m_db.containsCollection(m_propertyCollection);
+    }
+
+    /**
+     * @brief getBsonArray returns the bson array.
+     */
+    inline QBsonArray getBsonArray(){
+        if (m_parentObject.contains(m_propertyName)
+                && m_parentObject.value(m_propertyName).isArray()) {
+            return m_parentObject.value(m_propertyName).toArray();
+        }
+        QBsonArray array;
+        m_parentObject.insert(m_propertyName, array);
+        return array;
+    }
+
+};
+
 
 #endif // QBSONITEMMODEL_P_H

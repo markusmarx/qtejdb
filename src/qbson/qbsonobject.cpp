@@ -23,7 +23,7 @@ void QBsonObjectData::convert2BsonEntry(bson *bson, const char* attr, QBsonValue
     int i = 0;
     QList<QBsonValue> arr;
     QBsonValueHash obj;
-
+    QStringList names;
     switch (value.type()) {
         case QBsonValue::Id:
             bson_oid_t oid;
@@ -45,10 +45,11 @@ void QBsonObjectData::convert2BsonEntry(bson *bson, const char* attr, QBsonValue
         break;
         case QBsonValue::Object:
             bson_append_start_object(bson, attr);
+            names = value.toObject().names();
             obj = value.toObject().values();
-            for (QHash<QString, QBsonValue>::iterator it = obj.begin();
-                 it != obj.end(); ++it) {
-                convert2BsonEntry(bson, it.key().toLatin1(), it.value());
+            for (QStringList::iterator it = names.begin();
+                 it != names.end(); ++it) {
+                convert2BsonEntry(bson, (*it).toUtf8(), obj[*it]);
             }
 
             bson_append_finish_object(bson);
@@ -132,7 +133,11 @@ QBsonValue QBsonObjectData::convert2QBsonValue(bson_type bt, bson_iterator *it)
 
 void QBsonObjectData::insert(const QString &name, const QBsonValue &value)
 {
+    if (!values.contains(name)) {
+        sortedNames.append(name);
+    }
     values.insert(name, value);
+
 }
 
 /**
@@ -415,7 +420,7 @@ bool QBsonObject::contains(const QString &name)
 
 QStringList QBsonObject::names() const
 {
-    return data->values.keys();
+    return data->sortedNames;
 }
 
 const QBsonValueHash QBsonObject::values() const
@@ -448,6 +453,26 @@ bool QBsonObject::remove(const QString &name)
 bool QBsonObject::isEmpty() const
 {
     return data->values.isEmpty();
+}
+
+/**
+ * @brief QBsonObject::hasId returns true if a property _id exists.
+ */
+bool QBsonObject::hasOid()
+{
+    return contains("_id");
+}
+
+/**
+ * @brief QBsonObject::oid returns the _id property or a empty QBsonOid if
+ * not _id value exist.
+ */
+QBsonOid QBsonObject::oid()
+{
+    if (hasOid()) {
+        return value("_id").toId();
+    }
+    return QBsonOid();
 }
 
 

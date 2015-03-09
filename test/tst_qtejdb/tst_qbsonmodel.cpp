@@ -4,7 +4,8 @@
 
 #define TEST_COUNT 10
 
-Tst_QBsonModel::Tst_QBsonModel(QObject *parent):QObject(parent)
+Tst_QBsonModel::Tst_QBsonModel(QString url, QObject *parent)
+    :QObject(parent), m_url(url)
 {
 
 }
@@ -17,7 +18,7 @@ Tst_QBsonModel::~Tst_QBsonModel()
 /**
  * @brief Tst_QBsonModel::itemRemoved slot to test signal itemRemoved.
  */
-void Tst_QBsonModel::itemRemoved(QBsonObject removedObject)
+void Tst_QBsonModel::itemRemoved(int row, QBsonObject removedObject)
 {
     m_emitItemRemoved = removedObject;
 }
@@ -42,14 +43,29 @@ void Tst_QBsonModel::itemMoved(int sourceRow, int destinationRow)
 /**
  * @brief Tst_QBsonModel::itemUpdated slot to test signal itemUpdated.
  */
-void Tst_QBsonModel::itemUpdated(int row)
+void Tst_QBsonModel::itemUpdated(QString property, QVariant value, int row)
 {
     m_emitItemUpdated = row;
+    m_emitItemUpdatedProperty = property;
+    m_emitItemUpdatedValue = value;
 }
 
 void Tst_QBsonModel::initTestCase()
 {
+    QEjdbDatabase::removeDatabaseFiles(".", "test_db");
+    QEjdbDatabase::addDatabase(m_url).open();
+}
 
+QBsonObject Tst_QBsonModel::createTestBsonObject(int marker)
+{
+    QBsonObject bsonObject = Tst_Base::createTestBsonObject(true);
+    bsonObject.insert("marker", QBsonValue(marker));
+    return bsonObject;
+}
+
+void Tst_QBsonModel::testBsonObjectMarker(QBsonObject bsonObject, int marker)
+{
+    QCOMPARE(bsonObject.value("marker").toInt(), marker);
 }
 
 /**
@@ -117,21 +133,132 @@ void Tst_QBsonModel::tst_QBsonModelSimple()
 
     QCOMPARE(qBsonModel.count(), TEST_COUNT+2);
 
-    QBsonObject updatedObject = createTestBsonObject(11);
-    qBsonModel.update(updatedObject, 5);
+    qBsonModel.update("marker",11, 5);
     testBsonObjectMarker(qBsonModel.row(5), 11);
     QCOMPARE(m_emitItemUpdated, 5);
+    QCOMPARE(m_emitItemUpdatedProperty, QString("marker"));
+    QCOMPARE(m_emitItemUpdatedValue, QVariant(11));
 }
 
-QBsonObject Tst_QBsonModel::createTestBsonObject(int marker)
+/**
+ * @brief Tst_QBsonModel::tst_QEjdbCollectionSync
+ */
+void Tst_QBsonModel::tst_QEjdbCollectionSync()
 {
-    QBsonObject bsonObject = Tst_Base::createTestBsonObject(true);
-    bsonObject.insert("marker", QBsonValue(marker));
-    return bsonObject;
+    // open database and create collection
+    QEjdbDatabase db = QEjdbDatabase::database();
+    db.createCollection("testCollection4");
+    QEjdbCollectionSync *sync
+            = new QEjdbCollectionSync(QEjdbDatabase::database());
+    sync->setCollection("testCollection4");
+
+    // fetch model
+    sync->fetch();
+    // create object in model
+    sync->model()->append(createTestBsonObject(11));
+    QCOMPARE(sync->model()->count(), 1);
+
+    // load objects from db and test
+    QEjdbResult result = db.query("testCollection4", QBsonObject());
+    QCOMPARE(result.count(), 1);
+    QBsonObject bsonObject = result.first();
+    testBsonObjectMarker(bsonObject, 11);
+
+    // change object in model
+    sync->model()->update("marker", 12, 0);
+    result = db.query("testCollection4", QBsonObject());
+    QCOMPARE(result.count(), 1);
+    bsonObject = result.first();
+    testBsonObjectMarker(bsonObject, 12);
+
+    // add new object
+    sync->model()->append(createTestBsonObject(13));
+    result = db.query("testCollection4", QBsonObject());
+    QCOMPARE(result.count(), 2);
+    QList<QBsonObject> objList = result.values();
+    testBsonObjectMarker(objList.at(0), 12);
+    testBsonObjectMarker(objList.at(1), 13);
+
+    // test concurrent change
+    // change the object in db
+    bsonObject.insert("test_44", "test_44");
+    db.save("testCollection4", bsonObject);
+    // change the object in model
+    sync->model()->update("marker", 14, 0);
+    // test if the change in the db was not overwritten
+    bsonObject = db.load("testCollection4", bsonObject.oid());
+    testBsonObjectMarker(bsonObject, 14);
+    QCOMPARE(bsonObject.value("test_44").toString(), QString("test_44"));
+
+    // fetch
+    sync->fetch();
+    QCOMPARE(sync->model()->count(), 2);
+
+    delete sync;
 }
 
-void Tst_QBsonModel::testBsonObjectMarker(QBsonObject bsonObject, int marker)
+#define COLLECTION_OBJECT "testcollection5"
+#define COLLECTION_ARRAY  "testcollection6"
+
+void Tst_QBsonModel::tst_QEjdbArrayPropertySync()
 {
-    QCOMPARE(bsonObject.value("marker").toInt(), marker);
+    // open database and create collection
+    QEjdbDatabase db = QEjdbDatabase::database();
+    db.createCollection(COLLECTION_OBJECT);
+    db.createCollection(COLLECTION_ARRAY);
+    QEjdbArrayPropertySync *sync
+            = new QEjdbArrayPropertySync(QEjdbDatabase::database());
+
+    QBsonObject bsonObject = createTestBsonObject(11);
+    sync->setBsonObject(bsonObject, "testArray");
+    sync->setCollection(COLLECTION_OBJECT);
+    sync->setPropertyCollection(COLLECTION_ARRAY);
+
+    sync->fetch();
+    // create subproperties
+    QBsonObject pos1Bson = createTestBsonObject(1);
+    QBsonObject pos2Bson = createTestBsonObject(2);
+    sync->model()->append(pos1Bson);
+    sync->model()->append(pos2Bson);
+
+    QEjdbResult result = db.query(COLLECTION_ARRAY, QBsonObject());
+    QCOMPARE(result.count(), 2);
+
+    result = db.query(COLLECTION_OBJECT, QBsonObject());
+    QCOMPARE(result.count(), 1);
+    bsonObject = result.first();
+    QBsonArray array = result.first().value("testArray").toArray();
+    QCOMPARE(array.size(), 2);
+    QCOMPARE(array.value(0).toString(), pos1Bson.oid().toString());
+    QCOMPARE(array.value(1).toString(), pos2Bson.oid().toString());
+
+    sync->fetch();
+
+    QCOMPARE(sync->model()->row(0).oid(), pos1Bson.oid());
+    QCOMPARE(sync->model()->row(1).oid(), pos2Bson.oid());
+
+    sync->model()->move(1, 0);
+    QCOMPARE(sync->model()->row(1).oid(), pos1Bson.oid());
+    QCOMPARE(sync->model()->row(0).oid(), pos2Bson.oid());
+
+    sync->fetch();
+    QCOMPARE(sync->model()->count(), 2);
+    QCOMPARE(sync->model()->row(1).oid(), pos1Bson.oid());
+    QCOMPARE(sync->model()->row(0).oid(), pos2Bson.oid());
+
+    sync->model()->move(0, 1);
+    sync->model()->update("mytest", "mytest", 1);
+    QBsonObject pos0Bson = createTestBsonObject(25);
+    QBsonObject pos3Bson = createTestBsonObject(26);
+    sync->model()->insert(pos0Bson, 0);
+    sync->model()->insert(pos3Bson, 3);
+    sync->fetch();
+    QCOMPARE(sync->model()->count(), 4);
+    QCOMPARE(sync->model()->row(2).oid(), pos1Bson.oid());
+    QCOMPARE(sync->model()->row(1).oid(), pos2Bson.oid());
+    QCOMPARE(sync->model()->row(2).value("mytest").toString(),
+             QString("mytest"));
+
+
 }
 

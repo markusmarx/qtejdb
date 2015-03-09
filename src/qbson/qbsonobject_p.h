@@ -15,6 +15,9 @@ public:
     }
 
     QBsonValueHash values;
+
+    QStringList sortedNames;
+
     QByteArray toBinary() const;
 
     static void fromBinary(const QByteArray& binary, QBsonObject& obj);
