@@ -210,7 +210,7 @@ void Tst_QEjdbCollection::tst_joins()
                 .append(car2.value("_id"))
                 .append(car3.value("_id"))
         )
-        .append("customer", "indy")
+        .append("customer", "blindy")
         .append("pickupDate", QBsonValue(QDateTime(QDate(2013, 11, 5))));
 
     m_db.save("orders", order2);
@@ -220,20 +220,21 @@ void Tst_QEjdbCollection::tst_joins()
     QCOMPARE(car1.value("_id").toString(), order1.value("car").toString());
 
     // do a join an car attribute
-    QBsonObject query("$do", QBsonObject(
+    QBsonObject query;
+    query.append("$do", QBsonObject(
                           "car", QBsonObject(
                               "$join", "cars")
                           )
                       );
 
     QEjdbResult result = m_db.query("orders", query);
-
+    result.first();
     // check result
     QCOMPARE(2, result.count());
 
     // check single car on first order
-    QCOMPARE(QString("Honda Accord"),
-             result.first().value("car").toObject().value("model").toString());
+    QCOMPARE(result.first().value("car").toObject().value("model").toString()
+             , QString("Honda Accord"));
 
     // check car array on second order
     QBsonArray carArray = result.values().at(1).value("car").toArray();

@@ -74,7 +74,7 @@ QBsonArray& QBsonArray::append(const QBsonValue &value)
  */
 QBsonArray& QBsonArray::insert(int i, const QBsonValue &value)
 {
-    if (inRange(i)) {
+    if ((i >= 0 && i <= data->list.count())) {
         data->list.insert(i, value);
     }
     return *this;
@@ -86,6 +86,14 @@ QBsonArray &QBsonArray::remove(int i)
         data->list.removeAt(i);
     }
     return *this;
+}
+
+/**
+ * @brief QBsonArray::take remove the item from index and returns it.
+ */
+QBsonValue QBsonArray::take(int i)
+{
+    return data->list.takeAt(i);
 }
 
 /**

@@ -79,6 +79,7 @@ void Tst_QEjdbDatabase::tst_openWithDir()
 void Tst_QEjdbDatabase::tst_collection()
 {
     QEjdbDatabase db = QEjdbDatabase::addDatabase("file:test.db");
+    db.close();
     //
     // test with closed database.
     //

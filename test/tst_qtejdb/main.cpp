@@ -32,15 +32,15 @@ int main(int argc, char *argv[])
                     new Tst_QEjdbPerformance("socket:qtejdbtest")
                     );
         QScopedPointer<Tst_QBsonModel> t6 (
-                    new Tst_QBsonModel()
+                    new Tst_QBsonModel("file:test_db")
                     );
 
 
-        /*QTest::qExec(t1.data(), argc, argv);
+        QTest::qExec(t1.data(), argc, argv);
         QTest::qExec(t2.data(), argc, argv);
         QTest::qExec(t3.data(), argc, argv);
-        QTest::qExec(t4.data(), argc, argv);
-        QTest::qExec(t5.data(), argc, argv);*/
+        //QTest::qExec(t4.data(), argc, argv);
+        //QTest::qExec(t5.data(), argc, argv);
         QTest::qExec(t6.data(), argc, argv);
 
 

@@ -17,6 +17,7 @@ public:
     QBsonArray& append(const QBsonValue &value);
     QBsonArray& insert(int i, const QBsonValue &value);
     QBsonArray& remove(int i);
+    QBsonValue take(int i);
     QBsonValue value(int i);
     QList<QBsonValue> values() const;
     int size() const;
