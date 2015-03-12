@@ -56,9 +56,9 @@ void Tst_QBsonModel::initTestCase()
     QEjdbDatabase::addDatabase(m_url).open();
 }
 
-QBsonObject Tst_QBsonModel::createTestBsonObject(int marker)
+QBsonObject Tst_QBsonModel::createTestBsonObject(int marker, bool withId)
 {
-    QBsonObject bsonObject = Tst_Base::createTestBsonObject(true);
+    QBsonObject bsonObject = Tst_Base::createTestBsonObject(withId);
     bsonObject.insert("marker", QBsonValue(marker));
     return bsonObject;
 }
@@ -200,7 +200,11 @@ void Tst_QBsonModel::tst_QEjdbCollectionSync()
 #define COLLECTION_OBJECT "testcollection5"
 #define COLLECTION_ARRAY  "testcollection6"
 
-void Tst_QBsonModel::tst_QEjdbArrayPropertySync()
+/**
+ * @brief tests array property sync where the parent object and his sub objects
+ * are connected with joins. Means that only id are stored in parent object.
+ */
+void Tst_QBsonModel::tst_QEjdbArrayPropertySyncWithJoin()
 {
     // open database and create collection
     QEjdbDatabase db = QEjdbDatabase::database();
@@ -231,6 +235,69 @@ void Tst_QBsonModel::tst_QEjdbArrayPropertySync()
     QCOMPARE(array.size(), 2);
     QCOMPARE(array.value(0).toString(), pos1Bson.oid().toString());
     QCOMPARE(array.value(1).toString(), pos2Bson.oid().toString());
+
+    sync->fetch();
+
+    QCOMPARE(sync->model()->row(0).oid(), pos1Bson.oid());
+    QCOMPARE(sync->model()->row(1).oid(), pos2Bson.oid());
+
+    sync->model()->move(1, 0);
+    QCOMPARE(sync->model()->row(1).oid(), pos1Bson.oid());
+    QCOMPARE(sync->model()->row(0).oid(), pos2Bson.oid());
+
+    sync->fetch();
+    QCOMPARE(sync->model()->count(), 2);
+    QCOMPARE(sync->model()->row(1).oid(), pos1Bson.oid());
+    QCOMPARE(sync->model()->row(0).oid(), pos2Bson.oid());
+
+    sync->model()->move(0, 1);
+    sync->model()->update("mytest", "mytest", 1);
+    QBsonObject pos0Bson = createTestBsonObject(25);
+    QBsonObject pos3Bson = createTestBsonObject(26);
+    sync->model()->insert(pos0Bson, 0);
+    sync->model()->insert(pos3Bson, 3);
+    sync->fetch();
+    QCOMPARE(sync->model()->count(), 4);
+    QCOMPARE(sync->model()->row(2).oid(), pos1Bson.oid());
+    QCOMPARE(sync->model()->row(1).oid(), pos2Bson.oid());
+    QCOMPARE(sync->model()->row(2).value("mytest").toString(),
+             QString("mytest"));
+
+    db.removeCollection(COLLECTION_OBJECT);
+    db.removeCollection(COLLECTION_ARRAY);
+}
+
+/**
+ * @brief tests array property sync where sub objects are stored direct in his
+ * parent.
+ */
+void Tst_QBsonModel::tst_QEjdbArrayPropertySyncWithoutJoin()
+{
+    // open database and create collection
+    QEjdbDatabase db = QEjdbDatabase::database();
+    db.createCollection(COLLECTION_OBJECT);
+
+    QEjdbArrayPropertySync *sync
+            = new QEjdbArrayPropertySync(QEjdbDatabase::database());
+
+    QBsonObject bsonObject = createTestBsonObject(11);
+    sync->setBsonObject(bsonObject, "testArray");
+    sync->setCollection(COLLECTION_OBJECT);
+
+    sync->fetch();
+    // create subproperties
+    QBsonObject pos1Bson = createTestBsonObject(1, false);
+    QBsonObject pos2Bson = createTestBsonObject(2, false);
+    sync->model()->append(pos1Bson);
+    sync->model()->append(pos2Bson);
+
+    QEjdbResult result = db.query(COLLECTION_OBJECT, QBsonObject());
+    QCOMPARE(result.count(), 1);
+    bsonObject = result.first();
+    QBsonArray array = result.first().value("testArray").toArray();
+    QCOMPARE(array.size(), 2);
+    testBsonObjectMarker(array.value(0).toObject(), 1);
+    testBsonObjectMarker(array.value(1).toObject(), 2);
 
     sync->fetch();
 

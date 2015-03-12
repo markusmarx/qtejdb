@@ -22,10 +22,11 @@ private slots:
     void initTestCase();
     void tst_QBsonModelSimple();
     void tst_QEjdbCollectionSync();
-    void tst_QEjdbArrayPropertySync();
+    void tst_QEjdbArrayPropertySyncWithJoin();
+    void tst_QEjdbArrayPropertySyncWithoutJoin();
 
 protected:
-    QBsonObject createTestBsonObject(int marker);
+    QBsonObject createTestBsonObject(int marker, bool withId = true);
     void testBsonObjectMarker(QBsonObject bsonObject, int marker);
 
 private:

@@ -3,6 +3,7 @@
 #include "qatomic.h"
 #include <QLinkedList>
 #include "qbsonvalue.h"
+#include "qbsonobject.h"
 #include <QDebug>
 
 class QBsonArrayData {
@@ -124,6 +125,31 @@ QList<QBsonValue> QBsonArray::values() const
 int QBsonArray::size() const
 {
     return data->list.size();
+}
+
+/**
+ * @brief QBsonArray::subValueList Returns collect the property from subobjects
+ * and returns in a list. So you can extract _id values from sub objects.
+ */
+QList<QBsonValue> QBsonArray::subValueList(const QString &property) const
+{
+    QList<QBsonValue> propertyList;
+    QListIterator<QBsonValue> it(data->list);
+    while(it.hasNext()) {
+        QBsonValue subValue = it.next();
+        if (subValue.isObject()) {
+            propertyList.append(subValue.toObject().value(property));
+        }
+    }
+    return propertyList;
+}
+
+/**
+ * @brief QBsonArray::replace replace the index with the given new value.
+ */
+void QBsonArray::replace(int index, const QBsonValue &value)
+{
+    data->list.replace(index, value);
 }
 
 /**
