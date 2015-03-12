@@ -21,6 +21,8 @@ public:
     QBsonValue value(int i);
     QList<QBsonValue> values() const;
     int size() const;
+    QList<QBsonValue> subValueList(const QString &property) const;
+    void replace(int index, const QBsonValue &value);
 
 private:
     QBsonArrayData *data;

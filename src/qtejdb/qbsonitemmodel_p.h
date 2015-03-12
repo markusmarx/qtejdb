@@ -70,14 +70,11 @@ private:
      */
     inline void internalInsert(QBsonObject &bsonObject, uint row)
     {
-        //TODO create the id if not exist
-        if (bsonObject.contains("_id")) {
-            QBsonOid id = bsonObject.value("_id").toId();
-            StorageId storageId = id.hash();
-            m_bsonList.insert(row, storageId);
-            m_bsonId.insert(id.toString(), storageId);
-            m_bsonObjects.insert(storageId, bsonObject);
-        }
+        QBsonOid id = bsonObject.oid();
+        StorageId storageId = id.hash();
+        m_bsonList.insert(row, storageId);
+        m_bsonId.insert(id.toString(), storageId);
+        m_bsonObjects.insert(storageId, bsonObject);
     }
 
     /**
@@ -195,6 +192,10 @@ private:
     QString m_collection;
     QString m_propertyCollection;
 
+    QBsonObject loadBson(const QString &collection, const QBsonOid &oid);
+    QBsonObject reloadBson(const QString &collection, const QBsonObject &bson);
+    void saveBson(const QString &collection, QBsonObject &object);
+
     /**
      * @brief isDbValid check all required values.
      */
@@ -202,13 +203,16 @@ private:
     {
         return m_db.isOpen()
                 && m_db.containsCollection(m_collection)
-                && m_db.containsCollection(m_propertyCollection);
+                && ( m_propertyCollection.isEmpty()
+                        || m_db.containsCollection(m_propertyCollection));
     }
 
     /**
      * @brief getBsonArray returns the bson array.
      */
-    inline QBsonArray getBsonArray(){
+    inline QBsonArray getBsonArray()
+    {
+        m_parentObject = reloadBson(m_collection, m_parentObject);
         if (m_parentObject.contains(m_propertyName)
                 && m_parentObject.value(m_propertyName).isArray()) {
             return m_parentObject.value(m_propertyName).toArray();
@@ -216,6 +220,14 @@ private:
         QBsonArray array;
         m_parentObject.insert(m_propertyName, array);
         return array;
+    }
+
+    /**
+     * @brief isJoined returns true if propertyCollection is not empty.
+     */
+    inline bool isJoined()
+    {
+        return !m_propertyCollection.isEmpty();
     }
 
 };

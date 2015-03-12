@@ -349,6 +349,21 @@ void QEjdbCollectionSync::itemUpdated(QString property, QVariant value, int row)
 }
 
 /**
+ * @class QEjdbArrayPropertySync
+ * @brief QEjdbArrayPropertySync manages a array property.
+ *
+ * interface requirements
+ * ======================
+ * - set bson object and re load it from db
+ * - set id and load it from db
+ * - if propertyCollection is set then make a join over
+ * property and propertyCollection
+ * - save a property bson on a own collection only propertyCollection is set
+ * - if propertyCollection not set the bson is saved as subobj of parent object
+ *
+ */
+
+/**
  * @brief QEjdbArrayPropertySync::bsonObject returns bson object that contains
  * the array property stored in propertyName.
  */
@@ -420,27 +435,33 @@ QString QEjdbArrayPropertySync::propertyCollection()
 void QEjdbArrayPropertySync::fetch()
 {
     if (isDbValid()) {
-        QBsonObject query;
-        QBsonArray andQ;
-        andQ.append(QBsonObject("_id", m_parentObject.oid()));
-        query.append("$do", QBsonObject(
-                              m_propertyName, QBsonObject(
-                                  "$join", m_propertyCollection)
-                              )
-                    );
-        query.append("$and", andQ);
-        QEjdbResult result = m_db.query(m_collection, query);
 
-        if (result.count() > 0) {
-            QBsonObject parentObject = result.first();
+        QBsonObject found;
+        if (isJoined()) {
+            QBsonObject query;
+            QBsonArray andQ;
+            andQ.append(QBsonObject("_id", m_parentObject.oid()));
+            query.append("$do", QBsonObject(
+                                  m_propertyName, QBsonObject(
+                                      "$join", m_propertyCollection)
+                                  )
+                        );
+            query.append("$and", andQ);
+            QEjdbResult result = m_db.query(m_collection, query);
 
-            QBsonArray array = parentObject.value(m_propertyName).toArray();
-            m_qBsonItemModel->set(array.values());
-            return;
+            if (result.count() > 0) {
+                found = result.first();
+            }
+
+        } else {
+            found = m_db.load(m_collection, m_parentObject.oid());
         }
 
-        QBsonArray array = getBsonArray();
-        m_qBsonItemModel->set(array.values());
+        if (found.hasOid()) {
+            QBsonArray array = found.value(m_propertyName).toArray();
+            m_qBsonItemModel->set(array.values());
+        }
+
     }
 }
 
@@ -480,11 +501,9 @@ void QEjdbArrayPropertySync::itemRemoved(int row, QBsonObject removedObject)
 {
     Q_UNUSED(removedObject)
     if (isDbValid()) {
-
         QBsonArray array = getBsonArray();
         array.remove(row);
         m_db.save(m_collection, m_parentObject);
-
     }
 }
 
@@ -495,17 +514,16 @@ void QEjdbArrayPropertySync::itemInserted(int row)
 {
     if (isDbValid()) {
         QBsonObject newObject = m_qBsonItemModel->row(row);
-        if (newObject.hasOid()) {
-            QBsonObject obj = m_db.load(m_collection, m_parentObject.oid());
-            if (obj.hasOid()) {
-                m_parentObject = obj;
+        QBsonArray array = getBsonArray();
+        if (row >= 0 && row <= array.size()) {
+            if (isJoined()) {
+                m_db.save(m_propertyCollection, newObject);
+                array.insert(row, newObject.oid());
+            } else {
+                array.insert(row, newObject);
             }
-            m_db.save(m_propertyCollection, newObject);
-            QBsonArray array = getBsonArray();
-            if (row >= 0 && row <= array.size()) {
-                array.insert(row, QBsonOid(newObject.oid()));
-                m_db.save(m_collection, m_parentObject);
-            }
+            m_parentObject.insert(m_propertyName, array);
+            m_db.save(m_collection, m_parentObject);
         }
     }
 }
@@ -515,12 +533,10 @@ void QEjdbArrayPropertySync::itemInserted(int row)
  */
 void QEjdbArrayPropertySync::itemMoved(int sourceRow, int destinationRow)
 {
-    if (isDbValid()) {
-        m_parentObject = m_db.load(m_collection, m_parentObject.oid());
-        QBsonArray array = getBsonArray();
-        array.insert(destinationRow, array.take(sourceRow).toId());
-        m_db.save(m_collection, m_parentObject);
-    }
+    m_parentObject = m_db.load(m_collection, m_parentObject.oid());
+    QBsonArray array = getBsonArray();
+    array.insert(destinationRow, array.take(sourceRow));
+    saveBson(m_collection, m_parentObject);
 }
 
 /**
@@ -529,11 +545,52 @@ void QEjdbArrayPropertySync::itemMoved(int sourceRow, int destinationRow)
  */
 void QEjdbArrayPropertySync::itemUpdated(QString property, QVariant value, int row)
 {
+    QBsonObject updateObject = reloadBson(m_propertyCollection, m_qBsonItemModel->row(row));
+    updateObject.insert(property, QBsonValue::fromVariant(value));
+    if (isJoined()) {
+        saveBson(m_propertyCollection, updateObject);
+    } else {
+        QBsonArray array = getBsonArray();
+        array.replace(row, updateObject);
+        saveBson(m_collection, m_parentObject);
+    }
+
+}
+
+/**
+ * @brief QEjdbArrayPropertySync::loadBson Returns a bson by oid. If oid not valid
+ * returns an empty bson.
+ *
+ */
+QBsonObject QEjdbArrayPropertySync::loadBson(const QString &collection, const QBsonOid &oid)
+{
+    if (oid.isValid() && isDbValid()) {
+        return m_db.load(collection, oid.toString());
+    }
+    return QBsonObject();
+}
+
+/**
+ * @brief QEjdbArrayPropertySync::reloadBson loads a bson with _id from given bson
+ * from database. If database is not valid or bson have no oid property returns
+ * the given bson.
+ */
+QBsonObject QEjdbArrayPropertySync::reloadBson(
+        const QString &collection, const QBsonObject &bson
+) {
+    if (bson.hasOid() && isDbValid()) {
+        QBsonObject obj = m_db.load(collection, bson.oid());
+        if (obj.hasOid()) return obj;
+    }
+    return bson;
+}
+
+/**
+ * @brief QEjdbArrayPropertySync::saveBson save the given bson.
+ */
+void QEjdbArrayPropertySync::saveBson(const QString &collection, QBsonObject &bson)
+{
     if (isDbValid()) {
-        QBsonObject newObject = m_db.load(m_propertyCollection, m_qBsonItemModel->row(row).oid());
-        if (newObject.hasOid()) {
-            newObject.insert(property, QBsonValue::fromVariant(value));
-            m_db.save(m_propertyCollection, newObject);
-        }
+        m_db.save(collection, bson);
     }
 }

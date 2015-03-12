@@ -167,7 +167,7 @@ void QBsonObjectData::convert2QBson2(QBsonObject &obj, bson_iterator *it)
 
     while ((bt = bson_iterator_next(it)) != BSON_EOO) {
         QString key = BSON_ITERATOR_KEY(it);
-        obj.data->values.insert(key, convert2QBsonValue(bt, it));
+        obj.data->insert(key, convert2QBsonValue(bt, it));
     }
 }
 
@@ -184,7 +184,7 @@ void QBsonObjectData::convert2QBson2(QBsonObjectData *obj, bson_iterator *it)
 
     while ((bt = bson_iterator_next(it)) != BSON_EOO) {
         QString key = BSON_ITERATOR_KEY(it);
-        obj->values.insert(key, convert2QBsonValue(bt, it));
+        obj->insert(key, convert2QBsonValue(bt, it));
     }
 }
 
@@ -202,11 +202,8 @@ void QBsonObjectData::convert2QBson(bson *bson, QBsonObjectData *obj)
         return;
     }
     bson_iterator it;
-
     BSON_ITERATOR_FROM_BUFFER(&it, bson->data);
-
     convert2QBson2(obj, &it);
-
 }
 
 /**
@@ -378,11 +375,8 @@ QBsonObject::QBsonObject(void *bsonRec)
 }
 
 /**
- @brief QBsonObject::insert insert the value to the QBsonObject instance.
+ * @brief Insert the value to the QBsonObject instance.
  * Overwrites value if key exist.
- *
- * @param name name of element.
- * @param value value of element.
  */
 QBsonObject &QBsonObject::insert(const QString &name, const QBsonValue &value)
 {
@@ -404,6 +398,10 @@ QBsonObject &QBsonObject::append(const QString &name, const QBsonValue &value)
     return *this;
 }
 
+/**
+ * @brief Returns value stored at given property name or empty
+ * value if property not exist.
+ */
 const QBsonValue QBsonObject::value(const QString &name) const
 {
     if (data->values.contains(name)) {
@@ -413,7 +411,20 @@ const QBsonValue QBsonObject::value(const QString &name) const
     return QBsonValue();
 }
 
-bool QBsonObject::contains(const QString &name)
+/**
+ * @brief Returns true if the bson object has a property with
+ * given name.
+ */
+bool QBsonObject::contains(const char *name) const
+{
+    return contains(QString(name));
+}
+
+/**
+ * @brief Returns true if the bson object has a property with
+ * given name.
+ */
+bool QBsonObject::contains(const QString &name) const
 {
     return data->values.contains(name);
 }
@@ -458,7 +469,7 @@ bool QBsonObject::isEmpty() const
 /**
  * @brief QBsonObject::hasId returns true if a property _id exists.
  */
-bool QBsonObject::hasOid()
+bool QBsonObject::hasOid() const
 {
     return contains("_id");
 }
@@ -467,7 +478,7 @@ bool QBsonObject::hasOid()
  * @brief QBsonObject::oid returns the _id property or a empty QBsonOid if
  * not _id value exist.
  */
-QBsonOid QBsonObject::oid()
+QBsonOid QBsonObject::oid() const
 {
     if (hasOid()) {
         return value("_id").toId();

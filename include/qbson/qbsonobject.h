@@ -26,7 +26,8 @@ public:
     QBsonObject &insert(const QString &name, const QBsonValue &value);
     QBsonObject &append(const QString &name, const QBsonValue &value);
     const QBsonValue value(const QString &name) const;
-    bool contains(const QString &name);
+    bool contains(const QString &name) const;
+    bool contains(const char *name) const;
     QStringList names() const;
     const QBsonValueHash values() const;
     QByteArray toBinary() const;
