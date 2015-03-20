@@ -13,7 +13,6 @@ target_link_libraries(
     tst_qtejdbmodel
     Qt5::Qml
     Qt5::Quick
-    qejdbmodel
     qejdb
     qbson
     qtrpc2

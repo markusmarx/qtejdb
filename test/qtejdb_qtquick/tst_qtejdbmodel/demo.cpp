@@ -16,18 +16,14 @@ int main(int argc, char *argv[])
     db.open();
     db.createCollection("modeltest");
 
-    /*for (int i = 0; i < 1; i++) {
+    for (int i = 0; i < 1; i++) {
         QBsonObject obj;
         obj.append("name1", "Markus")
                 .append("name2", "Marx");
         db.save("modeltest", obj);
-    }*/
+    }
 
-    QEjdbItemModel *itemModel = new QEjdbItemModel(db);
-    itemModel->setCollection("modeltest");
-    QStringList ll;
-    ll << "name1" << "name2";
-    itemModel->setNames(ll, QHash<QString, QString>());
+    QEjdbItemModel *itemModel = new QEjdbItemModel(db, "modeltest");
 
     engine.rootContext()->setContextProperty(
                 "qejdbmodel", itemModel);

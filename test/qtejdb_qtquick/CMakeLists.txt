@@ -1,2 +1,3 @@
 add_subdirectory(tst_qbsonconverter)
 add_subdirectory(tst_qejdbmodel)
+add_subdirectory(tst_qtejdbmodel)

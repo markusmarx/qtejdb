@@ -7,7 +7,6 @@ set(QEJDB_PUBLIC_HEADER
         qejdbworker.h
         qejdbrpcworker.h
         qejdbitemmodel.h
-        qbsonitemmodel_p.h
 )
 
 set(QEJDB_SOURCES
