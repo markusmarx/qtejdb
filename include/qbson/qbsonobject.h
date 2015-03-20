@@ -33,17 +33,19 @@ public:
     QByteArray toBinary() const;
     bool remove(const QString& name);
     bool isEmpty() const;
+    bool hasOid() const;
+    QBsonOid oid() const;
 
     bool operator==(QBsonObject &obj);
+protected:
+    QBsonObjectData *data;
 
 private:
-    friend class QObjectBsonData;
+    friend class QBsonObjectData;
     friend class QEjdbCollectionPrivate;
     friend class QEjdbFileWorker;
 
-    QBsonObjectData *data;
-
-    QBsonObject(void* bsonRec, bool transferable = false);
+    QBsonObject(void* bsonRec);
 
     QBsonObjectData* constData() const {return data;}
 

@@ -7,11 +7,8 @@ Window {
     width: 360
     height: 360
 
-    QEjdb.QEjdbModel {
 
-    }
-
-    QEjdb.QEjdbClient {
+    /*QEjdb.QEjdbClient {
         id: qejdbClient
         uri: 'file:testmodel_db2'
 
@@ -46,7 +43,7 @@ Window {
 
         }
     }
-
+*/
 
 
     MouseArea {

@@ -33,6 +33,8 @@ public:
     void buildRoles();
     QHash<int, QByteArray> roles();
     QBsonObject row(int row);
+    QBsonValue data(int row, int role);
+    void setData(int row, int role, const QBsonValue &value);
     QBsonObject oid(QBsonId bsonId);
     int count();
 
@@ -50,6 +52,8 @@ private:
     QHash<QBsonId, StorageId> m_bsonId;
     QHash<StorageId, QBsonObject> m_bsonObjects;
     QHash<int, QByteArray> m_roles;
+
+    QString roleAsKey(int role);
 
     /**
      * @brief internalClear clear all lists.
@@ -119,6 +123,8 @@ private:
     {
         return row >= 0 && row < count();
     }
+
+
 
 };
 

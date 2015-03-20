@@ -138,6 +138,13 @@ void Tst_QBsonModel::tst_QBsonModelSimple()
     QCOMPARE(m_emitItemUpdated, 5);
     QCOMPARE(m_emitItemUpdatedProperty, QString("marker"));
     QCOMPARE(m_emitItemUpdatedValue, QVariant(11));
+
+    QHash<int, QByteArray> roles = qBsonModel.roles();
+    int testRole = roles.key(QString("string").toLatin1());
+    QCOMPARE(qBsonModel.data(5, testRole).toString(), QString("test"));
+    qBsonModel.setData(5, testRole, QString("testtest"));
+    QCOMPARE(qBsonModel.data(5, testRole).toString(), QString("testtest"));
+
 }
 
 /**

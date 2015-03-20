@@ -150,6 +150,27 @@ QBsonObject QBsonItemModel::row(int row)
 }
 
 /**
+ * @brief Returns value by row and role.
+ */
+QBsonValue QBsonItemModel::data(int row, int role)
+{
+    if (isValidRow(row)) {
+        return internalGet(row).value(roleAsKey(role));
+    }
+    return QBsonValue();
+}
+
+/**
+ * @brief Set value by row and role.
+ */
+void QBsonItemModel::setData(int row, int role, const QBsonValue &value)
+{
+    if (isValidRow(row)) {
+        internalGet(row).insert(roleAsKey(role), value);
+    }
+}
+
+/**
  * @brief QBsonItemModel::getById Returns bson by bsonid
  * @param bsonId
  * @return bson from id
@@ -206,6 +227,17 @@ int QBsonItemModel::count()
 }
 
 /**
+ * @brief Returns the value that stored under role in m_roles.
+ */
+QString QBsonItemModel::roleAsKey(int role)
+{
+    if (m_roles.contains(role)) {
+        return QString(m_roles[role]);
+    }
+    return QString();
+}
+
+/**
  * @class QEjdbCollectionSync manages bson document synchronisation with a
  * collection. Synchronize a qbsonmodel with a collection in database. Create,
  * update, remove bsonobjects. A row insert append the object into the database collection.
@@ -233,6 +265,12 @@ QEjdbCollectionSync::QEjdbCollectionSync(QEjdbDatabase db, QObject *parent)
  */
 QEjdbCollectionSync::~QEjdbCollectionSync()
 {
+    QObject::disconnect(m_qBsonItemModel, &QBsonItemModel::itemInserted,
+                     this, &QEjdbCollectionSync::itemSave);
+    QObject::disconnect(m_qBsonItemModel, &QBsonItemModel::itemRemoved,
+                     this, &QEjdbCollectionSync::itemRemoved);
+    QObject::disconnect(m_qBsonItemModel, &QBsonItemModel::itemUpdated,
+                     this, &QEjdbCollectionSync::itemUpdated);
     delete m_qBsonItemModel;
 }
 
@@ -385,6 +423,14 @@ QEjdbArrayPropertySync::QEjdbArrayPropertySync(QEjdbDatabase db, QObject *parent
  */
 QEjdbArrayPropertySync::~QEjdbArrayPropertySync()
 {
+    QObject::disconnect(m_qBsonItemModel, &QBsonItemModel::itemInserted,
+                     this, &QEjdbArrayPropertySync::itemInserted);
+    QObject::disconnect(m_qBsonItemModel, &QBsonItemModel::itemRemoved,
+                     this, &QEjdbArrayPropertySync::itemRemoved);
+    QObject::disconnect(m_qBsonItemModel, &QBsonItemModel::itemUpdated,
+                     this, &QEjdbArrayPropertySync::itemUpdated);
+    QObject::disconnect(m_qBsonItemModel, &QBsonItemModel::itemMoved,
+                     this, &QEjdbArrayPropertySync::itemMoved);
     delete m_qBsonItemModel;
 }
 

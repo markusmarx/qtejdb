@@ -1,44 +1,47 @@
 #ifndef QEJDBITEMMODEL_H
 #define QEJDBITEMMODEL_H
-
+/*
+ * Copyright (C) 2014-2015 Markus Marx <markus.marx@marxenter.de>
+ *
+ * This file is part of the qejdb.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ */
 #include <QObject>
-#include <QAbstractItemModel>
 #include "qejdbdatabase.h"
 #include "qbsonobject.h"
 #include <QAbstractListModel>
 
-class QEjdbItemModelWorker;
-class QBsonModelData;
 
-class QEjdbItemModel : public QAbstractItemModel
+QT_FORWARD_DECLARE_CLASS(QBsonItemModel)
+
+class QEjdbItemModel : public QAbstractListModel
 {
     Q_OBJECT
     
 public:
-    explicit QEjdbItemModel(QEjdbDatabase db = QEjdbDatabase(), QObject *parent = 0);
+    explicit QEjdbItemModel(QEjdbDatabase db, QString collection, QObject *parent = 0);
 
     ~QEjdbItemModel();
 
      QVariant data(const QModelIndex &index, int role) const;
 
-     QModelIndex index(int row, int column,
-                       const QModelIndex &parent = QModelIndex()) const;
-
-     QModelIndex parent(const QModelIndex &index) const;
-
      int rowCount(const QModelIndex &parent = QModelIndex()) const;
-
      bool setData(const QModelIndex &index, const QVariant &value,
                   int role = Qt::EditRole);
-
      bool insertRow(int row, const QModelIndex &parent);
-
      bool insertRows(int position, int rows,
                      const QModelIndex &parent = QModelIndex());
-
      bool removeRows(int position, int rows,
                      const QModelIndex &parent = QModelIndex());
-
      void setNames(QStringList names, QHash<QString, QString> namesMap);
      QVariant headerData(int section, Qt::Orientation orientation, int role) const;
      void setCollection(const QString &collectionName);
@@ -50,18 +53,13 @@ signals:
 public slots:
 
 private:
-    QEjdbDatabase m_db;
 
+     QBsonItemModel *m_bsonModel;
+     QObject *m_modeSync;
 
+     void initCollectionSyncModel(QEjdbDatabase db, const QString &collection);
+     bool isValid() const;
 
-    QHash<int, QByteArray> m_roleNames;
-
-    QHash<int, QByteArray> m_roleNamesMap;
-
-    QEjdbItemModelWorker *m_modelWorker;
-
-    QBsonModelData *getQBsonModelData(const QModelIndex &index) const;
-    QBsonObject getQBson(const QModelIndex &index) const;
 
 };
 
