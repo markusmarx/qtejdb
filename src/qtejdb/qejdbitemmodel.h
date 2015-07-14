@@ -29,6 +29,7 @@ class QEjdbItemModel : public QAbstractListModel
     
 public:
     explicit QEjdbItemModel(QEjdbDatabase db, QString collection, QObject *parent = 0);
+    explicit QEjdbItemModel(QObject *parent = 0);
 
     ~QEjdbItemModel();
 
@@ -42,12 +43,13 @@ public:
                      const QModelIndex &parent = QModelIndex());
      bool removeRows(int position, int rows,
                      const QModelIndex &parent = QModelIndex());
-     void setNames(QStringList names, QHash<QString, QString> namesMap);
+
      QVariant headerData(int section, Qt::Orientation orientation, int role) const;
      void setCollection(const QString &collectionName);
 
      QHash<int, QByteArray> roleNames() const;
      int columnCount(const QModelIndex &parent) const;
+     void insert(const QBsonObject &bsonObject, int row);
 signals:
 
 public slots:

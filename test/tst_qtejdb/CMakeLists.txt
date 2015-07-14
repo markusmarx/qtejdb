@@ -6,3 +6,4 @@ target_link_libraries ( tst_qejdb Qt5::Core Qt5::Test qtrpc2 qejdb qbson pthread
 target_include_directories (tst_qejdb PUBLIC ../../include)
 
 add_test(tst_qejdb tst_qejdb)
+SETUP_TARGET_FOR_COVERAGE(tst_qejdb_coverage  tst_qejdb coverage)

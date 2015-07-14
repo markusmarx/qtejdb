@@ -228,7 +228,7 @@ QString QBsonValue::toString() const
  */
 double QBsonValue::toDouble() const
 {
-    if (isValid(QBsonValue::Double)) {
+    if (data->v.canConvert(QVariant::Double)) {
         return data->v.toDouble();
     }
     qWarning() << "QBsonValue cannot convert to double";
@@ -243,7 +243,7 @@ double QBsonValue::toDouble() const
  */
 int QBsonValue::toInt() const
 {
-    if (isValid(QBsonValue::Integer)) {
+    if (data->v.canConvert(QVariant::Int)) {
         return data->v.toInt();
     }
     qWarning() << "QBsonValue cannot convert to int";
@@ -258,7 +258,7 @@ int QBsonValue::toInt() const
  */
 long QBsonValue::toLong() const
 {
-    if (isValid(QBsonValue::Long)) {
+    if (data->v.canConvert(QVariant::LongLong)) {
         return data->v.toLongLong();
     }
     qWarning() << "QBsonValue cannot convert to long";
@@ -358,10 +358,6 @@ QBsonOid QBsonValue::toId() const
     return QBsonOid();
 }
 
-bool QBsonValue::operator ==(const QBsonValue value) const
-{
-    return data->v == value.data->v;
-}
 
 /**
  * @brief QBsonValue::isObject returns true if type is QBsonValue::Object
@@ -388,7 +384,7 @@ bool QBsonValue::isArray() const
  */
 bool QBsonValue::isValid() const
 {
-    return data != 0;
+    return data != 0 && data->v.isValid();
 }
 
 /**
@@ -410,7 +406,6 @@ QVariant QBsonValue::toVariant() const
  */
 QBsonValue QBsonValue::fromVariant(QVariant variant)
 {
-    if (!variant.isValid()) return QBsonValue();
     switch (variant.type()) {
     case QVariant::Bool:
         return QBsonValue(variant.toBool());
@@ -450,4 +445,19 @@ QBsonValue QBsonValue::fromVariant(QVariant variant)
 bool QBsonValue::isValid(QBsonValue::QBsonValueType type) const
 {
     return isValid() && data->type == type;
+}
+
+bool QBsonValue::operator ==(const QBsonValue value) const
+{
+    return data->v == value.data->v;
+}
+
+bool QBsonValue::operator ==(const QVariant value) const
+{
+    return data->v == value;
+}
+
+bool operator ==(const QVariant variant, const QBsonValue value)
+{
+    return variant == value.toVariant();
 }

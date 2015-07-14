@@ -17,13 +17,14 @@ set(QEJDBQUICK_SOURCES
     qejdbplugin.cpp
     qejdbclient.cpp
     qbsonconverter.cpp
+    qjsonmodel.cpp
 )
 
 add_library ( qejdbplugin SHARED ${QEJDBQUICK_SOURCES} ${QEJDBQUICK_QML_SOURCES} )
 
 qt5_use_modules( qejdbplugin Quick Qml)
 
-target_link_libraries(qejdbplugin qejdb Qt5::Qml Qt5::Quick )
+target_link_libraries(qejdbplugin qejdb Qt5::Qml Qt5::Quick)
 
 target_include_directories (qejdbplugin PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}

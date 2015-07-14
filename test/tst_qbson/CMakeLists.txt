@@ -1,9 +1,11 @@
-find_package(Qt5Core)
-find_package(Qt5Test)
+set(SOURCE qbsonvaluetest.cc qbsonoidtest.cc qbsontobsonrectest.cc
+qbsonfrombsonrectest.cc qbsonarraytest.cc qbsonobjecttest.cc)
 
-add_executable ( tst_qbson tst_qbson.cpp )
+find_package(GTest REQUIRED)
+include_directories(${GTEST_INCLUDE_DIRS})
+add_executable(qbsontest ${SOURCE})
+target_link_libraries ( qbsontest Qt5::Core qbson pthread z)
+target_link_libraries(qbsontest ${GTEST_BOTH_LIBRARIES})
+add_test(AllTestsInFoo qbsontest)
 
-target_link_libraries ( tst_qbson Qt5::Core Qt5::Test qbson pthread z)
-target_include_directories (tst_qbson PUBLIC ../../include)
-
-add_test(tst_qbson tst_qbson)
+SETUP_TARGET_FOR_COVERAGE(tst_qbson_coverage  qbsontest coverage)

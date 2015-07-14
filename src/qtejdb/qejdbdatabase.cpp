@@ -201,7 +201,7 @@ QEjdbDatabase QEjdbDatabasePrivate::database(const QString& name, bool open)
 }
 
 
-QT_STATIC_CONST_IMPL char *QEjdbDatabase::defaultConnection = "qejdb_default_connection";
+const char *QEjdbDatabase::defaultConnection = "qejdb_default_connection";
 
 /**
  * @class QEjdbDatabase
@@ -278,10 +278,8 @@ QEjdbDatabase QEjdbDatabase::database(const QString &connectionName)
  */
 QString QEjdbDatabase::connectionName() const
 {
-    if (d) {
-        return d->connectionName();
-    }
-    return QString();
+    Q_ASSERT(d);
+    return d->connectionName();
 }
 
 
@@ -304,34 +302,26 @@ QEjdbDatabase &QEjdbDatabase::operator=(const QEjdbDatabase &other)
 
 bool QEjdbDatabase::save(const QString &collectionName, QBsonObject &bson)
 {
-    if (d) {
-        return d->m_worker->save(collectionName, bson);
-    }
-    return false;
+    Q_ASSERT(d);
+    return d->m_worker->save(collectionName, bson);
 }
 
 QBsonObject QEjdbDatabase::load(const QString &collectionName, const QString &oid)
 {
-    if (d) {
-        return d->m_worker->load(collectionName, oid);
-    }
-    return QBsonObject();
+    Q_ASSERT(d);
+    return d->m_worker->load(collectionName, oid);
 }
 
 QEjdbResult QEjdbDatabase::loadAll(const QString &collectionName)
 {
-    if (d) {
-        return d->m_worker->loadAll(collectionName);
-    }
-    return QEjdbResult();
+    Q_ASSERT(d);
+    return d->m_worker->loadAll(collectionName);
 }
 
 bool QEjdbDatabase::remove(const QString &collectionName, const QString &oid)
 {
-    if (d) {
-        return d->m_worker->remove(collectionName, oid);
-    }
-    return false;
+    Q_ASSERT(d);
+    return d->m_worker->remove(collectionName, oid);
 }
 
 bool QEjdbDatabase::remove(const QString &collectionName, QBsonObject obj)
@@ -343,10 +333,8 @@ bool QEjdbDatabase::remove(const QString &collectionName, QBsonObject obj)
 
 QEjdbResult QEjdbDatabase::query(const QString &collectionName, const QBsonObject& query)
 {
-    if (d) {
-        return d->m_worker->query(collectionName, query);
-    }
-    return QEjdbResult();
+    Q_ASSERT(d);
+    return d->m_worker->query(collectionName, query);
 }
 
 QEjdbDatabase::QEjdbDatabase():d(0)
@@ -364,46 +352,37 @@ QEjdbDatabase::~QEjdbDatabase()
 
 void QEjdbDatabase::open()
 {
-    if (d) {
-        return d->open();
-    }
+    Q_ASSERT(d);
+    return d->open();
 }
 
 bool QEjdbDatabase::close()
 {
-    if (d) {
-        return d->close();
-    }
-    return false;
+    Q_ASSERT(d);
+    return d->close();
 }
 
 bool QEjdbDatabase::isOpen()
 {
-    if (!d) return false;
+    Q_ASSERT(d);
     return d->isOpen();
 }
 
 bool QEjdbDatabase::containsCollection(const QString &collectionName)
 {
-    if (d) {
-        return d->containsCollection(collectionName);
-    }
-    return false;
+    Q_ASSERT(d);
+    return d->containsCollection(collectionName);
 }
 
 
 bool QEjdbDatabase::createCollection(const QString &collectionName)
 {
-    if (d) {
-        return d->createCollection(collectionName);
-    }
-    return false;
+    Q_ASSERT(d);
+    return d->createCollection(collectionName);
 }
 
 bool QEjdbDatabase::removeCollection(const QString& collectionName )
 {
-    if (d) {
-        return d->removeCollection(collectionName);
-    }
-    return false;
+    Q_ASSERT(d);
+    return d->removeCollection(collectionName);
 }

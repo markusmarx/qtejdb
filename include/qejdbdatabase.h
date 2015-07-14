@@ -131,7 +131,7 @@ private:
     friend class QEjdbDatabasePrivate;
     QEjdbDatabasePrivate *d;
 
-    QT_STATIC_CONST char *defaultConnection;
+    static const char *defaultConnection;
 
 
     /**

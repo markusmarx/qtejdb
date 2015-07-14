@@ -3,6 +3,7 @@
 
 #include <QDateTime>
 #include <QLatin1String>
+#include <QVariant>
 
 class QBsonValueData;
 class QBsonObject;

@@ -3,6 +3,7 @@
 
 #include <QDateTime>
 #include <QLatin1String>
+#include <QVariant>
 
 class QBsonValueData;
 class QBsonObject;
@@ -17,8 +18,18 @@ public:
      * @brief The QBsonValueType bsonvalue types.
      */
     enum QBsonValueType {
-        Double, Integer, Long, Object, Array, Id, DateTime, Timestamp, Binary, Empty,
-        Bool, String
+        Double,
+        Integer,
+        Long,
+        Object,
+        Array,
+        Id,
+        DateTime,
+        Timestamp,
+        Binary,
+        Empty,
+        Bool,
+        String
     };
 
     QBsonValue();
@@ -35,7 +46,6 @@ public:
     QBsonValue(const QBsonArray &value);
     QBsonValue(bool value);
     QBsonValue(const QBsonOid &value);
-
 
     QBsonValue(const QBsonValue &);
     QBsonValue &operator=(const QBsonValue &);
@@ -59,12 +69,15 @@ public:
 
     QVariant toVariant() const;
     static QBsonValue fromVariant(QVariant variant);
+
+    bool operator ==(const QVariant value) const;
+
 private:
     QBsonValueData *data;
 
     bool isValid(QBsonValue::QBsonValueType type) const;
 };
 
-
+bool operator ==(const QVariant variant, const QBsonValue value);
 
 #endif // QBSONVALUE_H
