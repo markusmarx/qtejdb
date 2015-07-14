@@ -1,5 +1,6 @@
 #include "qejdbresult.h"
 #include "qejdbresult_p.h"
+#include <QDataStream>
 #include <QDebug>
 
 QEjdbResult::QEjdbResult():data(new QEjdbResultData)

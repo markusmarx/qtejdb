@@ -6,6 +6,7 @@
 #include <QTest>
 #include <QElapsedTimer>
 #include <QDebug>
+#include <QDataStream>
 
 void Tst_QBson::tst_qbson()
 {

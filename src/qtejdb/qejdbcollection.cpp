@@ -1,4 +1,6 @@
 #include "qejdbcollection.h"
+#include "qbsonfrombsonrec.h"
+#include "qbsontobsonrec.h"
 #include <QDebug>
 #include "ejdb.h"
 #include "qbsonobject.h"
@@ -72,7 +74,7 @@ bool QEjdbCollectionPrivate::save(QBsonObject &obj)
 
     // get bson
     QBsonObjectData *d = obj.data;
-    bson bsrec = QBsonObjectData::convert2Bson(*d);
+    bson bsrec = convertQBsonToBsonRec(d, 0);
 
     // save
     bool res = ejdbsavebson(m_col, &bsrec, &oid);
@@ -100,7 +102,9 @@ QBsonObject QEjdbCollectionPrivate::load(QString oidStr)
     bson_oid_from_string(&oid, oidStr.toLatin1());
 
     bson* bsrec = ejdbloadbson(m_col, &oid);
-    QBsonObject obj(bsrec);
+    QBsonObject obj;
+    convertBsonObjectFromBsonRec(bsrec, obj);
+
     bson_del(bsrec);
 
     return obj;
@@ -112,7 +116,7 @@ QList<QBsonObject> QEjdbCollectionPrivate::query(const QBsonObject &query)
     bson bq1;
     bson_init_as_query(&bq1);
     QBsonObjectData *d = query.data;
-    bq1 = QBsonObjectData::convert2Bson(*d, &bq1);
+    bq1 = convertQBsonToBsonRec(d, &bq1);
 
     bson_finish(&bq1);
 
@@ -130,7 +134,7 @@ QList<QBsonObject> QEjdbCollectionPrivate::query(const QBsonObject &query)
         int size = bson_size2(bsdata);
         bson *bs = bson_create_from_buffer(bsdata, size);
         QBsonObject obj;
-        QBsonObjectData::convert2QBson(bs, obj);
+        convertBsonObjectFromBsonRec(bs, obj);
 
         resultList.append(obj);
         bson_del(bs);

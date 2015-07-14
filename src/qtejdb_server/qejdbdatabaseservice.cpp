@@ -2,6 +2,7 @@
 #include <QDebug>
 #include "serverconfiguration.h"
 #include <QCoreApplication>
+#include <QDataStream>
 
 QTRPC_REGISTER_METATYPE(QEjdbDatabaseService::ResultData)
 QTRPC_REGISTER_METATYPE(QBsonObject)

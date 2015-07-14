@@ -25,7 +25,7 @@ public:
     ~QBsonItemModel();
     void set(QList<QBsonObject> bsonList);
     void set(QList<QBsonValue> bsonList);
-    void insert(QBsonObject &bsonObject, const uint &row);
+    void insert(const QBsonObject &bsonObject, const uint &row);
     void update(QString property, QVariant value, const uint &row);
     void append(QBsonObject bsonObject);
     void move(int sourceRow, int destinationRow);
@@ -72,7 +72,7 @@ private:
      * @param bsonObject bsonobject
      * @param row row
      */
-    inline void internalInsert(QBsonObject &bsonObject, uint row)
+    inline void internalInsert(const QBsonObject &bsonObject, uint row)
     {
         QBsonOid id = bsonObject.oid();
         StorageId storageId = id.hash();

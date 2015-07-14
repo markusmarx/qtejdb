@@ -41,11 +41,15 @@ QBsonItemModel::~QBsonItemModel()
  * @param bsonObject bsonobject
  * @param row row
  */
-void QBsonItemModel::insert(QBsonObject &bsonObject, const uint &row)
+void QBsonItemModel::insert(const QBsonObject &bsonObject, const uint &row)
 {
     if (row <= count()) {
         internalInsert(bsonObject, row);
         emit itemInserted(row);
+        if (count() == 1) {
+            buildRoles();
+            emit reset();
+        }
     }
 
 }

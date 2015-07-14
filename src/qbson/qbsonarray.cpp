@@ -94,7 +94,10 @@ QBsonArray &QBsonArray::remove(int i)
  */
 QBsonValue QBsonArray::take(int i)
 {
-    return data->list.takeAt(i);
+    if (inRange(i)) {
+        return data->list.takeAt(i);
+    }
+    return QBsonValue();
 }
 
 /**
@@ -131,7 +134,7 @@ int QBsonArray::size() const
  * @brief QBsonArray::subValueList Returns collect the property from subobjects
  * and returns in a list. So you can extract _id values from sub objects.
  */
-QList<QBsonValue> QBsonArray::subValueList(const QString &property) const
+QList<QBsonValue> QBsonArray::collectProperties(const QString &property) const
 {
     QList<QBsonValue> propertyList;
     QListIterator<QBsonValue> it(data->list);
@@ -149,7 +152,9 @@ QList<QBsonValue> QBsonArray::subValueList(const QString &property) const
  */
 void QBsonArray::replace(int index, const QBsonValue &value)
 {
-    data->list.replace(index, value);
+    if(inRange(index)) {
+        data->list.replace(index, value);
+    }
 }
 
 /**

@@ -3,6 +3,8 @@
 #include "qejdbexception.h"
 #include "qejdbresult.h"
 #include "qejdbresult_p.h"
+#include "qbsonfrombsonrec.h"
+#include "qbsontobsonrec.h"
 
 QEjdbFileWorker::QEjdbFileWorker(const QUrl &url, int mode):
     m_path(url.toLocalFile()), m_mode(mode), m_db(0)
@@ -76,7 +78,7 @@ bool QEjdbFileWorker::save(const QString &collectionName, QBsonObject &bsonObj)
 
     // get bson
     QBsonObjectData *d = bsonObj.data;
-    bson bsrec = QBsonObjectData::convert2Bson(*d);
+    bson bsrec = convertQBsonToBsonRec(d, 0);
     EJCOLL *col = getCollection(collectionName);
     // save
     bool res = ejdbsavebson(col, &bsrec, &oid);
@@ -97,7 +99,8 @@ QBsonObject QEjdbFileWorker::load(const QString &collectionName, const QString &
     bson_oid_from_string(&oid, oidStr.toLatin1());
     EJCOLL *col = getCollection(collectionName);
     bson* bsrec = ejdbloadbson(col, &oid);
-    QBsonObject obj(bsrec);
+    QBsonObject obj;
+    convertBsonObjectFromBsonRec(bsrec, obj);
     bson_del(bsrec);
 
     return obj;
@@ -123,7 +126,7 @@ QEjdbResult QEjdbFileWorker::query(const QString &collectionName, const QBsonObj
     bson bq1;
     bson_init_as_query(&bq1);
     QBsonObjectData *d = query.data;
-    bq1 = QBsonObjectData::convert2Bson(*d, &bq1);
+    bq1 = convertQBsonToBsonRec(d, &bq1);
 
     bson_finish(&bq1);
 

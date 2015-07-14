@@ -5,7 +5,7 @@
 #define TEST_COUNT 10
 
 Tst_QBsonModel::Tst_QBsonModel(QString url, QObject *parent)
-    :QObject(parent), m_url(url)
+    :QObject(parent), m_url(url), m_emitReset(false)
 {
 
 }
@@ -50,6 +50,11 @@ void Tst_QBsonModel::itemUpdated(QString property, QVariant value, int row)
     m_emitItemUpdatedValue = value;
 }
 
+void Tst_QBsonModel::reset()
+{
+    m_emitReset = true;
+}
+
 void Tst_QBsonModel::initTestCase()
 {
     QEjdbDatabase::removeDatabaseFiles(".", "test_db");
@@ -84,15 +89,25 @@ void Tst_QBsonModel::tst_QBsonModelSimple()
                      this, &Tst_QBsonModel::itemMoved);
     QObject::connect(&qBsonModel, &QBsonItemModel::itemUpdated,
                      this, &Tst_QBsonModel::itemUpdated);
+    QObject::connect(&qBsonModel, &QBsonItemModel::reset,
+                     this, &Tst_QBsonModel::reset);
+
+
+    qBsonModel.insert(Tst_Base::createTestBsonObject(true), 0);
+    QCOMPARE(qBsonModel.roles().count(), 10);
+    QCOMPARE(qBsonModel.count(), 1);
+    QCOMPARE(m_emitReset, true);
+    m_emitReset = false;
 
     qBsonModel.set(createTestBsonObjectList(TEST_COUNT, true));
+    QCOMPARE(m_emitReset, true);
 
-    QCOMPARE(qBsonModel.roles().count(), 11);
+    QCOMPARE(qBsonModel.roles().count(), 10);
     QCOMPARE(qBsonModel.count(), TEST_COUNT);
 
     testBsonObject(qBsonModel.row(0));
-    QString id = qBsonModel.row(5).value("_id").toString();
-    QString id2 = qBsonModel.oid(id).value("_id").toString();
+    QString id = qBsonModel.row(5).oid().toString();
+    QString id2 = qBsonModel.oid(id).oid().toString();
     QCOMPARE(id, id2);
 
     QBsonObject obj = createTestBsonObject(99);

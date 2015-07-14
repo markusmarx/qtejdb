@@ -5,6 +5,7 @@
 #include "qejdbquery.h"
 #include "qbson/qbsonobject.h"
 #include "qbson/qbsonarray.h"
+#include <QDataStream>
 
 
 Tst_QEjdbCollection::Tst_QEjdbCollection(QString url, QObject *parent) :

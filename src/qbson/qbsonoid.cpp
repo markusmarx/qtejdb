@@ -19,7 +19,7 @@ public:
     QBsonOidData()
     {
         ref = 1;
-        id = "000000000000000000000000";
+        //id = "";
     }
 
     QBsonOidData(const QString& id):id(id) { ref = 1;}

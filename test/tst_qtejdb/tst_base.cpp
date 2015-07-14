@@ -16,7 +16,7 @@ QBsonObject Tst_Base::createTestBsonObject(bool withId)
 {
     QBsonObject subObj;
     QBsonObject testObj;
-    if (withId) testObj.append("_id", QBsonOid::generate());
+    if (withId) testObj.setOid(QBsonOid::generate());
 
     subObj.insert("name", "subinsert");
     QBsonArray arr;

@@ -2,12 +2,22 @@ cmake_minimum_required(VERSION 2.8)
 cmake_policy(SET CMP0028 OLD)
 project(qtejdb)
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/")
+include(CodeCoverage)
+
+SET(CMAKE_CXX_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
+#	 SET(CMAKE_C_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
+
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 # Instruct CMake to run moc automatically when needed.
 set(CMAKE_AUTOMOC ON)
 
 set(LIBRARY_OUTPUT_PATH  ${PROJECT_BINARY_DIR}/lib)
+set(EJDB_INCLUDE_PATH ${CMAKE_SOURCE_DIR}/3rdparty/ejdb/src/ejdb
+                      ${CMAKE_SOURCE_DIR}/3rdparty/ejdb/src/bson
+                      ${CMAKE_SOURCE_DIR}/3rdparty/ejdb/src/tcutil
+                      ${PROJECT_BINARY_DIR}/3rdparty/ejdb/src/generated)
 
 enable_testing()
 
@@ -46,7 +56,17 @@ if(NOT Qt5Test_FOUND)
     message(FATAL_ERROR "Qt5Test module is required!")
 endif()
 
+find_package(Qt5Test REQUIRED)
+if(NOT Qt5Test_FOUND)
+    message(FATAL_ERROR "Qt5Test module is required!")
+endif()
 
+find_package(Qt5QuickTest REQUIRED)
+if(NOT Qt5QuickTest_FOUND)
+    message(FATAL_ERROR "Qt5QuickTest module is required!")
+endif()
+
+add_subdirectory(3rdparty/ejdb)
 add_subdirectory(3rdparty/qtrcp2)
 
 add_subdirectory(src/qbson)
@@ -55,11 +75,15 @@ add_subdirectory(test/tst_qbson)
 add_subdirectory(src/qtejdb)
 add_subdirectory(test/tst_qtejdb)
 
-add_subdirectory(src/qtejdb_server)
-add_subdirectory(test/tst_qtejdbserver)
+#add_subdirectory(src/qtejdb_server)
+#add_subdirectory(test/tst_qtejdbserver)
 
 #add_subdirectory(test/tst_qtejdbmodel)
 #add_subdirectory(test/tst_concurrent)
 
-add_subdirectory(src/qtejdb_qtquick)
-add_subdirectory(test/qtejdb_qtquick)
+#add_subdirectory(src/qtejdb_qtquick)
+#add_subdirectory(test/qtejdb_qtquick)
+
+
+
+

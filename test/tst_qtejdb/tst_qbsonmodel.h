@@ -17,6 +17,7 @@ public slots:
     void itemInserted(int row);
     void itemMoved(int sourceRow, int destinationRow);
     void itemUpdated(QString property, QVariant value, int row);
+    void reset();
 
 private slots:
     void initTestCase();
@@ -38,6 +39,7 @@ private:
     int m_emitItemMovedDestinationRow;
     QBsonObject m_emitItemRemoved;
     QString m_url;
+    bool m_emitReset;
 };
 
 #endif // TST_QBSONMODEL_H

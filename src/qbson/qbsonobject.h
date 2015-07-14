@@ -7,7 +7,6 @@
 #include <QHash>
 #include <stdarg.h>
 
-
 typedef QHash<QString, QBsonValue> QBsonValueHash;
 class QBsonObjectData;
 class QBsonOid;
@@ -35,19 +34,18 @@ public:
     bool isEmpty() const;
     bool hasOid() const;
     QBsonOid oid() const;
+    void setOid(QBsonOid oid);
 
     bool operator==(QBsonObject &obj);
 protected:
+
+    QBsonObjectData* constData() const {return data;}
+
     QBsonObjectData *data;
 
-private:
     friend class QBsonObjectData;
     friend class QEjdbCollectionPrivate;
     friend class QEjdbFileWorker;
-
-    QBsonObject(void* bsonRec);
-
-    QBsonObjectData* constData() const {return data;}
 
 };
 

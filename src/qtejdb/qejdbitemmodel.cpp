@@ -2,10 +2,15 @@
 #include "qbsonobject.h"
 #include "qbsonitemmodel_p.h"
 
-QEjdbItemModel::QEjdbItemModel(QEjdbDatabase db, QString collection, QObject *parent) :
-    QAbstractListModel(parent)
+QEjdbItemModel::QEjdbItemModel(QEjdbDatabase db, QString collection, QObject *parent)
+    : QAbstractListModel(parent), m_modeSync(0), m_bsonModel(0)
 {
     initCollectionSyncModel(db, collection);
+}
+
+QEjdbItemModel::QEjdbItemModel(QObject *parent)
+    : QAbstractListModel(parent), m_modeSync(0), m_bsonModel(0)
+{
 }
 
 QEjdbItemModel::~QEjdbItemModel()
@@ -68,6 +73,19 @@ bool QEjdbItemModel::removeRows(int position, int rows, const QModelIndex &paren
 int QEjdbItemModel::columnCount(const QModelIndex &parent) const
 {
     return 1;
+}
+
+/**
+ * @brief Inserts a bson object on given row.
+ * @return void
+ */
+void QEjdbItemModel::insert(const QBsonObject &bsonObject, int row)
+{
+    if (isValid()) {
+        beginInsertRows(QModelIndex(), row, row);
+        m_bsonModel->insert(bsonObject, row);
+        endInsertRows();
+    }
 }
 
 /**
