@@ -1,4 +1,4 @@
-set(MODULES qbson qtejdb)
+set(MODULES qbson qtejdb itemmodel)
 set(ALL_SRC)
 set(ALL_HDRS)
 set(PUB_HDRS)
