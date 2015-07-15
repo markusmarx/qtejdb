@@ -1,7 +1,7 @@
 #include "gtest/gtest.h"
-#include "qbsontobsonrec.h"
-#include "qbsonobject_p.h"
-#include "qbsonarray.h"
+#include "qbson/qbsontobsonrec.h"
+#include "qbson/qbsonobject_p.h"
+#include "qbson/qbsonarray.h"
 #include <QByteArray>
 TEST(QBsonToBsonRecTest, TestFromQBsonObjectWithId)
 {

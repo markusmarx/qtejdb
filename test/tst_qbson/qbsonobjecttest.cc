@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "qbsonobject.h"
+#include "qbson/qbsonobject.h"
 #include "bson.h"
 #include <QDataStream>
 

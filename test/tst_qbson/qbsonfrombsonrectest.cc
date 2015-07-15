@@ -1,10 +1,10 @@
 
 #include "gtest/gtest.h"
 #include "bson.h"
-#include "qbsonobject.h"
-#include "qbsonobject_p.h"
-#include "qbsonarray.h"
-#include "qbsonfrombsonrec.h"
+#include "qbson/qbsonobject.h"
+#include "qbson/qbsonobject_p.h"
+#include "qbson/qbsonarray.h"
+#include "qbson/qbsonfrombsonrec.h"
 #include <QDateTime>
 TEST(QBsonFromBsonRec, TestWithBsonObjectDataWithEmptyBson)
 {

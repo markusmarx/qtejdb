@@ -69,11 +69,9 @@ endif()
 add_subdirectory(3rdparty/ejdb)
 add_subdirectory(3rdparty/qtrcp2)
 
-add_subdirectory(src/qbson)
-add_subdirectory(test/tst_qbson)
-
-add_subdirectory(src/qtejdb)
-add_subdirectory(test/tst_qtejdb)
+add_subdirectory(src)
+add_subdirectory(test)
+#add_subdirectory(test/tst_qtejdb)
 
 #add_subdirectory(src/qtejdb_server)
 #add_subdirectory(test/tst_qtejdbserver)

@@ -4,15 +4,14 @@
 #include <QFile>
 #include <QReadLocker>
 #include <QReadWriteLock>
-#include "qbsonobject.h"
+#include "qbson/qbsonobject.h"
 #include "qejdbquery.h"
-
 
 #include "qatomic.h"
 #include "ejdb.h"
 #include "bson.h"
 #include "qejdbworker.h"
-#include "qbsonobject.h"
+#include "qbson/qbsonobject.h"
 
 
 /**
@@ -62,8 +61,7 @@ public:
     void open();
     bool close();
     bool isOpen() const;
-    QEjdbCollection collection(QString collectionName);
-    QEjdbCollection storeCollection(EJCOLL *col, QString collectionName);
+
     bool createCollection(const QString &collectionName);
     bool removeCollection(const QString &collectionName);
     bool containsCollection(const QString &collectionName);
@@ -96,11 +94,6 @@ private:
      * @brief m_mode database open mode
      */
     int m_mode;
-
-    /**
-     * @brief m_collections
-     */
-    QHash<QString, QEjdbCollection> m_collections;
 
     /**
      * @brief m_connectionName name of the connection stored in dictionary.
@@ -225,6 +218,7 @@ QEjdbDatabase QEjdbDatabase::addDatabase(QString url, int mode, QString connecti
 {
     QEjdbDatabase db(url, mode, connectionName);
     QEjdbDatabasePrivate::addDatabase(db, connectionName);
+    db.open();
     return db;
 }
 
@@ -237,9 +231,7 @@ QEjdbDatabase QEjdbDatabase::addDatabase(QString url, QString connectionName)
 {
     QEjdbDatabase db(url, 0, connectionName);
     QEjdbDatabasePrivate::addDatabase(db, connectionName);
-    if (!db.isOpen()) {
-        db.open();
-    }
+    db.open();
     return db;
 }
 
@@ -326,9 +318,8 @@ bool QEjdbDatabase::remove(const QString &collectionName, const QString &oid)
 
 bool QEjdbDatabase::remove(const QString &collectionName, QBsonObject obj)
 {
-    if (!obj.contains("_id") || !obj.value("_id").isValid()) return false;
-    QString oid = obj.value("_id").toString();
-    return remove(collectionName, oid);
+    if (!obj.hasOid()) return false;
+    return remove(collectionName, obj.oid());
 }
 
 QEjdbResult QEjdbDatabase::query(const QString &collectionName, const QBsonObject& query)
@@ -353,7 +344,10 @@ QEjdbDatabase::~QEjdbDatabase()
 void QEjdbDatabase::open()
 {
     Q_ASSERT(d);
-    return d->open();
+    if (isOpen()) {
+        return;
+    }
+    d->open();
 }
 
 bool QEjdbDatabase::close()

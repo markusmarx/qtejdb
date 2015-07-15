@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "qbsonoid.h"
+#include "qbson/qbsonoid.h"
 #include <QHash>
 
 TEST(QBsonOidTest, TestOidGeneration)

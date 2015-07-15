@@ -5,7 +5,6 @@
 #include <QDir>
 #include <QUrl>
 
-#include "qejdbcollection.h"
 #include "qejdbexception.h"
 #include "qejdbresult.h"
 

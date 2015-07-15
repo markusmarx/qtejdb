@@ -1,9 +1,9 @@
 #include "gtest/gtest.h"
-#include "qbsonvalue.h"
+#include "qbson/qbsonvalue.h"
 #include <QDateTime>
-#include "qbsonoid.h"
-#include "qbsonobject.h"
-#include "qbsonarray.h"
+#include "qbson/qbsonoid.h"
+#include "qbson/qbsonobject.h"
+#include "qbson/qbsonarray.h"
 #include "qbytearray.h"
 
 TEST(QBsonValueTest, TestFromVariantWithOid)

@@ -203,8 +203,6 @@ bool QBsonObject::operator==(QBsonObject &obj)
 
 }
 
-
-
 /**
  * @brief QBsonObject::QBsonObject create a shared instance.
  * @param rhs

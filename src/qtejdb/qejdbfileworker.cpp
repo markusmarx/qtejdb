@@ -1,10 +1,10 @@
 #include "qejdbworker.h"
-#include "qbsonobject_p.h"
+#include "qbson/qbsonobject_p.h"
 #include "qejdbexception.h"
 #include "qejdbresult.h"
 #include "qejdbresult_p.h"
-#include "qbsonfrombsonrec.h"
-#include "qbsontobsonrec.h"
+#include "qbson/qbsonfrombsonrec.h"
+#include "qbson/qbsontobsonrec.h"
 
 QEjdbFileWorker::QEjdbFileWorker(const QUrl &url, int mode):
     m_path(url.toLocalFile()), m_mode(mode), m_db(0)
@@ -13,11 +13,16 @@ QEjdbFileWorker::QEjdbFileWorker(const QUrl &url, int mode):
 
 void QEjdbFileWorker::open()
 {
+    if (isOpen()) {
+        qWarning() << "ejdb is already opened.";
+        return;
+    }
     m_db = ejdbnew();
 
     if (!ejdbopen(m_db, m_path.toLatin1(), m_mode)) {
+        int ecode = ejdbecode(m_db);
         ejdbdel(m_db);
-        throw QEjdbException(QEjdbException::CONNECTIONERROR, ejdberrmsg(ejdbecode(m_db)));
+        throw QEjdbException(QEjdbException::CONNECTIONERROR, ejdberrmsg(ecode));
     }
 
 }
@@ -83,10 +88,10 @@ bool QEjdbFileWorker::save(const QString &collectionName, QBsonObject &bsonObj)
     // save
     bool res = ejdbsavebson(col, &bsrec, &oid);
     ejdbsyncoll(col);
-    if (!bsonObj.contains("_id")) {
+    if (!bsonObj.hasOid()) {
         char oidhex[25];
         bson_oid_to_string(&oid, oidhex);
-        bsonObj.insert("_id", QBsonOid(oidhex));
+        bsonObj.setOid(QBsonOid(oidhex));
     }
 
     bson_destroy(&bsrec);
@@ -109,7 +114,6 @@ QBsonObject QEjdbFileWorker::load(const QString &collectionName, const QString &
 QEjdbResult QEjdbFileWorker::loadAll(const QString &collectionName)
 {
     QBsonObject allQuery;
-
     return query(collectionName, allQuery);
 }
 

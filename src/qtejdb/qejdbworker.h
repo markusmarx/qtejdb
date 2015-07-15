@@ -4,7 +4,7 @@
 #include <QUrl>
 #include <QHash>
 
-#include "qbsonobject.h"
+#include "qbson/qbsonobject.h"
 #include "ejdb.h"
 #include "qejdbresult.h"
 

@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
-#include "qbsonarray.h"
-#include "qbsonobject.h"
+#include "qbson/qbsonarray.h"
+#include "qbson/qbsonobject.h"
 
 TEST(QBsonArrayTest, TestInsertValue)
 {
