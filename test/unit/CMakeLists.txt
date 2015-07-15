@@ -1,6 +1,6 @@
 find_package(GTest REQUIRED)
 
-set(MODULES tst_qbson tst_qtejdb)
+set(MODULES qbson qtejdb itemmodel)
 set(ALL_SRC)
 set(ALL_HDRS)
 set(PUB_HDRS)

@@ -20,7 +20,6 @@
 #include "qbson/qbsonobject.h"
 #include <QAbstractListModel>
 
-
 QT_FORWARD_DECLARE_CLASS(QBsonItemModel)
 
 class QEjdbItemModel : public QAbstractListModel
