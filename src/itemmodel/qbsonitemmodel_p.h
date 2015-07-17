@@ -4,11 +4,7 @@
 #include <QObject>
 #include <QList>
 #include <QHash>
-#include <QByteArray>
-#include "qtejdb/qejdbdatabase.h"
 #include "qbson/qbsonobject.h"
-#include "qbson/qbsonarray.h"
-
 
 /**
  * @internal
@@ -24,18 +20,18 @@ public:
     explicit QBsonItemModel(QObject *parent = 0);
     ~QBsonItemModel();
     void set(QList<QBsonObject> bsonList);
-    void set(QList<QBsonValue> bsonList);
     void insert(const QBsonObject &bsonObject, const uint &row);
     void update(QString property, QVariant value, const uint &row);
     void append(QBsonObject bsonObject);
     void move(int sourceRow, int destinationRow);
     void remove(int row);
     void buildRoles();
+    void clear();
     QHash<int, QByteArray> roles();
     QBsonObject row(int row);
     QBsonValue data(int row, int role);
     void setData(int row, int role, const QBsonValue &value);
-    QBsonObject oid(QBsonId bsonId);
+    QBsonObject byOid(QBsonId bsonId);
     int count();
 
 signals:
@@ -74,10 +70,9 @@ private:
      */
     inline void internalInsert(const QBsonObject &bsonObject, uint row)
     {
-        QBsonOid id = bsonObject.oid();
-        StorageId storageId = id.hash();
+        StorageId storageId = bsonObject.oid().hash();
         m_bsonList.insert(row, storageId);
-        m_bsonId.insert(id.toString(), storageId);
+        m_bsonId.insert(bsonObject.oid().toString(), storageId);
         m_bsonObjects.insert(storageId, bsonObject);
     }
 
@@ -119,121 +114,16 @@ private:
         return m_bsonObjects.value(m_bsonId.value(bsonId));
     }
 
+    /**
+     * @brief isValidRow test if given row is in range.
+     *
+     * @param row row index beginning 0
+     *
+     * @return
+     */
     inline bool isValidRow(int row)
     {
         return row >= 0 && row < count();
-    }
-
-
-
-};
-
-class QEjdbCollectionSync: public QObject
-{
-    Q_OBJECT
-public:
-    explicit QEjdbCollectionSync(QEjdbDatabase db, QObject *parent = 0);
-    ~QEjdbCollectionSync();
-    QBsonObject query() const;
-    QBsonObject hints() const;
-    QString collection() const;
-    QBsonItemModel* model();
-
-public slots:
-    void fetch();
-    void setQuery(QBsonObject query);
-    void setHints(QBsonObject hints);
-    void setCollection(QString collection);
-
-private slots:
-    void itemRemoved(int row, QBsonObject removedObject);
-    void itemSave(int row);
-    void itemUpdated(QString property, QVariant value, int row);
-
-private:
-    QEjdbDatabase m_db;
-    QBsonItemModel *m_qBsonItemModel;
-    QString m_collection;
-    QBsonObject m_query;
-    QBsonObject m_hints;
-
-    bool isDbValid()
-    {
-        return m_db.isOpen()
-                && m_db.containsCollection(m_collection);
-    }
-};
-
-class QEjdbArrayPropertySync: public QObject
-{
-    Q_OBJECT
-public:
-    explicit QEjdbArrayPropertySync(QEjdbDatabase db, QObject *parent = 0);
-    ~QEjdbArrayPropertySync();
-    QBsonItemModel *model();
-    QBsonObject bsonObject();
-    QString propertyName();
-    QString collection();
-    QString propertyCollection();
-
-public slots:
-
-    void fetch();
-    void setPropertyCollection(QString propertyCollection);
-    void setCollection(QString collection);
-    void setBsonObject(QBsonObject bsonObject, QString propertyName);
-
-private slots:
-    void itemRemoved(int row, QBsonObject removedObject);
-    void itemInserted(int row);
-    void itemMoved(int sourceRow, int destinationRow);
-    void itemUpdated(QString property, QVariant value, int row);
-
-private:
-
-    QEjdbDatabase m_db;
-    QBsonItemModel *m_qBsonItemModel;
-    QBsonObject m_parentObject;
-    QString m_propertyName;
-    QString m_collection;
-    QString m_propertyCollection;
-
-    QBsonObject loadBson(const QString &collection, const QBsonOid &oid);
-    QBsonObject reloadBson(const QString &collection, const QBsonObject &bson);
-    void saveBson(const QString &collection, QBsonObject &object);
-
-    /**
-     * @brief isDbValid check all required values.
-     */
-    inline bool isDbValid()
-    {
-        return m_db.isOpen()
-                && m_db.containsCollection(m_collection)
-                && ( m_propertyCollection.isEmpty()
-                        || m_db.containsCollection(m_propertyCollection));
-    }
-
-    /**
-     * @brief getBsonArray returns the bson array.
-     */
-    inline QBsonArray getBsonArray()
-    {
-        m_parentObject = reloadBson(m_collection, m_parentObject);
-        if (m_parentObject.contains(m_propertyName)
-                && m_parentObject.value(m_propertyName).isArray()) {
-            return m_parentObject.value(m_propertyName).toArray();
-        }
-        QBsonArray array;
-        m_parentObject.insert(m_propertyName, array);
-        return array;
-    }
-
-    /**
-     * @brief isJoined returns true if propertyCollection is not empty.
-     */
-    inline bool isJoined()
-    {
-        return !m_propertyCollection.isEmpty();
     }
 
 };

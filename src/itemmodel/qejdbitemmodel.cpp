@@ -1,6 +1,7 @@
 #include "qejdbitemmodel.h"
 #include "qbson/qbsonobject.h"
 #include "qbsonitemmodel_p.h"
+#include "qbsonitemmodelsync_p.h"
 
 QEjdbItemModel::QEjdbItemModel(QEjdbDatabase db, QString collection, QObject *parent)
     : QAbstractListModel(parent), m_modeSync(0), m_bsonModel(0)

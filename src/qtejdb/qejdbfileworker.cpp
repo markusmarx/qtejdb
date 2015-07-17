@@ -125,18 +125,32 @@ bool QEjdbFileWorker::remove(const QString &collectionName, const QString &oidSt
     return ejdbrmbson(col, &oid);
 }
 
-QEjdbResult QEjdbFileWorker::query(const QString &collectionName, const QBsonObject &query)
+QEjdbResult QEjdbFileWorker::query(const QString &collectionName, const QBsonObject &query, const QBsonObject &hints)
 {
     bson bq1;
     bson_init_as_query(&bq1);
+    bson bhints;
+    bool hasHints = !hints.isEmpty();
+
     QBsonObjectData *d = query.data;
     bq1 = convertQBsonToBsonRec(d, &bq1);
-
     bson_finish(&bq1);
+
+    if (hasHints) {
+        bson_init_as_query(&bhints);
+        bhints = convertQBsonToBsonRec(hints.data, &bhints);
+        bson_finish(&bhints);
+    }
 
     EJCOLL *coll = getCollection(collectionName);
 
-    EJQ *q = ejdbcreatequery(this->m_db, &bq1, NULL, 0, NULL);
+    EJQ *q = ejdbcreatequery(
+                this->m_db,
+                &bq1,
+                NULL,
+                0,
+                hasHints?&bhints:NULL
+            );
 
     uint32_t count;
     TCLIST *res = ejdbqryexecute(coll, q, &count, 0, NULL);
@@ -155,6 +169,9 @@ QEjdbResult QEjdbFileWorker::query(const QString &collectionName, const QBsonObj
     //Dispose query
     ejdbquerydel(q);
     bson_destroy(&bq1);
+    if (hasHints) {
+        bson_destroy(&bhints);
+    }
 
     QEjdbResult result;
 

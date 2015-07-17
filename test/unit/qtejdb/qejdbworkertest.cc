@@ -6,4 +6,5 @@ TEST(QEjdbWorkerTest, TestCreateFromFileUrl)
     QEjdbWorker *worker = QEjdbWorker::createFromUrl(QUrl("file:test.db"), 0);
     QEjdbFileWorker *fileWorker = dynamic_cast<QEjdbFileWorker*>(worker);
     EXPECT_TRUE(fileWorker != 0);
+    delete worker;
 }

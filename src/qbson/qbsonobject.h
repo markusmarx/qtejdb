@@ -36,7 +36,7 @@ public:
     QBsonOid oid() const;
     void setOid(QBsonOid oid);
 
-    bool operator==(QBsonObject &obj);
+    bool operator==(const QBsonObject &obj) const;
 protected:
 
     QBsonObjectData* constData() const {return data;}

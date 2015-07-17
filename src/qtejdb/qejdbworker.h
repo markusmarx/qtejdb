@@ -27,7 +27,7 @@ public:
     virtual QEjdbResult loadAll(const QString &collectionName) = 0;
     virtual bool remove(const QString &collectionName, const QString &oid) = 0;
 
-    virtual QEjdbResult query(const QString &collectionName, const QBsonObject &query) = 0;
+    virtual QEjdbResult query(const QString &collectionName, const QBsonObject &query, const QBsonObject &hints = QBsonObject()) = 0;
 
     /**
      * @brief createFromUrl creates a worker instance from url.
@@ -65,7 +65,7 @@ public:
     virtual QEjdbResult loadAll(const QString &collectionName);
     virtual bool remove(const QString &collectionName, const QString &oid);
 
-    virtual QEjdbResult query(const QString &collectionName, const QBsonObject &query);
+    virtual QEjdbResult query(const QString &collectionName, const QBsonObject &query, const QBsonObject &hints = QBsonObject());
 
     int mode() const;
 private:

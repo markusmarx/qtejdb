@@ -322,10 +322,10 @@ bool QEjdbDatabase::remove(const QString &collectionName, QBsonObject obj)
     return remove(collectionName, obj.oid());
 }
 
-QEjdbResult QEjdbDatabase::query(const QString &collectionName, const QBsonObject& query)
+QEjdbResult QEjdbDatabase::query(const QString &collectionName, const QBsonObject& query, const QBsonObject& hints)
 {
     Q_ASSERT(d);
-    return d->m_worker->query(collectionName, query);
+    return d->m_worker->query(collectionName, query, hints);
 }
 
 QEjdbDatabase::QEjdbDatabase():d(0)
@@ -344,9 +344,6 @@ QEjdbDatabase::~QEjdbDatabase()
 void QEjdbDatabase::open()
 {
     Q_ASSERT(d);
-    if (isOpen()) {
-        return;
-    }
     d->open();
 }
 

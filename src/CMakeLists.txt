@@ -20,4 +20,4 @@ target_include_directories (
     ${PROJECT_SOURCE_DIR}/3rdparty/qtrcp2/lib
 )
 
-target_link_libraries(qtejdb Qt5::Core z ejdb_p qtrpc2)
+target_link_libraries(qtejdb Qt5::Core z ejdb_p)

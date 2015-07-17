@@ -210,4 +210,5 @@ TEST(QBsonFromBsonRec, TestFromBsonRecToBsonDataWithId)
     bson_oid_to_string(&bson_oid, strOid);
     EXPECT_EQ(QBsonOid(strOid), objectData->oid);
     bson_destroy(&bsrec);
+    delete objectData;
 }
