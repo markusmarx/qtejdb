@@ -112,7 +112,7 @@ public:
     bool remove(const QString &collectionName, QBsonObject obj);
     bool removeCollection(const QString &collectionName);
 
-    QEjdbResult query(const QString &collectionName, const QBsonObject &query);
+    QEjdbResult query(const QString &collectionName, const QBsonObject &query, const QBsonObject& hints = QBsonObject());
     QString connectionName() const;
 
 protected:

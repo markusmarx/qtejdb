@@ -18,20 +18,14 @@ public:
     QEjdbException(const int code, const QString &msg);
     ~QEjdbException() throw() {}
 
-    void raise() const { throw *this; }
-    QEjdbException *clone() const { return new QEjdbException(*this); }
+    void raise() const;
+    QEjdbException *clone() const;
 
 
 
-    int code() const
-    {
-        return m_code;
-    }
+    int code() const;
 
-    QString message() const
-    {
-        return m_msg;
-    }
+    QString message() const;
 
 
 private:

@@ -89,6 +89,7 @@ void convertBsonValueFromBsonRec(QBsonObjectData *objData, bson_iterator *it)
         QString key = BSON_ITERATOR_KEY(it);
         if (key == "_id") {
             objData->oid = convertQBsonValueFromBsonRec(bt, it).toId();
+            continue;
         }
         objData->insert(key, convertQBsonValueFromBsonRec(bt, it));
     }
@@ -108,6 +109,7 @@ void convertBsonValueFromBsonRec(QBsonObject &obj, bson_iterator *it)
         QString key = BSON_ITERATOR_KEY(it);
         if (key == "_id") {
             obj.setOid(convertQBsonValueFromBsonRec(bt, it).toId());
+            continue;
         }
         obj.insert(key, convertQBsonValueFromBsonRec(bt, it));
     }

@@ -191,15 +191,14 @@ void QBsonObject::setOid(QBsonOid oid)
 
 
 /**
- * @brief QBsonObject::operator ==c compare two BsonObjects
+ * @brief QBsonObject::operator == compare two BsonObjects
+ *
  * @param obj
  * @return
  */
-bool QBsonObject::operator==(QBsonObject &obj)
+bool QBsonObject::operator==(const QBsonObject &obj) const
 {
-
-    //QHash<QString, QBsonValue>::Iterator it = obj.values().iterator;
-    return false;
+    return data == obj.data || obj.oid() == oid();
 
 }
 

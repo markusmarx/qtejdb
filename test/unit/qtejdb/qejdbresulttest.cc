@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 #include "qtejdb/qejdbresult.h"
 #include "qtejdb/qejdbdatabase.h"
+#include <QDataStream>
 #include <QDebug>
 
 #define MODE QEJDB::CREATE | QEJDB::WRITE | \

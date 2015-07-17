@@ -23,6 +23,7 @@ TEST(QEjdbExceptionTest, TestClone)
     QEjdbException *ex2 = ex.clone();
     EXPECT_EQ(QEjdbException::CONNECTIONERROR, ex2->code());
     EXPECT_EQ("test", ex2->message());
+    delete ex2;
 }
 TEST(QEjdbExceptionTest, TestQDebug)
 {
