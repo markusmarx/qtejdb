@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "itemmodel/qbsonitemmodelsync_p.h"
+#include "itemmodel/qejdbcollectionsync.h"
 #include "../helper.h"
 #include <QDebug>
 
@@ -38,7 +38,6 @@ TEST_F(QBsonModelCollectionSyncTest, TestFetch)
     QEjdbCollectionSync *sync = new QEjdbCollectionSync(
                 QEjdbDatabase::database());
     sync->setCollection(COLL);
-
     sync->fetch();
     EXPECT_EQ(COLL, sync->collection());
     EXPECT_EQ(10, sync->model()->count());
@@ -67,6 +66,7 @@ TEST_F(QBsonModelCollectionSyncTest, TestItemRemove)
     QBsonObject hints(
                 "$orderby", QBsonObject("marker", 1));
     sync->setHints(hints);
+    EXPECT_EQ("$orderby", sync->hints().names().at(0));
     sync->fetch();
     EXPECT_EQ(1, sync->model()->row(0).value("marker").toInt());
     sync->model()->remove(0);
@@ -74,4 +74,31 @@ TEST_F(QBsonModelCollectionSyncTest, TestItemRemove)
     EXPECT_EQ(2, sync->model()->row(0).value("marker").toInt());
     delete sync;
 }
-
+TEST_F(QBsonModelCollectionSyncTest, TestSetQuery)
+{
+    QEjdbCollectionSync *sync = new QEjdbCollectionSync(
+                QEjdbDatabase::database());
+    sync->setCollection(COLL);
+    sync->setQuery(QBsonObject("marker", 2));
+    EXPECT_EQ(2, sync->query().value("marker"));
+    sync->fetch();
+    EXPECT_EQ(1, sync->model()->count());
+    delete sync;
+}
+TEST_F(QBsonModelCollectionSyncTest, TestItemInsert)
+{
+    QEjdbCollectionSync *sync = new QEjdbCollectionSync(
+                QEjdbDatabase::database());
+    sync->setCollection(COLL);
+    QBsonObject hints(
+                "$orderby", QBsonObject("marker", 1));
+    sync->setHints(hints);
+    sync->fetch();
+    EXPECT_EQ(9, sync->model()->count());
+    sync->model()->insert(createBsonObject(false, 1), 1);
+    EXPECT_EQ(10, sync->model()->count());
+    sync->fetch();
+    EXPECT_EQ(10, sync->model()->count());
+    EXPECT_EQ(1, sync->model()->row(0).value("marker").toInt());
+    delete sync;
+}

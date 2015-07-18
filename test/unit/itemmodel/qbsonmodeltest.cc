@@ -34,7 +34,6 @@ TEST(QBsonItemModelTest, TestSet)
             = createBsonObjects(10);
     QBsonItemModelSignalSpy spy(&model);
     EXPECT_CALL(spy, reset()).Times(1);
-    EXPECT_CALL(spy, itemInserted(::testing::Lt(10))).Times(10);
     EXPECT_EQ(0, objectList.at(0).value("marker").toInt());
     EXPECT_EQ(1, objectList.at(1).value("marker").toInt());
     model.set(objectList);
