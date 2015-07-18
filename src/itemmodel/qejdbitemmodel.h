@@ -49,6 +49,7 @@ public:
      QHash<int, QByteArray> roleNames() const;
      int columnCount(const QModelIndex &parent) const;
      void insert(const QBsonObject &bsonObject, int row);
+
 signals:
 
 public slots:

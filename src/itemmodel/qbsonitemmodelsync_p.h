@@ -6,114 +6,45 @@
 #include "qbson/qbsonobject.h"
 #include "qbson/qbsonarray.h"
 
-
-class QEjdbCollectionSync: public QObject
+class QEjdbAbstractSync: public QObject
 {
     Q_OBJECT
+
 public:
-    explicit QEjdbCollectionSync(QEjdbDatabase db, QObject *parent = 0);
-    ~QEjdbCollectionSync();
-    QBsonObject query() const;
-    QBsonObject hints() const;
-    QString collection() const;
-    QBsonItemModel* model();
+    explicit QEjdbAbstractSync(QObject *parent = 0)
+        : QObject(parent), m_qBsonItemModel(new QBsonItemModel(this))
+    {
+        QObject::connect(m_qBsonItemModel, &QBsonItemModel::itemInserted,
+                         this, &QEjdbAbstractSync::itemInserted);
+        QObject::connect(m_qBsonItemModel, &QBsonItemModel::itemRemoved,
+                         this, &QEjdbAbstractSync::itemRemoved);
+        QObject::connect(m_qBsonItemModel, &QBsonItemModel::itemUpdated,
+                         this, &QEjdbAbstractSync::itemUpdated);
+        QObject::connect(m_qBsonItemModel, &QBsonItemModel::itemMoved,
+                         this, &QEjdbAbstractSync::itemMoved);
+    }
+
+    ~QEjdbAbstractSync()
+    {
+        QObject::disconnect(m_qBsonItemModel, &QBsonItemModel::itemInserted,
+                         this, &QEjdbAbstractSync::itemInserted);
+        QObject::disconnect(m_qBsonItemModel, &QBsonItemModel::itemRemoved,
+                         this, &QEjdbAbstractSync::itemRemoved);
+        QObject::disconnect(m_qBsonItemModel, &QBsonItemModel::itemUpdated,
+                         this, &QEjdbAbstractSync::itemUpdated);
+        QObject::disconnect(m_qBsonItemModel, &QBsonItemModel::itemMoved,
+                         this, &QEjdbAbstractSync::itemMoved);
+        delete m_qBsonItemModel;
+    }
+
+    QBsonItemModel* model() const;
+    QBsonItemModel *m_qBsonItemModel;
 
 public slots:
-    void fetch();
-    void setQuery(QBsonObject query);
-    void setHints(QBsonObject hints);
-    void setCollection(QString collection);
-
-private slots:
-    void itemRemoved(int row, QBsonObject removedObject);
-    void itemSave(int row);
-    void itemUpdated(QString property, QVariant value, int row);
-
-private:
-    QEjdbDatabase m_db;
-    QBsonItemModel *m_qBsonItemModel;
-    QString m_collection;
-    QBsonObject m_query;
-    QBsonObject m_hints;
-
-    bool isDbValid()
-    {
-        return m_db.isOpen()
-                && m_db.containsCollection(m_collection);
-    }
-};
-
-class QEjdbArrayPropertySync: public QObject
-{
-    Q_OBJECT
-public:
-    explicit QEjdbArrayPropertySync(QEjdbDatabase db, QObject *parent = 0);
-    ~QEjdbArrayPropertySync();
-    QBsonItemModel *model();
-    QBsonObject bsonObject();
-    QString propertyName();
-    QString collection();
-    QString propertyCollection();
-
-public slots:
-
-    void fetch();
-    void setPropertyCollection(QString propertyCollection);
-    void setCollection(QString collection);
-    void setBsonObject(QBsonObject bsonObject, QString propertyName);
-
-private slots:
-    void itemRemoved(int row, QBsonObject removedObject);
-    void itemInserted(int row);
-    void itemMoved(int sourceRow, int destinationRow);
-    void itemUpdated(QString property, QVariant value, int row);
-
-private:
-
-    QEjdbDatabase m_db;
-    QBsonItemModel *m_qBsonItemModel;
-    QBsonObject m_parentObject;
-    QString m_propertyName;
-    QString m_collection;
-    QString m_propertyCollection;
-
-    QBsonObject loadBson(const QString &collection, const QBsonOid &oid);
-    QBsonObject reloadBson(const QString &collection, const QBsonObject &bson);
-    void saveBson(const QString &collection, QBsonObject &object);
-
-    /**
-     * @brief isDbValid check all required values.
-     */
-    inline bool isDbValid()
-    {
-        return m_db.isOpen()
-                && m_db.containsCollection(m_collection)
-                && ( m_propertyCollection.isEmpty()
-                        || m_db.containsCollection(m_propertyCollection));
-    }
-
-    /**
-     * @brief getBsonArray returns the bson array.
-     */
-    inline QBsonArray getBsonArray()
-    {
-        m_parentObject = reloadBson(m_collection, m_parentObject);
-        if (m_parentObject.contains(m_propertyName)
-                && m_parentObject.value(m_propertyName).isArray()) {
-            return m_parentObject.value(m_propertyName).toArray();
-        }
-        QBsonArray array;
-        m_parentObject.insert(m_propertyName, array);
-        return array;
-    }
-
-    /**
-     * @brief isJoined returns true if propertyCollection is not empty.
-     */
-    inline bool isJoined()
-    {
-        return !m_propertyCollection.isEmpty();
-    }
+    virtual void itemRemoved(int row, QBsonObject removedObject) = 0;
+    virtual void itemInserted(int row) = 0;
+    virtual void itemMoved(int sourceRow, int destinationRow) = 0;
+    virtual void itemUpdated(QString property, QVariant value, int row) = 0;
 
 };
 #endif // QBSONMODELSYNC_P_H

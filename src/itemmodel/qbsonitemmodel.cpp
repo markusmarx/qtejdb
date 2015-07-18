@@ -210,8 +210,10 @@ void QBsonItemModel::set(QList<QBsonObject> bsonList)
     QList<QBsonObject>::iterator it;
     int i = 0;
     for (it = bsonList.begin(); it != bsonList.end(); it++) {
-        append(*it);
+        internalInsert(*it, i++);
+
     }
+    buildRoles();
 }
 
 /**

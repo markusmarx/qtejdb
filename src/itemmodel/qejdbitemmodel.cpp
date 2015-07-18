@@ -1,7 +1,7 @@
 #include "qejdbitemmodel.h"
 #include "qbson/qbsonobject.h"
 #include "qbsonitemmodel_p.h"
-#include "qbsonitemmodelsync_p.h"
+#include "qejdbcollectionsync.h"
 
 QEjdbItemModel::QEjdbItemModel(QEjdbDatabase db, QString collection, QObject *parent)
     : QAbstractListModel(parent), m_modeSync(0), m_bsonModel(0)
@@ -125,8 +125,6 @@ QVariant QEjdbItemModel::headerData(int section, Qt::Orientation orientation, in
 void QEjdbItemModel::setCollection(const QString &collectionName)
 {
     beginResetModel();
-
-
     endResetModel();
 }
 

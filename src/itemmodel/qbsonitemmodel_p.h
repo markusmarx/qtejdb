@@ -70,7 +70,7 @@ private:
      */
     inline void internalInsert(const QBsonObject &bsonObject, uint row)
     {
-        StorageId storageId = bsonObject.oid().hash();
+        StorageId storageId = bsonObject.hasOid()?bsonObject.oid().hash(): row;
         m_bsonList.insert(row, storageId);
         m_bsonId.insert(bsonObject.oid().toString(), storageId);
         m_bsonObjects.insert(storageId, bsonObject);
