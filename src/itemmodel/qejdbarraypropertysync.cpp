@@ -18,8 +18,15 @@
  * @brief QEjdbArrayPropertySync::bsonObject returns bson object that contains
  * the array property stored in propertyName.
  */
-QEjdbArrayPropertySync::QEjdbArrayPropertySync(QEjdbDatabase db, QObject *parent)
-    : m_db(db), QEjdbAbstractSync(parent)
+QEjdbArrayPropertySync::QEjdbArrayPropertySync(QEjdbDatabase db,
+                                               QString collection,
+                                               QString property,
+                                               QString propertyCollection,
+                                               QBsonObject bsonObject,
+                                               QObject *parent)
+    : m_db(db), m_collection(collection), m_propertyName(property)
+    , m_propertyCollection(propertyCollection), m_parentObject(bsonObject),
+      QEjdbAbstractSync(parent)
 {
 
 }

@@ -8,7 +8,11 @@ class QEjdbCollectionSync: public QEjdbAbstractSync
 {
     Q_OBJECT
 public:
-    explicit QEjdbCollectionSync(QEjdbDatabase db, QObject *parent = 0);
+    explicit QEjdbCollectionSync(QEjdbDatabase db,
+                                 QString collectionName = QString(),
+                                 QBsonObject query = QBsonObject(),
+                                 QBsonObject hints = QBsonObject(),
+                                 QObject *parent = 0);
     ~QEjdbCollectionSync();
     QBsonObject query() const;
     QBsonObject hints() const;
