@@ -10,8 +10,14 @@
  * @brief QEjdbCollectionSync::QEjdbCollectionSync initialize a instance with
  * a database and an underlying model that caches the data.
  */
-QEjdbCollectionSync::QEjdbCollectionSync(QEjdbDatabase db, QObject *parent)
-    : m_db(db), QEjdbAbstractSync(parent)
+QEjdbCollectionSync::QEjdbCollectionSync(QEjdbDatabase db,
+                                         QString collectionName,
+                                         QBsonObject query,
+                                         QBsonObject hints,
+                                         QObject *parent)
+    : m_db(db), QEjdbAbstractSync(parent), m_collection(collectionName)
+    , m_query(query), m_hints(hints)
+
 {
 }
 

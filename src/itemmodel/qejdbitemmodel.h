@@ -19,7 +19,7 @@
 #include "qtejdb/qejdbdatabase.h"
 #include "qbson/qbsonobject.h"
 #include <QAbstractListModel>
-
+#include "qbsonitemmodelsync_p.h"
 QT_FORWARD_DECLARE_CLASS(QBsonItemModel)
 
 class QEjdbItemModel : public QAbstractListModel
@@ -27,7 +27,7 @@ class QEjdbItemModel : public QAbstractListModel
     Q_OBJECT
     
 public:
-    explicit QEjdbItemModel(QEjdbDatabase db, QString collection, QObject *parent = 0);
+    explicit QEjdbItemModel(QEjdbAbstractSync *sync, QObject *parent = 0);
     explicit QEjdbItemModel(QObject *parent = 0);
 
     ~QEjdbItemModel();
@@ -44,11 +44,14 @@ public:
                      const QModelIndex &parent = QModelIndex());
 
      QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-     void setCollection(const QString &collectionName);
 
+     void setSync(QEjdbAbstractSync *sync);
      QHash<int, QByteArray> roleNames() const;
      int columnCount(const QModelIndex &parent) const;
      void insert(const QBsonObject &bsonObject, int row);
+     void remove(int row);
+     void move(int sourceRow, int destinationRow);
+     void reset();
 
 signals:
 
@@ -57,10 +60,11 @@ public slots:
 private:
 
      QBsonItemModel *m_bsonModel;
-     QObject *m_modeSync;
+     QEjdbAbstractSync *m_sync;
 
      void initCollectionSyncModel(QEjdbDatabase db, const QString &collection);
      bool isValid() const;
+     void resetModel();
 
 
 };

@@ -45,6 +45,7 @@ public slots:
     virtual void itemInserted(int row) = 0;
     virtual void itemMoved(int sourceRow, int destinationRow) = 0;
     virtual void itemUpdated(QString property, QVariant value, int row) = 0;
+    virtual void fetch() = 0;
 
 };
 #endif // QBSONMODELSYNC_P_H

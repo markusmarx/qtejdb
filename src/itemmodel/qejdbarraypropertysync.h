@@ -8,7 +8,12 @@ class QEjdbArrayPropertySync: public QEjdbAbstractSync
 {
     Q_OBJECT
 public:
-    explicit QEjdbArrayPropertySync(QEjdbDatabase db, QObject *parent = 0);
+    explicit QEjdbArrayPropertySync(QEjdbDatabase db,
+                                    QString collection = QString(),
+                                    QString property = QString(),
+                                    QString propertyCollection = QString(),
+                                    QBsonObject bsonObject = QBsonObject(),
+                                    QObject *parent = 0);
     ~QEjdbArrayPropertySync();
     QBsonObject bsonObject();
     QString propertyName();

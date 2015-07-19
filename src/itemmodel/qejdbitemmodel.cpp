@@ -3,20 +3,20 @@
 #include "qbsonitemmodel_p.h"
 #include "qejdbcollectionsync.h"
 
-QEjdbItemModel::QEjdbItemModel(QEjdbDatabase db, QString collection, QObject *parent)
-    : QAbstractListModel(parent), m_modeSync(0), m_bsonModel(0)
+QEjdbItemModel::QEjdbItemModel(QEjdbAbstractSync *sync, QObject *parent)
+    : m_sync(sync), m_bsonModel(sync->model())
 {
-    initCollectionSyncModel(db, collection);
+    resetModel();
 }
 
 QEjdbItemModel::QEjdbItemModel(QObject *parent)
-    : QAbstractListModel(parent), m_modeSync(0), m_bsonModel(0)
+    : QAbstractListModel(parent), m_sync(0), m_bsonModel(0)
 {
 }
 
 QEjdbItemModel::~QEjdbItemModel()
 {
-    delete m_modeSync;
+    delete m_sync;
 }
 
 /**
@@ -89,22 +89,29 @@ void QEjdbItemModel::insert(const QBsonObject &bsonObject, int row)
     }
 }
 
-/**
- * @brief Init model with collection and db to view all items from a collection.
- * @return void
- */
-void QEjdbItemModel::initCollectionSyncModel(QEjdbDatabase db, const QString &collection)
+void QEjdbItemModel::remove(int row)
 {
-    QEjdbCollectionSync *colSync = 0;
-    if (m_modeSync) {
-        delete m_modeSync;
+    if (isValid()) {
+        beginRemoveRows(QModelIndex(), row, row);
+        m_bsonModel->remove(row);
+        endRemoveRows();
     }
+}
 
-    colSync = new QEjdbCollectionSync(db);
-    colSync->setCollection(collection);
-    colSync->fetch();
-    m_modeSync = colSync;
-    m_bsonModel = colSync->model();
+void QEjdbItemModel::move(int sourceRow, int destinationRow)
+{
+    if (isValid()
+            && beginMoveRows(QModelIndex(), sourceRow, sourceRow, QModelIndex(), destinationRow)) {
+        m_bsonModel->move(sourceRow, destinationRow);
+        endMoveRows();
+    }
+}
+
+void QEjdbItemModel::reset()
+{
+    if (isValid()) {
+        resetModel();
+    }
 }
 
 /**
@@ -113,7 +120,15 @@ void QEjdbItemModel::initCollectionSyncModel(QEjdbDatabase db, const QString &co
  */
 bool QEjdbItemModel::isValid() const
 {
-    return m_modeSync != 0 && m_bsonModel != 0;
+    return m_sync != 0 && m_bsonModel != 0;
+}
+
+void QEjdbItemModel::resetModel()
+{
+    Q_ASSERT(m_sync);
+    beginResetModel();
+    m_sync->fetch();
+    endResetModel();
 }
 
 
@@ -122,18 +137,17 @@ QVariant QEjdbItemModel::headerData(int section, Qt::Orientation orientation, in
     return QVariant();
 }
 
-void QEjdbItemModel::setCollection(const QString &collectionName)
+void QEjdbItemModel::setSync(QEjdbAbstractSync *sync)
 {
-    beginResetModel();
-    endResetModel();
+    if (qobject_cast<QObject*>(sync)) {
+        sync->deleteLater();
+    }
+    m_sync = sync;
+    m_bsonModel = sync->model();
+    resetModel();
 }
 
 QHash<int, QByteArray> QEjdbItemModel::roleNames() const
 {
     return m_bsonModel->roles();
 }
-
-
-
-
-
