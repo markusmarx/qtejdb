@@ -71,7 +71,7 @@ public:
     }
 
     static void removeDatabase(const QString &name);
-    static QEjdbDatabase addDatabase(const QEjdbDatabase &db, const QString &name);
+    static void addDatabase(const QEjdbDatabase &db, const QString &name);
     static QEjdbDatabase database(const QString &name, bool open);
 private:
 
@@ -158,18 +158,17 @@ void QEjdbDatabasePrivate::removeDatabase(const QString &name)
 
 }
 
-QEjdbDatabase QEjdbDatabasePrivate::addDatabase(const QEjdbDatabase &db, const QString &name)
+void QEjdbDatabasePrivate::addDatabase(const QEjdbDatabase &db, const QString &name)
 {
     QEjdbConnectionDict *dict = ejdbDict();
     Q_ASSERT(dict);
     QWriteLocker locker(&dict->lock);
 
     if (dict->contains(name)) {
-        return dict->value(name);
-
+        dict->take(name).close();
     }
     dict->insert(name, db);
-    return db;
+
 }
 
 
@@ -218,7 +217,7 @@ QEjdbDatabase::QEjdbDatabase(
 QEjdbDatabase QEjdbDatabase::addDatabase(QString url, int mode, QString connectionName)
 {
     QEjdbDatabase db(url, mode, connectionName);
-    db = QEjdbDatabasePrivate::addDatabase(db, connectionName);
+    QEjdbDatabasePrivate::addDatabase(db, connectionName);
     db.open();
     return db;
 }
