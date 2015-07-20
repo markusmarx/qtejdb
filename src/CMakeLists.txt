@@ -11,7 +11,16 @@ foreach(MODULE IN LISTS MODULES)
         list(APPEND PUB_HDRS ${CMAKE_CURRENT_SOURCE_DIR}/${MODULE}/${MODULE}.h)
 endforeach(MODULE)
 
+add_library(qtejdb_p STATIC ${ALL_SRC})
 add_library(qtejdb SHARED ${ALL_SRC})
+
+target_include_directories (
+    qtejdb_p PUBLIC
+    ${EJDB_INCLUDE_PATH}
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${PROJECT_SOURCE_DIR}/3rdparty/qtrcp2/include
+    ${PROJECT_SOURCE_DIR}/3rdparty/qtrcp2/lib
+)
 target_include_directories (
     qtejdb PUBLIC
     ${EJDB_INCLUDE_PATH}
@@ -20,4 +29,5 @@ target_include_directories (
     ${PROJECT_SOURCE_DIR}/3rdparty/qtrcp2/lib
 )
 
+target_link_libraries(qtejdb_p Qt5::Core z ejdb_p)
 target_link_libraries(qtejdb Qt5::Core z ejdb_p)

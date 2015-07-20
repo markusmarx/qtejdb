@@ -75,7 +75,8 @@ endif()
 # Download and install GoogleMock
 ExternalProject_Add(
     gmock
-    SVN_REPOSITORY http://googlemock.googlecode.com/svn/trunk
+    URL https://googlemock.googlecode.com/files/gmock-1.7.0.zip
+    #SVN_REPOSITORY http://googlemock.googlecode.com/svn/trunk
     PREFIX ${CMAKE_CURRENT_BINARY_DIR}/3rdparty/googlemock
     # Disable install step
     INSTALL_COMMAND ""
@@ -99,8 +100,12 @@ include_directories("${source_dir}/gtest/include")
 
 add_subdirectory(3rdparty/ejdb)
 
+add_subdirectory(src/qtquickplugin)
+
 add_subdirectory(src)
 add_subdirectory(test/unit)
+
+add_subdirectory(test/unit_qml)
 #add_subdirectory(test/tst_qtejdb)
 
 #add_subdirectory(src/qtejdb_server)
