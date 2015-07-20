@@ -1,4 +1,4 @@
-set(MODULES qbson qtejdb itemmodel)
+set(MODULES qbson qtejdb itemmodel qtquickplugin)
 set(ALL_SRC)
 set(ALL_HDRS)
 set(PUB_HDRS)
@@ -19,6 +19,6 @@ include_directories(
 )
 
 add_executable(qtejdbtest ${ALL_SRC})
-target_link_libraries (qtejdbtest Qt5::Core qtejdb gmock_main libgmock)
-add_test(AllTests qtejdbtest)
+target_link_libraries (qtejdbtest Qt5::Core qejdbplugin gmock_main libgmock)
+add_test(QtEjdbUnitTest qtejdbtest)
 SETUP_TARGET_FOR_COVERAGE(test_coverage qtejdbtest coverage)

@@ -48,14 +48,14 @@ public:
      void setSync(QEjdbAbstractSync *sync);
      QHash<int, QByteArray> roleNames() const;
      int columnCount(const QModelIndex &parent) const;
-     void insert(const QBsonObject &bsonObject, int row);
-     void remove(int row);
-     void move(int sourceRow, int destinationRow);
-     void reset();
 
 signals:
 
 public slots:
+     void insert(const QBsonObject &bsonObject, int row);
+     void remove(int row);
+     void move(int sourceRow, int destinationRow);
+     void reset();
 
 private:
 
