@@ -16,7 +16,7 @@ class CollectionModel: public QEjdbItemModel, public QQmlParserStatus
     Q_PROPERTY(QString collection READ collection WRITE setCollection NOTIFY collectionChanged)
 
 public:
-    CollectionModel(QObject *parent);
+    CollectionModel(QObject *parent = 0);
     ~CollectionModel();
     void classBegin();
     void componentComplete();
@@ -32,11 +32,15 @@ public slots:
     void setCollection(QString collection);
     void insert(QJSValue value, int row);
 
+
 signals:
     void clientChanged();
     void queryChanged(QJSValue query);
     void hintsChanged(QJSValue hints);
     void collectionChanged(QString collection);
+
+protected slots:
+    void init();
 
 private:
     QEjdbClient* m_client;

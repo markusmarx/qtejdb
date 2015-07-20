@@ -7,7 +7,7 @@
 class QEjdbClient;
 class QEjdbClientPrivate {
 public:
-    QEjdbClientPrivate(QEjdbClient* q): q_ptr(q)
+    QEjdbClientPrivate(QEjdbClient* q): q_ptr(q), m_isConnected(false)
     {
     }
 
@@ -47,6 +47,11 @@ public:
      * and visa versa.
      */
     QBsonConverter m_bsonConverter;
+
+    /**
+     * @brief m_isConnected indicated wether a client is connected or not.
+     */
+    bool m_isConnected;
 
     /**
      * @brief checkCollection creates the collection of not exist.

@@ -71,7 +71,7 @@ public:
     }
 
     static void removeDatabase(const QString &name);
-    static void addDatabase(const QEjdbDatabase &db, const QString &name);
+    static QEjdbDatabase addDatabase(const QEjdbDatabase &db, const QString &name);
     static QEjdbDatabase database(const QString &name, bool open);
 private:
 
@@ -158,17 +158,18 @@ void QEjdbDatabasePrivate::removeDatabase(const QString &name)
 
 }
 
-void QEjdbDatabasePrivate::addDatabase(const QEjdbDatabase &db, const QString &name)
+QEjdbDatabase QEjdbDatabasePrivate::addDatabase(const QEjdbDatabase &db, const QString &name)
 {
     QEjdbConnectionDict *dict = ejdbDict();
     Q_ASSERT(dict);
     QWriteLocker locker(&dict->lock);
 
     if (dict->contains(name)) {
-        dict->take(name).close();
+        return dict->value(name);
 
     }
     dict->insert(name, db);
+    return db;
 }
 
 
@@ -180,14 +181,14 @@ QEjdbDatabase QEjdbDatabasePrivate::database(const QString& name, bool open)
     dict->lock.lockForRead();
     if (dict->contains(name)) {
         QEjdbDatabase db = dict->value(name);
-        dict->lock.unlock();
         if (!db.isOpen() && open) {
             db.open();
         }
+        dict->lock.unlock();
         return db;
     }
-
-    qDebug() << "no database was found under key " + name;
+    dict->lock.unlock();
+    qWarning() << "no database was found under key " + name;
     throw QEjdbException(QEjdbException::DBKEYNOTEXIST,
                          "no database was found under key " + name);
 
@@ -217,7 +218,7 @@ QEjdbDatabase::QEjdbDatabase(
 QEjdbDatabase QEjdbDatabase::addDatabase(QString url, int mode, QString connectionName)
 {
     QEjdbDatabase db(url, mode, connectionName);
-    QEjdbDatabasePrivate::addDatabase(db, connectionName);
+    db = QEjdbDatabasePrivate::addDatabase(db, connectionName);
     db.open();
     return db;
 }

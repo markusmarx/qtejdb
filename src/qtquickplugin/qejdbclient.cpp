@@ -55,6 +55,7 @@ QJSValue QEjdbClientPrivate::save(QString collectionName, const QJSValue &jsValu
 
     QJSValue resultJs(jsValue);
     resultJs.setProperty("_id", QJSValue(bsonObj.oid().toString()));
+
     return resultJs;
 }
 
@@ -240,13 +241,18 @@ QJSValue QEjdbClient::convert(const QBsonObject &bsonObject)
     return d_ptr->convert(bsonObject);
 }
 
+bool QEjdbClient::isConnected()
+{
+    return d_ptr->m_isConnected;
+}
+
 /**
  * @brief QEjdbClient::connect
  */
 void QEjdbClient::connect()
 {
     Q_D(QEjdbClient);
-    qDebug() << "connect QEjdb on" << d->m_uri
+    qWarning() << "connect QEjdb on" << d->m_uri
              << "and connectioName" << d->m_connectionName;
 
     QEjdbDatabase db;
@@ -254,7 +260,8 @@ void QEjdbClient::connect()
     QString connectionName = d->m_connectionName;
 
     db = QEjdbDatabase::addDatabase(uri, connectionName);
-
+    d->m_isConnected = true;
+    emit connected();
 }
 
 /**

@@ -5,7 +5,7 @@ import QtTest 1.0
 TestCase {
     name: "QEjdb Test"
 
-    QEjdb.QEjdbClient {
+    QEjdb.Client {
         id: qejdbClient
         uri: 'file:tst_qejdbmodel.db'
 
@@ -15,7 +15,7 @@ TestCase {
         }
     }
 
-    function test_Save() {
+    function test_SaveLoadRemove() {
         var json = qejdbClient.save('testcollection',
              {
                  'name':'test',

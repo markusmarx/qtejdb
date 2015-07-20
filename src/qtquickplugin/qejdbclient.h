@@ -30,12 +30,14 @@ public:
     bool autoCreateCollection() const;
     QBsonObject convert(const QJSValue &jsValue);
     QJSValue convert(const QBsonObject &bsonObject);
+    bool isConnected();
 
 signals:
 
     void uriChanged(QString arg);
     void connectionNameChanged(QString arg);
     void autoCreateCollectionChanged(bool arg);
+    void connected();
 
 public slots:
 

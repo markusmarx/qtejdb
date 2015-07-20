@@ -1,5 +1,5 @@
 enable_testing()
-find_package(Qt5Core)
+
 find_package(Qt5Test)
 
 set(tst_qejdbmodel_SRCS qtquicktest.cpp)
