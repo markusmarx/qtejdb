@@ -1,4 +1,6 @@
 #include "qbsonitemmodel_p.h"
+#include <QStringList>
+
 /**
  * @class QBsonItemModel
  * @brief QBsonItemModel is a internal storage for bson objects.
