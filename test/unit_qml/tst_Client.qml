@@ -1,4 +1,4 @@
-import QtQuick 2.3
+import QtQuick 2.0
 import QEjdb 1.0 as QEjdb
 import QtTest 1.0
 
