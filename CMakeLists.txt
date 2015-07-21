@@ -11,7 +11,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Mo
 include(ExternalProject)
 include(CodeCoverage)
 
-SET(CMAKE_CXX_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
+SET(CMAKE_CXX_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage -fPIC")
 #	 SET(CMAKE_C_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
 
 # Find includes in corresponding build directories
