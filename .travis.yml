@@ -1,5 +1,9 @@
 language: cpp
 
+branches:
+  except:
+    - gh-pages
+
 before_install:
      - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
      - sudo add-apt-repository --yes ppa:kalakris/cmake
