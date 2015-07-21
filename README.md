@@ -1,4 +1,6 @@
-# A document store for Qt / QML based on ejdb
+# Qt/Qml Documentstore
+
+[![Build Status](https://travis-ci.org/markusmarx/qtejdb.png)](https://travis-ci.org/markusmarx/qtejdb)
 
 QtEjdb is a simple to use document store. It's based on Qt and ejdb.
 
