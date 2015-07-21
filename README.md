@@ -1,4 +1,6 @@
-# A document store for Qt / QML based on ejdb
+# Qt/Qml Documentstore
+
+[![Build Status](https://travis-ci.org/markusmarx/qtejdb.png)](https://travis-ci.org/markusmarx/qtejdb)
 
 QtEjdb is a simple to use document store. It's based on Qt and ejdb.
 
@@ -38,3 +40,9 @@ The demo can be executed with
 ```
   make demo1
 ```
+
+## Licence
+
+Distributed under [LGPL-3.0 license](http://opensource.org/licenses/LGPL-3.0).
+
+Copyright (c) 2014-2015 [Markus Marx](mailto:markus.marx@marxenter.de) and contributors.
