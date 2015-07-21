@@ -72,51 +72,27 @@ if(NOT Qt5QuickTest_FOUND)
     message(FATAL_ERROR "Qt5QuickTest module is required!")
 endif()
 
-# Download and install GoogleMock
-ExternalProject_Add(
-    gmock
-    URL https://googlemock.googlecode.com/files/gmock-1.7.0.zip
-    #SVN_REPOSITORY http://googlemock.googlecode.com/svn/trunk
-    PREFIX ${CMAKE_CURRENT_BINARY_DIR}/3rdparty/googlemock
-    # Disable install step
-    INSTALL_COMMAND ""
-    UPDATE_COMMAND ""
-)
-
-# Create a libgmock target to be used as a dependency by test programs
-add_library(libgmock IMPORTED STATIC GLOBAL)
-add_dependencies(libgmock gmock)
-
-# Set gmock properties
-ExternalProject_Get_Property(gmock source_dir binary_dir)
-set_target_properties(libgmock PROPERTIES
-    "IMPORTED_LOCATION" "${binary_dir}/libgmock.a"
-    "IMPORTED_LINK_INTERFACE_LIBRARIES" "${CMAKE_THREAD_LIBS_INIT}"
-#    "INTERFACE_INCLUDE_DIRECTORIES" "${source_dir}/include"
-)
-# I couldn't make it work with INTERFACE_INCLUDE_DIRECTORIES
-include_directories("${source_dir}/include")
-include_directories("${source_dir}/gtest/include")
-
+#
+# ADD BUILD FOR QTEJDB LIBRARY
+#
 add_subdirectory(3rdparty/ejdb)
+add_subdirectory(src)
 
+#
+# ADD BUILD FOR QTQUCKPLUGIN
+#
 add_subdirectory(src/qtquickplugin)
 
-add_subdirectory(src)
+#
+# ADD UNIT-TESTS
+#
 add_subdirectory(test/unit)
-
 add_subdirectory(test/unit_qml)
-#add_subdirectory(test/tst_qtejdb)
 
-#add_subdirectory(src/qtejdb_server)
-#add_subdirectory(test/tst_qtejdbserver)
-
-#add_subdirectory(test/tst_qtejdbmodel)
-#add_subdirectory(test/tst_concurrent)
-
-#add_subdirectory(src/qtejdb_qtquick)
-#add_subdirectory(test/qtejdb_qtquick)
-
+#
+# ADD DEMO AND MANUAL TESTS
+#
+add_subdirectory(test/manual/demo1)
 
 
 

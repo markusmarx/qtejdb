@@ -4,7 +4,7 @@
 #include <QDebug>
 
 CollectionModel::CollectionModel(QObject *parent)
-    :QEjdbItemModel(parent)
+    :QEjdbItemModel(parent), m_client(0)
 {
 
 }
@@ -21,18 +21,24 @@ void CollectionModel::classBegin()
 
 void CollectionModel::componentComplete()
 {
-    if (m_client != 0) {
+    bool error = false;
+    if (m_client == 0) {
         qWarning() << "the property \"client\" have to set in CollectionModel";
+        error = true;
     }
 
     if (m_collection.isEmpty()) {
         qWarning() << "the property \"collection\" have to set in CollectionModel";
+        error = true;
     }
 
-    QEjdbDatabase db = QEjdbDatabase::database(m_client->connectionName());
-    QBsonObject query = m_client->convert(m_query);
-    QBsonObject hints = m_client->convert(m_hints);
-    setSync(new QEjdbCollectionSync(db, m_collection, query, hints, this));
+    if (error) {
+        qWarning() << "CollectionModel could not initialised.";
+        return;
+    }
+
+    init();
+
 }
 
 /**
@@ -64,7 +70,9 @@ QString CollectionModel::collection() const
  */
 void CollectionModel::setClient(QEjdbClient *client)
 {
+    qDebug() << "set client model " << client;
     if (m_client != client) {
+
         m_client = client;
     }
     emit clientChanged();
@@ -100,4 +108,18 @@ void CollectionModel::setCollection(QString collection)
 void CollectionModel::insert(QJSValue value, int row)
 {
     QEjdbItemModel::insert(m_client->convert(value), row);
+}
+
+void CollectionModel::init()
+{
+    if (m_client->isConnected()) {
+        QEjdbDatabase db = QEjdbDatabase::database(m_client->connectionName());
+        QBsonObject query = m_client->convert(m_query);
+        QBsonObject hints = m_client->convert(m_hints);
+        QEjdbItemModel::setSync(new QEjdbCollectionSync(db, m_collection, query, hints, this));
+        disconnect(m_client, &QEjdbClient::connected, this, &CollectionModel::init);
+        return;
+    }
+
+    connect(m_client, &QEjdbClient::connected, this, &CollectionModel::init);
 }
