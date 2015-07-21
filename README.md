@@ -12,13 +12,28 @@ Dependencies:
 
 Test dependencies:
 
-  - GoogleTest, will automaticly downloaded while building
+  - GoogleTest, GoogleMock, will automaticly downloaded while building
 
 ## Build and Test
 
 ```
+  git clone --recursive https://github.com/markusmarx/qtejdb.git
+  cd qtejdb
   mkdir build
   cd build
-  cmake ..
+  cmake .. -DCMAKE_BUILD_TYPE=Release
   cmake --build .
+```
+
+The unit tests can be executed with ctest:
+
+```
+  ctest -V
+```
+
+## Examples
+
+The demo can be executed with
+```
+  make demo1
 ```
