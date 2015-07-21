@@ -18,4 +18,4 @@ add_custom_command(TARGET qtquicktest POST_BUILD
   COMMAND cp -uv ${CMAKE_CURRENT_SOURCE_DIR}/*.qml ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-add_test(QQmlPluginUnitTest qtquicktest -import ${CMAKE_BINARY_DIR}/plugins)
+add_test(QQmlPluginUnitTest qtquicktest -txt -import ${CMAKE_BINARY_DIR}/plugins)
