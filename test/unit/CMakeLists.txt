@@ -11,21 +11,19 @@ ExternalProject_Add(
 
 # Create a libgmock target to be used as a dependency by test programs
 add_library(libgmock IMPORTED STATIC GLOBAL)
-add_dependencies(libgmock gmock)
+add_dependencies(libgmock gmock_main)
 
 # Set gmock properties
 ExternalProject_Get_Property(gmock source_dir binary_dir)
 set_target_properties(libgmock PROPERTIES
-    "IMPORTED_LOCATION" "${binary_dir}/libgmock.a"
+    "IMPORTED_LOCATION" "${binary_dir}/libgmock_main.a"
     "IMPORTED_LINK_INTERFACE_LIBRARIES" "${CMAKE_THREAD_LIBS_INIT}"
 #    "INTERFACE_INCLUDE_DIRECTORIES" "${source_dir}/include"
 )
+
 # I couldn't make it work with INTERFACE_INCLUDE_DIRECTORIES
 include_directories("${source_dir}/include")
 include_directories("${source_dir}/gtest/include")
-
-
-
 
 set(MODULES qbson qtejdb itemmodel qtquickplugin)
 set(ALL_SRC)
@@ -48,6 +46,6 @@ include_directories(
 )
 
 add_executable(qtejdbtest ${ALL_SRC})
-target_link_libraries (qtejdbtest Qt5::Core qejdbplugin gmock_main libgmock)
+target_link_libraries (qtejdbtest Qt5::Core qejdbplugin libgmock)
 add_test(QtEjdbUnitTest qtejdbtest)
 SETUP_TARGET_FOR_COVERAGE(test_coverage qtejdbtest coverage)
