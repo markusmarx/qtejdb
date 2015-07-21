@@ -7,6 +7,7 @@ before_install:
      - sudo apt-get install qtbase5-dev qtdeclarative5-dev
      - sudo apt-get install qt5-default qttools5-dev-tools
      - sudo apt-get install cmake
+     - sudo apt-get install lcov gcov
 
 before_script:
     - cmake --version
