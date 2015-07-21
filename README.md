@@ -1,51 +1,24 @@
-# A document store for Qt / QML
+# A document store for Qt / QML based on ejdb
 
 QtEjdb is a simple to use document store. It's based on Qt and ejdb.
 
+## Requirements
 
-- Open database. If the database file not exist it will be created.
-```c++
-QEjdbDatabase::addDatabase("file:testdb").open();
-```
+Dependencies:
 
-- Create a collection. A collection is a container for one documenttype.
-```c++
-QEjdbDatabase qejdb = QEjdbDatabase::database();
-qejdb.createCollection("testcollection");
-```
+  - Qt (>= 5)
+  - ejdb
+  - CMake (>= 2.8.12)
 
-- Build and save a bson
-``` c++
-QBsonObject person;
-person.insert("name", "Frodo Baggins");
-person.insert("age", 21);
+Test dependencies:
 
-qejdb.save("testcollection", person);
-```
+  - GoogleTest, will automaticly downloaded while building
 
-- Get the bson _id and load it
-``` c++
-QBsonOid oid = obj.value("_id").toId();
-QBsonObject frodo = qejdb.load( "testcollection", oid);
-```
-
-- Or load bson by query. Ejdb query syntax is similar to mongodbs query syntax.
-``` c++
-QEjdbQuery query("testcollection", qejdb);
-QEjdbResult result = query.exec(
-      QBsonObject(
-          "name", QBsonObject("$begin", "Frod")
-      )
-);
+## Build and Test
 
 ```
-- voilà!
-
-
-
-
-
-
-## Development
-
-Buildsystem: CMake
+  mkdir build
+  cd build
+  cmake ..
+  cmake --build .
+```
