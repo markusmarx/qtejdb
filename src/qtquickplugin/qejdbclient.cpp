@@ -166,7 +166,7 @@ void QEjdbClient::componentComplete()
         d->m_autoCloseConnection = true;
     }
 
-    QJSEngine *engine = QtQml::qmlEngine(this);
+    QJSEngine *engine = qmlEngine(this);
 
     if (engine == 0) {
         engine = new QJSEngine(this);
