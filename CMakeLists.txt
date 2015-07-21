@@ -70,7 +70,7 @@ endif()
 include_directories(${Qt5Core_INCLUDE_DIRS})
 include_directories(${Qt5Gui_INCLUDE_DIRS})
 include_directories(${Qt5Quick_INCLUDE_DIRS})
-
+include_directories(${Qt5Qml_INCLUDE_DIRS})
 
 #
 # ADD BUILD FOR QTEJDB LIBRARY
