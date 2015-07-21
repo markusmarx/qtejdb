@@ -7,7 +7,7 @@
 #include <QQmlContext>
 #include "qtejdb/qejdbdatabase.h"
 #include "qtejdb/qejdbexception.h"
-#include <QtQml>
+#include <QtQml/qqml.h>
 
 /**
  * @class QEjdbClient
