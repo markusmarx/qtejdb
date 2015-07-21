@@ -7,8 +7,9 @@ QtEjdb is a simple to use document store. It's based on Qt and ejdb.
 Dependencies:
 
   - Qt (>= 5)
-  - ejdb
-  - CMake (>= 2.8.12)
+  - ejdb (included)
+  - boost
+  - CMake (>= 2.8.11)
 
 Test dependencies:
 
