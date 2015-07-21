@@ -6,6 +6,7 @@
 #include "qbsonoid.h"
 #include <QHash>
 #include <stdarg.h>
+#include <QStringList>
 
 typedef QHash<QString, QBsonValue> QBsonValueHash;
 class QBsonObjectData;
