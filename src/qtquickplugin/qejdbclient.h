@@ -49,6 +49,7 @@ public slots:
     QJSValue load(QString collectionName, QJSValue uid);
     QJSValue save(QString collectionName, const QJSValue &jsValue);
     QJSValue remove(QString collectionName, QJSValue uid);
+    void createCollection(QString collection);
 private:
 
 

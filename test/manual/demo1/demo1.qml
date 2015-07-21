@@ -15,6 +15,7 @@ Window {
         connectionName: "test"
         Component.onCompleted: {
             connect()
+            createCollection('testcollection')
         }
         Component.onDestruction: {
             disconnect();
@@ -26,19 +27,20 @@ Window {
         client: client
     }
 
-
-
     ColumnLayout {
-       anchors.fill: parent
-       spacing: 2
-       TextField{
+
+        anchors.fill: parent
+        spacing: 2
+        TextField {
             anchors.left: parent.left
             anchors.right: parent.right
             text: "hallo"
             Keys.onReturnPressed: {
                 model.saveItem(text)
+                text = ''
             }
         }
+
         ListView {
             id: listView
             anchors.left: parent.left
@@ -47,9 +49,5 @@ Window {
             model: model
             delegate: Text {text: name}
         }
-
     }
-
-
 }
-

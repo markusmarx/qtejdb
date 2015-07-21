@@ -196,6 +196,12 @@ QJSValue QEjdbClient::remove(QString collectionName, QJSValue uid)
     return d->remove(collectionName, uid);
 }
 
+void QEjdbClient::createCollection(QString collection)
+{
+    Q_D(QEjdbClient);
+    d->database().createCollection(collection);
+}
+
 QJSValue QEjdbClient::load(QString collectionName, QJSValue uid)
 {
     Q_D(QEjdbClient);

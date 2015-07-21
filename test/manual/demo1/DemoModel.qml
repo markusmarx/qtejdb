@@ -5,9 +5,19 @@ QEjdb.CollectionModel {
     id:demoModel
     collection: 'testcollection'
 
+    hints: {
+        '$orderby': {'_createdAt': -1}
+    }
+
     function saveItem(name) {
-        var item = {'name': name};
-        demoModel.insert(item, 0);
+        var item = {
+            '_createdAt': new Date(),
+            'name': name
+        }
+
+        item = demoModel.insert(item, 0);
+
+        console.log(item);
     }
 
 }
