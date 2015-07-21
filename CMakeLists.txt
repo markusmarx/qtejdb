@@ -62,15 +62,15 @@ if(NOT Qt5Test_FOUND)
     message(FATAL_ERROR "Qt5Test module is required!")
 endif()
 
-find_package(Qt5Test REQUIRED)
-if(NOT Qt5Test_FOUND)
-    message(FATAL_ERROR "Qt5Test module is required!")
-endif()
-
 find_package(Qt5QuickTest REQUIRED)
 if(NOT Qt5QuickTest_FOUND)
     message(FATAL_ERROR "Qt5QuickTest module is required!")
 endif()
+
+include_directories(${Qt5Core_INCLUDE_DIRS})
+include_directories(${Qt5Gui_INCLUDE_DIRS})
+include_directories(${Qt5Quick_INCLUDE_DIRS})
+
 
 #
 # ADD BUILD FOR QTEJDB LIBRARY
