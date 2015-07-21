@@ -9,7 +9,7 @@ before_install:
      - sudo apt-get install cmake
      # GCC / Clang (Needed until Travis CI updates to Ubuntu 14.04+)
      - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-     - sudo apt-get install -qq --force-yes g++-4.9
+     - sudo apt-get install -qq --force-yes gcc-4.9
      - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 90
      - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 90
      - sudo update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-4.9 90
