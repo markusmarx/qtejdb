@@ -2,6 +2,7 @@
 #define QBSONOBJECT_P_H
 #include "qatomic.h"
 #include "qbsonoid.h"
+#include <QStringList>
 #define TCNUMBUFSIZ 32
 
 QT_FORWARD_DECLARE_CLASS(QBsonObject)
