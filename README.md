@@ -40,3 +40,9 @@ The demo can be executed with
 ```
   make demo1
 ```
+
+## Licence
+
+Distributed under [LGPL-3.0 license](http://opensource.org/licenses/LGPL-3.0).
+
+Copyright (c) 2014-2015 [Markus Marx](mailto:markus.marx@marxenter.de) and contributors.
