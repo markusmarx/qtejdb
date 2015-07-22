@@ -11,12 +11,12 @@ Dependencies:
 
   - Qt (>= 5)
   - ejdb (included)
-  - boost
   - CMake (>= 2.8.11)
 
 Test dependencies:
 
-  - GoogleTest, GoogleMock, will automaticly downloaded while building
+  - GoogleTest, GoogleMock (automaticly downloaded while building)
+  - boost
 
 ## Build and Test
 
