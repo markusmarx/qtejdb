@@ -88,6 +88,8 @@ add_subdirectory(src/qtquickplugin)
 #
 add_subdirectory(test/unit)
 add_subdirectory(test/unit_qml)
+SETUP_TARGET_FOR_COVERAGE(test_coverage qtquicktest coverage)
+
 
 #
 # ADD DEMO AND MANUAL TESTS

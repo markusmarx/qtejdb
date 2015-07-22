@@ -138,7 +138,7 @@ FUNCTION(SETUP_TARGET_FOR_COVERAGE _targetname _testrunner _outputname)
                 ${LCOV_PATH} --directory src --zerocounters
 
 		# Run tests
-		COMMAND ${_testrunner} ${ARGV3}
+                COMMAND ctest -V ${ARGV3}
 
 		# Capturing lcov counters and generating report
                 COMMAND ${LCOV_PATH} --directory src --capture --output-file ${_outputname}.info

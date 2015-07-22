@@ -48,4 +48,3 @@ include_directories(
 add_executable(qtejdbtest ${ALL_SRC})
 target_link_libraries (qtejdbtest Qt5::Core qejdbplugin libgmock)
 add_test(QtEjdbUnitTest qtejdbtest)
-SETUP_TARGET_FOR_COVERAGE(test_coverage qtejdbtest coverage)

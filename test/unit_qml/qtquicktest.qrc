@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>tst_Client.qml</file>
+        <file>tst_CollectionModel.qml</file>
     </qresource>
 </RCC>
