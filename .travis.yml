@@ -1,9 +1,5 @@
 language: cpp
 
-branches:
-  except:
-    - gh-pages
-
 before_install:
      # gcc 4.9
      - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
