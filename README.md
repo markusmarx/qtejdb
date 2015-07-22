@@ -1,7 +1,7 @@
 # Qt/Qml Documentstore
 
 [![Build Status](https://travis-ci.org/markusmarx/qtejdb.svg?branch=master)](https://travis-ci.org/markusmarx/qtejdb)
-[![Coverage Status](https://coveralls.io/repos/markusmarx/qtejdb/badge.svg?branch=master&service=github)](https://coveralls.io/github/markusmarx/qtejdb?branch=master)
+[![codecov.io](http://codecov.io/github/markusmarx/qtejdb/coverage.svg?branch=master)](http://codecov.io/github/markusmarx/qtejdb?branch=master)
 
 QtEjdb is a simple to use document store. It's based on Qt and ejdb.
 
