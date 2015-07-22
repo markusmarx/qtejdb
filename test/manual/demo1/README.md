@@ -4,6 +4,13 @@ Shows a bson in a ListView and connect in a collection with CollectionModel.
 
 ## demo1.qml
 
+import QEjdb
+
+```qml
+import QEjdb 1.0 as QEjdb
+```
+
+
 Create a client, connect the database and create the collection.
 ```qml
 QEjdb.Client {
