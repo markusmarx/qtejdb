@@ -11,7 +11,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Mo
 include(ExternalProject)
 include(CodeCoverage)
 
-SET(CMAKE_CXX_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage -fPIC")
+SET(CMAKE_CXX_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage --coverage -fPIC")
 #	 SET(CMAKE_C_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
 
 # Find includes in corresponding build directories
@@ -88,8 +88,6 @@ add_subdirectory(src/qtquickplugin)
 #
 add_subdirectory(test/unit)
 add_subdirectory(test/unit_qml)
-SETUP_TARGET_FOR_COVERAGE(test_coverage qtquicktest coverage)
-
 
 #
 # ADD DEMO AND MANUAL TESTS
