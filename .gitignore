@@ -27,6 +27,7 @@ Makefile*
 
 *.autosave
 3rdparty/ejdb
+build
 *.txt.user
 .idea
 .cccc
