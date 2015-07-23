@@ -8,14 +8,23 @@ TestCase {
     QEjdb.Client {
         id: qejdbClient
         uri: 'file:tst_qejdbmodel.db'
-
+        autoCreateCollection: true
         Component.onCompleted: {
             connect();
-
         }
     }
 
+
+    function test_CreateCollection() {
+        qejdbClient.createCollection('newCollection')
+    }
+
+    function test_Uri() {
+        compare('file:tst_qejdbmodel.db', qejdbClient.uri)
+    }
+
     function test_SaveLoadRemove() {
+
         var json = qejdbClient.save('testcollection',
              {
                  'name':'test',
@@ -36,4 +45,5 @@ TestCase {
         json2 = qejdbClient.load('testcollection', json._id);
         compare(null, json2)
     }
+
 }

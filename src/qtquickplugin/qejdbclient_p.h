@@ -59,12 +59,17 @@ public:
      * @param db reference to database
      * @param collection collection Name
      */
-    inline void checkCollection(QEjdbDatabase &db, QString collection)
+    inline bool checkCollection(QEjdbDatabase &db, QString collection)
     {
-        if (db.isOpen() && !db.containsCollection(collection) && m_autoCreateCollection) {
-            db.createCollection(collection);
+        if (!db.isOpen()) {
+            return false;
         }
+        if (db.containsCollection(collection)) {
+            return true;
+        }
+        return m_autoCreateCollection ? db.createCollection(collection) : false;
     }
+
     /**
      * @brief database get the database connectionName
      *

@@ -16,6 +16,7 @@ QEjdbItemModel::QEjdbItemModel(QObject *parent)
 
 QEjdbItemModel::~QEjdbItemModel()
 {
+    QObject::disconnect(m_bsonModel, &QBsonItemModel::reset, this, &QEjdbItemModel::reset);
     delete m_sync;
 }
 
@@ -140,7 +141,9 @@ QVariant QEjdbItemModel::headerData(int section, Qt::Orientation orientation, in
 void QEjdbItemModel::setSync(QEjdbAbstractSync *sync)
 {
     if (qobject_cast<QObject*>(m_sync)) {
+        QObject::disconnect(m_sync);
         m_sync->deleteLater();
+
     }
     m_sync = sync;
     m_bsonModel = sync->model();

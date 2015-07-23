@@ -7,6 +7,7 @@
 #include <QQmlContext>
 #include "qtejdb/qejdbdatabase.h"
 #include "qtejdb/qejdbexception.h"
+#include "basemodel.h"
 #include <QtQml/qqml.h>
 
 /**
@@ -202,6 +203,12 @@ void QEjdbClient::createCollection(QString collection)
     d->database().createCollection(collection);
 }
 
+void QEjdbClient::removeCollection(QString collection)
+{
+    Q_D(QEjdbClient);
+    d->database().removeCollection(collection);
+}
+
 QJSValue QEjdbClient::load(QString collectionName, QJSValue uid)
 {
     Q_D(QEjdbClient);
@@ -250,6 +257,15 @@ QJSValue QEjdbClient::convert(const QBsonObject &bsonObject)
 bool QEjdbClient::isConnected()
 {
     return d_ptr->m_isConnected;
+}
+
+void QEjdbClient::registerModel(BaseModel *baseModel)
+{
+    if (isConnected()) {
+        baseModel->connected();
+    }
+    QObject::connect(this, &QEjdbClient::connected, baseModel, &BaseModel::connected);
+    QObject::connect(this, &QEjdbClient::disconnected, baseModel, &BaseModel::disconnected);
 }
 
 /**

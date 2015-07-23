@@ -24,7 +24,7 @@ QEjdbArrayPropertySync::QEjdbArrayPropertySync(QEjdbDatabase db,
                                                QString propertyCollection,
                                                QBsonObject bsonObject,
                                                QObject *parent)
-    : m_db(db), m_collection(collection), m_propertyName(property)
+    : m_db(db), m_collection(collection), m_arrayProperty(property)
     , m_propertyCollection(propertyCollection), m_parentObject(bsonObject),
       QEjdbAbstractSync(parent)
 {
@@ -50,7 +50,7 @@ QBsonObject QEjdbArrayPropertySync::bsonObject()
  */
 QString QEjdbArrayPropertySync::propertyName()
 {
-    return m_propertyName;
+    return m_arrayProperty;
 }
 
 /**
@@ -84,7 +84,7 @@ void QEjdbArrayPropertySync::fetch()
             QBsonArray andQ;
             andQ.append(QBsonObject("_id", m_parentObject.oid()));
             query.append("$do", QBsonObject(
-                                  m_propertyName, QBsonObject(
+                                  m_arrayProperty, QBsonObject(
                                       "$join", m_propertyCollection)
                                   )
                         );
@@ -101,7 +101,7 @@ void QEjdbArrayPropertySync::fetch()
         }
 
         if (found.hasOid()) {
-            QBsonArray array = found.value(m_propertyName).toArray();
+            QBsonArray array = found.value(m_arrayProperty).toArray();
             m_qBsonItemModel->clear();
             QList<QBsonObject> objectList;
             foreach (QBsonValue val, array.values()) {
@@ -140,7 +140,17 @@ void QEjdbArrayPropertySync::setCollection(QString collection)
 void QEjdbArrayPropertySync::setBsonObject(QBsonObject bsonObject, QString propertyName)
 {
     m_parentObject = bsonObject;
-    m_propertyName = propertyName;
+    m_arrayProperty = propertyName;
+}
+
+void QEjdbArrayPropertySync::setParentObject(QBsonObject parentObject)
+{
+    m_parentObject = parentObject;
+}
+
+void QEjdbArrayPropertySync::setArrayProperty(QString arrayProperty)
+{
+    m_arrayProperty = arrayProperty;
 }
 
 /**
@@ -173,7 +183,7 @@ void QEjdbArrayPropertySync::itemInserted(int row)
             } else {
                 array.insert(row, newObject);
             }
-            m_parentObject.insert(m_propertyName, array);
+            m_parentObject.insert(m_arrayProperty, array);
             m_db.save(m_collection, m_parentObject);
         }
     }

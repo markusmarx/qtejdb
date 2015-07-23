@@ -26,6 +26,8 @@ public slots:
     void setPropertyCollection(QString propertyCollection);
     void setCollection(QString collection);
     void setBsonObject(QBsonObject bsonObject, QString propertyName);
+    void setParentObject(QBsonObject bsonObject);
+    void setArrayProperty(QString arrayProperty);
     void itemRemoved(int row, QBsonObject removedObject);
     void itemInserted(int row);
     void itemMoved(int sourceRow, int destinationRow);
@@ -35,7 +37,7 @@ private:
 
     QEjdbDatabase m_db;
     QBsonObject m_parentObject;
-    QString m_propertyName;
+    QString m_arrayProperty;
     QString m_collection;
     QString m_propertyCollection;
 
@@ -59,12 +61,12 @@ private:
     inline QBsonArray getBsonArray()
     {
         m_parentObject = reloadBson(m_collection, m_parentObject);
-        if (m_parentObject.contains(m_propertyName)
-                && m_parentObject.value(m_propertyName).isArray()) {
-            return m_parentObject.value(m_propertyName).toArray();
+        if (m_parentObject.contains(m_arrayProperty)
+                && m_parentObject.value(m_arrayProperty).isArray()) {
+            return m_parentObject.value(m_arrayProperty).toArray();
         }
         QBsonArray array;
-        m_parentObject.insert(m_propertyName, array);
+        m_parentObject.insert(m_arrayProperty, array);
         return array;
     }
 

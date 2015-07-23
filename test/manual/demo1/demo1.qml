@@ -27,27 +27,25 @@ Window {
         client: client
     }
 
-    ColumnLayout {
-
-        anchors.fill: parent
-        spacing: 2
-        TextField {
-            anchors.left: parent.left
-            anchors.right: parent.right
-            text: "hallo"
-            Keys.onReturnPressed: {
-                model.saveItem(text)
-                text = ''
-            }
+    TextField {
+        id:textF
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        text: "hallo"
+        Keys.onReturnPressed: {
+            model.saveItem(text)
+            text = ''
         }
+    }
 
-        ListView {
-            id: listView
-            anchors.left: parent.left
-            anchors.right: parent.right
-            height: 500
-            model: model
-            delegate: Text {text: name}
-        }
+    ListView {
+        id: listView
+        anchors.top: textF.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        model: model
+        delegate: Text {text: name}
     }
 }
