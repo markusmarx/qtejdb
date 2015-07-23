@@ -7,6 +7,8 @@ set(QEJDBQUICK_PUBLIC_HEADER
     qejdbclient.h
     qbsonconverter.h
     collectionmodel.h
+    basemodel.h
+    arraypropertymodel.h
 )
 
 set(QEJDBQUICK_SOURCES
@@ -14,6 +16,8 @@ set(QEJDBQUICK_SOURCES
     qejdbclient.cpp
     qbsonconverter.cpp
     collectionmodel.cpp
+    basemodel.cpp
+    arraypropertymodel.cpp
 )
 
 add_library ( qejdbplugin SHARED ${QEJDBQUICK_SOURCES} ${QEJDBQUICK_QML_SOURCES} )

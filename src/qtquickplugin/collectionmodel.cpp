@@ -4,7 +4,7 @@
 #include <QDebug>
 
 CollectionModel::CollectionModel(QObject *parent)
-    :QEjdbItemModel(parent), m_client(0)
+    :BaseModel(parent)
 {
 
 }
@@ -19,36 +19,31 @@ void CollectionModel::classBegin()
 
 }
 
-void CollectionModel::componentComplete()
+bool CollectionModel::checkProperties()
 {
     bool error = false;
-    if (m_client == 0) {
-        qWarning() << "the property \"client\" have to set in CollectionModel";
-        error = true;
-    }
 
     if (m_collection.isEmpty()) {
-        qWarning() << "the property \"collection\" have to set in CollectionModel";
         error = true;
     }
-
-    if (error) {
-        qWarning() << "CollectionModel could not initialised.";
-        return;
+    if (m_client == 0) {
+        error = true;
     }
-
-    init();
-
+    return !error;
 }
 
-/**
- * @brief Returns the client that connects to the db.
- * @return
- */
-QEjdbClient *CollectionModel::client() const
+void CollectionModel::tryInit()
 {
-    return m_client;
+    if (checkProperties()) {
+        m_client->registerModel(this);
+    }
 }
+
+void CollectionModel::componentComplete()
+{
+
+}
+
 
 QJSValue CollectionModel::query() const
 {
@@ -60,31 +55,14 @@ QJSValue CollectionModel::hints() const
     return m_hints;
 }
 
-QString CollectionModel::collection() const
-{
-    return m_collection;
-}
-
-/**
- * @brief Sets a new client.
- */
-void CollectionModel::setClient(QEjdbClient *client)
-{
-    qDebug() << "set client model " << client;
-    if (m_client != client) {
-
-        m_client = client;
-    }
-    emit clientChanged();
-}
-
 void CollectionModel::setQuery(QJSValue query)
 {
     if (m_query.equals(query))
         return;
 
     m_query = query;
-    emit queryChanged(query);
+    emit queryChanged(m_client->convert(query));
+
 }
 
 void CollectionModel::setHints(QJSValue hints)
@@ -93,33 +71,37 @@ void CollectionModel::setHints(QJSValue hints)
         return;
 
     m_hints = hints;
-    emit hintsChanged(hints);
+    emit hintsChanged(m_client->convert(hints));
+    emit fetch();
 }
 
-void CollectionModel::setCollection(QString collection)
+void CollectionModel::connected()
 {
-    if (m_collection == collection)
-        return;
-
-    m_collection = collection;
-    emit collectionChanged(collection);
-}
-
-void CollectionModel::insert(QJSValue value, int row)
-{
-    QEjdbItemModel::insert(m_client->convert(value), row);
-}
-
-void CollectionModel::init()
-{
-    if (m_client->isConnected()) {
+    if (m_client->isConnected() && checkProperties()) {
         QEjdbDatabase db = QEjdbDatabase::database(m_client->connectionName());
         QBsonObject query = m_client->convert(m_query);
         QBsonObject hints = m_client->convert(m_hints);
-        QEjdbItemModel::setSync(new QEjdbCollectionSync(db, m_collection, query, hints, this));
-        disconnect(m_client, &QEjdbClient::connected, this, &CollectionModel::init);
+        QEjdbCollectionSync *colSync = new QEjdbCollectionSync(db, m_collection, query, hints, this);
+
+        QObject::connect(this, &CollectionModel::queryChanged,
+                         colSync, &QEjdbCollectionSync::setQuery
+                         );
+        QObject::connect(this, &CollectionModel::hintsChanged,
+                         colSync, &QEjdbCollectionSync::setHints
+                         );
+        QObject::connect(this, &CollectionModel::collectionChanged,
+                         colSync, &QEjdbCollectionSync::setCollection
+                         );
+        QObject::connect(this, &CollectionModel::fetch,
+                         colSync, &QEjdbCollectionSync::fetch
+                         );
+
+        QEjdbItemModel::setSync(colSync);
         return;
     }
+}
 
-    connect(m_client, &QEjdbClient::connected, this, &CollectionModel::init);
+void CollectionModel::disconnected()
+{
+
 }

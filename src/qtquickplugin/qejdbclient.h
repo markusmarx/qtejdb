@@ -8,7 +8,8 @@
 #include "qtejdb/qejdbdatabase.h"
 #include "qbsonconverter.h"
 
-class QEjdbClientPrivate;
+QT_FORWARD_DECLARE_CLASS(BaseModel)
+QT_FORWARD_DECLARE_CLASS(QEjdbClientPrivate)
 class QEjdbClient : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
@@ -31,6 +32,7 @@ public:
     QBsonObject convert(const QJSValue &jsValue);
     QJSValue convert(const QBsonObject &bsonObject);
     bool isConnected();
+    void registerModel(BaseModel *baseModel);
 
 signals:
 
@@ -38,6 +40,7 @@ signals:
     void connectionNameChanged(QString arg);
     void autoCreateCollectionChanged(bool arg);
     void connected();
+    void disconnected();
 
 public slots:
 
@@ -50,6 +53,7 @@ public slots:
     QJSValue save(QString collectionName, const QJSValue &jsValue);
     QJSValue remove(QString collectionName, QJSValue uid);
     void createCollection(QString collection);
+    void removeCollection(QString collection);
 private:
 
 

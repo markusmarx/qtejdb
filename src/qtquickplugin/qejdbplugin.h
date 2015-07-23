@@ -3,7 +3,7 @@
 
 #include <QQmlExtensionPlugin>
 
-Q_DECL_EXPORT class QEjdbPlugin : public QQmlExtensionPlugin
+class Q_DECL_EXPORT QEjdbPlugin : public QQmlExtensionPlugin
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface")
