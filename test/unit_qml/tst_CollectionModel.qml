@@ -22,7 +22,7 @@ TestCase {
     QEjdb.CollectionModel {
         id: collectionModelValid
         client: qejdbClient
-        query: {'name': 'test'}
+        query: {'name': {'$begin': 'test'}}
         hints: {'$orderby': {'name': 1}}
         collection: 'testcollection3'
     }
@@ -40,16 +40,49 @@ TestCase {
         }
     }
 
-    function test_InsertItem() {
-        collectionModelValid.insert(0, {'name': 'test'})
+    function test_Append() {
+        collectionModelValid.append({'name': 'test2'})
         compare(listView.count, 1)
+        var json = collectionModelValid.get(0)
+        compare(json.name, 'test2');
+    }
+
+    function test_InsertAndGetItem() {
+        collectionModelValid.reset()
+        collectionModelValid.insert(0, {'name': 'test'})
+        compare(listView.count, 2)
+        compare(collectionModelValid.count, 2)
+        var json = collectionModelValid.get(0)
+        compare(json.name, 'test');
     }
 
     function test_Properties() {
+        collectionModelValid.reset()
         compare(collectionModelValid.collection, 'testcollection3')
         var query = collectionModelValid.query
         var hints = collectionModelValid.hints
-        compare(query.name, 'test')
+        var client = collectionModelValid.client
+        compare(query.name.$begin, 'test')
         compare(hints.$orderby.name, 1)
+        compare(client.id, qejdbClient.id)
     }
+
+    function test_Set() {
+        collectionModelValid.reset()
+        collectionModelValid.set(0, {'name': 'test1'})
+        collectionModelValid.reset()
+        compare(listView.count, 2)
+        var json = collectionModelValid.get(0)
+        compare(json.name, 'test1');
+    }
+
+    function test_SetProperty() {
+        collectionModelValid.reset()
+        compare(listView.count, 2)
+        collectionModelValid.setProperty(0, 'name', 'test3');
+        collectionModelValid.reset()
+        var json = collectionModelValid.get(1)
+        compare(json.name, 'test3');
+    }
+
 }
