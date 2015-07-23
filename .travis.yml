@@ -57,3 +57,8 @@ script:
 
 after_success:
     - bash <(curl -s https://codecov.io/bash)
+    #- lcov --directory src --capture --output-file coverage.info
+    #- lcov --remove coverage.info '*/*build*/*' '*/Qt/*' '*/3rdparty/*' 'test/*' '/usr/*' --output-file coverage.info.cleaned
+    #- lcov --list coverage.info.cleaned
+    #- bash <(curl -s https://codecov.io/bash) -f coverage.info.cleaned
+
