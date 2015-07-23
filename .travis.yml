@@ -1,5 +1,11 @@
 language: cpp
 
+env:
+  global:
+   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+   #   via the "travis encrypt" command using the project repo's public key
+   - secure: "WUNWU0Bmg0ZiScI/z2xr3lIflFgWkrtymp3fJ/6VyiUM3hLZa9w6mqwE0VMBCWtQdj9FwDAZMfgh09FRoO+8fMJywxWO3JyTwLNqVdAtwSfWK5WXnWhs5Xk/mnb7EjPebRr5gNjWsrJcGjH+l7jEOKXwaGBugzVQSubnC3fSkTH+liKkZcWAfya9UFjU3ZAyR948/62ToP5cbuVpgI1WOzmV+ebnjFiHxc80qQgIvpolLLfn+iCJoF6w/j9TB0KHIV8DeQ4OArGXUERZ2296F1JqXIek1QImlGAJkuT0QKM3ejibXTGsH/oeXiCw+OP0hs1k4ukL3tAGMvNG6tSQdSIAR4AaWxv40zX7EmucBCv7dmEFNFppC0gn2HlFrsS/LnYCE30WwY/ncUHSlbyiw3B39Dcy5vODAbW4dtXoS2iDOEDxqyrRG0eIrEt2XQCv+oXDgxEn5beBh150jD5RzRMh0xdnJMA3t7rjBgrRxKRRyTeTzEzfJBK9OWFhhjVjJb87GVvXD92187QCbJFrl60P6EquXlaLBfi8ULaYB3Ifol8w1Scb1dDAPu+qGAZJn8RttxTPUJBCNwu6GG28tQq5KzT+wDJtiLPU1bQ6h51vAtbA2EsUpUm7RKySKHnvHBdY8ZsGrZuFjLa8FqgQYZcHw8qab7gxdVtOcCORC5M="
+
 before_install:
      # gcc 4.9
      - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
@@ -19,17 +25,27 @@ install:
      - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 90
      - sudo update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-4.9 90
      # LCOV (Needed until Travis CI updates to Ubuntu 14.04+)
-     - wget -O lcov.tar.gz http://downloads.sourceforge.net/ltp/lcov-1.11.tar.gz
-     - mkdir lcov
-     - tar -xzf lcov.tar.gz -C ./lcov --strip-components=1
-     - cd lcov
-     - sudo make install
-     - cd ..
-     - rm -Rf lcov lcov.tar.gz
+     #- wget -O lcov.tar.gz http://downloads.sourceforge.net/ltp/lcov-1.11.tar.gz
+     #- mkdir lcov
+     #- tar -xzf lcov.tar.gz -C ./lcov --strip-components=1
+     #- cd lcov
+     #- sudo make install
+     #- cd ..
+     #- rm -Rf lcov lcov.tar.gz
      # Start display server to run qmltests.
      - "export DISPLAY=:99.0"
      - "sh -e /etc/init.d/xvfb start"
      - gem install coveralls-lcov
+
+addons:
+  coverity_scan:
+    project:
+      name: "markusmarx/qtejdb"
+      description: "Qt Documentdatabase"
+    notification_email: markus.taubert@gmail.com
+    build_command_prepend: "make clean"
+    build_command:   "make -j 4"
+    branch_pattern: coverity_scan
 
 before_script:
     - mkdir build && cd build
@@ -40,8 +56,4 @@ script:
     - ctest -V
 
 after_success:
-   # - lcov --directory src --capture --output-file coverage.info
-   # - lcov --remove coverage.info '*/moc_*' '*/Qt/*' '*/3rdparty/*' 'test/*' '/usr/*' --output-file coverage.info.cleaned
-   # - lcov --list coverage.info.cleaned
     - bash <(curl -s https://codecov.io/bash)
-
