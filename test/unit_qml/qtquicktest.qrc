@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>tst_Client.qml</file>
         <file>tst_CollectionModel.qml</file>
+        <file>tst_ArrayPropertyModel.qml</file>
     </qresource>
 </RCC>

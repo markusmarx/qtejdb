@@ -36,8 +36,7 @@ class QBsonModelCollectionSyncTest : public ::testing::Test
 TEST_F(QBsonModelCollectionSyncTest, TestFetch)
 {
     QEjdbCollectionSync *sync = new QEjdbCollectionSync(
-                QEjdbDatabase::database());
-    sync->setCollection(COLL);
+                QEjdbDatabase::database(), COLL);
     sync->fetch();
     EXPECT_EQ(COLL, sync->collection());
     EXPECT_EQ(10, sync->model()->count());
@@ -46,8 +45,7 @@ TEST_F(QBsonModelCollectionSyncTest, TestFetch)
 TEST_F(QBsonModelCollectionSyncTest, TestItemUpdate)
 {
     QEjdbCollectionSync *sync = new QEjdbCollectionSync(
-                QEjdbDatabase::database());
-    sync->setCollection(COLL);
+                QEjdbDatabase::database(), COLL);
     QBsonObject hints(
                 "$orderby", QBsonObject("marker", 1));
     sync->setHints(hints);
@@ -61,8 +59,7 @@ TEST_F(QBsonModelCollectionSyncTest, TestItemUpdate)
 TEST_F(QBsonModelCollectionSyncTest, TestItemRemove)
 {
     QEjdbCollectionSync *sync = new QEjdbCollectionSync(
-                QEjdbDatabase::database());
-    sync->setCollection(COLL);
+                QEjdbDatabase::database(), COLL);
     QBsonObject hints(
                 "$orderby", QBsonObject("marker", 1));
     sync->setHints(hints);
