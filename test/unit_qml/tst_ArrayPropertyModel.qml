@@ -56,7 +56,7 @@ TestCase {
         var json = {name: 'name'}
         listView.currentIndex = 0
         compare(listView.currentItem.theName, 'test')
-        modelValid.insert(json, 0)
+        modelValid.insert(0, json)
         compare(listView.count, 2)
     }
 

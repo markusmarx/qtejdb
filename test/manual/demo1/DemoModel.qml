@@ -15,7 +15,7 @@ QEjdb.CollectionModel {
             'name': name
         }
 
-        item = demoModel.insert(item, 0);
+        item = demoModel.insert(0, item);
 
         console.log(item);
     }

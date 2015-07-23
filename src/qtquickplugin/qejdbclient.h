@@ -29,7 +29,7 @@ public:
     QString uri() const;
     QString connectionName() const;
     bool autoCreateCollection() const;
-    QBsonObject convert(const QJSValue &jsValue);
+    QBsonValue convert(const QJSValue &jsValue);
     QJSValue convert(const QBsonObject &bsonObject);
     bool isConnected();
     void registerModel(BaseModel *baseModel);

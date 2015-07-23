@@ -81,7 +81,7 @@ int QEjdbItemModel::columnCount(const QModelIndex &parent) const
  * @brief Inserts a bson object on given row.
  * @return void
  */
-void QEjdbItemModel::insert(const QBsonObject &bsonObject, int row)
+void QEjdbItemModel::insert(int row, const QBsonObject &bsonObject)
 {
     if (isValid()) {
         beginInsertRows(QModelIndex(), row, row);
@@ -90,7 +90,7 @@ void QEjdbItemModel::insert(const QBsonObject &bsonObject, int row)
     }
 }
 
-void QEjdbItemModel::remove(int row)
+void QEjdbItemModel::remove(int row, int count)
 {
     if (isValid()) {
         beginRemoveRows(QModelIndex(), row, row);
@@ -99,13 +99,18 @@ void QEjdbItemModel::remove(int row)
     }
 }
 
-void QEjdbItemModel::move(int sourceRow, int destinationRow)
+void QEjdbItemModel::move(int sourceRow, int destinationRow, int count)
 {
     if (isValid()
             && beginMoveRows(QModelIndex(), sourceRow, sourceRow, QModelIndex(), destinationRow)) {
         m_bsonModel->move(sourceRow, destinationRow);
         endMoveRows();
     }
+}
+
+QBsonObject QEjdbItemModel::get(int row)
+{
+    return m_bsonModel->row(row);
 }
 
 void QEjdbItemModel::reset()

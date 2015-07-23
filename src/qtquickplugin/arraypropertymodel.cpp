@@ -69,7 +69,7 @@ void ArrayPropertyModel::connected()
 {
     if (m_client->isConnected() && checkProperties()) {
         QEjdbDatabase db = QEjdbDatabase::database(m_client->connectionName());
-        QBsonObject parentObject = m_client->convert(m_parentObject);
+        QBsonObject parentObject = m_client->convert(m_parentObject).toObject();
 
         QEjdbArrayPropertySync *arrPropSync
                 = new QEjdbArrayPropertySync(
@@ -129,7 +129,7 @@ void ArrayPropertyModel::setParentObject(QJSValue parentObject)
         return;
 
     m_parentObject = parentObject;
-    emit parentObjectChanged(m_client->convert(parentObject));
+    emit parentObjectChanged(m_client->convert(parentObject).toObject());
     tryInit();
 }
 

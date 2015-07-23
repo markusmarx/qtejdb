@@ -8,6 +8,7 @@
 #include "qtejdb/qejdbdatabase.h"
 #include "qtejdb/qejdbexception.h"
 #include "basemodel.h"
+#include "qbson/qbsonvalue.h"
 #include <QtQml/qqml.h>
 
 /**
@@ -48,7 +49,7 @@ QJSValue QEjdbClientPrivate::save(QString collectionName, const QJSValue &jsValu
 {
     qDebug() << "save value" << jsValue.toVariant() << "in" << collectionName;
 
-    QBsonObject bsonObj = convert(jsValue);
+    QBsonObject bsonObj = convert(jsValue).toObject();
 
     QEjdbDatabase db = database();
     checkCollection(db, collectionName);
@@ -112,7 +113,7 @@ QJSValue QEjdbClientPrivate::remove(QString collectionName, QJSValue uid)
  *
  * @return QBsonObject converted instance
  */
-QBsonObject QEjdbClientPrivate::convert(const QJSValue &jsValue)
+QBsonValue QEjdbClientPrivate::convert(const QJSValue &jsValue)
 {
     return m_bsonConverter.convert(jsValue);
 }
@@ -242,7 +243,7 @@ bool QEjdbClient::autoCreateCollection() const
 /**
  * @brief QEjdbClient::convert tranform QJSValue to QBsonObject.
  */
-QBsonObject QEjdbClient::convert(const QJSValue &jsValue)
+QBsonValue QEjdbClient::convert(const QJSValue &jsValue)
 {
     return d_ptr->convert(jsValue);
 }

@@ -13,7 +13,7 @@ public:
     ~QBsonConverter();
 
     QJSValue convert(const QBsonObject &bsonObject);
-    QBsonObject convert(const QJSValue &jsValue);
+    QBsonValue convert(const QJSValue &jsValue);
     void setJSEngine(QJSEngine *engine);
 protected:
 

@@ -1,6 +1,7 @@
 #include "collectionmodel.h"
 #include "qejdbclient.h"
 #include "itemmodel/qejdbcollectionsync.h"
+#include "qbson/qbsonvalue.h"
 #include <QDebug>
 
 CollectionModel::CollectionModel(QObject *parent)
@@ -61,7 +62,7 @@ void CollectionModel::setQuery(QJSValue query)
         return;
 
     m_query = query;
-    emit queryChanged(m_client->convert(query));
+    emit queryChanged(m_client->convert(query).toObject());
 
 }
 
@@ -71,7 +72,7 @@ void CollectionModel::setHints(QJSValue hints)
         return;
 
     m_hints = hints;
-    emit hintsChanged(m_client->convert(hints));
+    emit hintsChanged(m_client->convert(hints).toObject());
     emit fetch();
 }
 
@@ -79,8 +80,8 @@ void CollectionModel::connected()
 {
     if (m_client->isConnected() && checkProperties()) {
         QEjdbDatabase db = QEjdbDatabase::database(m_client->connectionName());
-        QBsonObject query = m_client->convert(m_query);
-        QBsonObject hints = m_client->convert(m_hints);
+        QBsonObject query = m_client->convert(m_query).toObject();
+        QBsonObject hints = m_client->convert(m_hints).toObject();
         QEjdbCollectionSync *colSync = new QEjdbCollectionSync(db, m_collection, query, hints, this);
 
         QObject::connect(this, &CollectionModel::queryChanged,

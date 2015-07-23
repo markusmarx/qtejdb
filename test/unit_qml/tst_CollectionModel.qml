@@ -41,7 +41,7 @@ TestCase {
     }
 
     function test_InsertItem() {
-        collectionModelValid.insert({'name': 'test'}, 0)
+        collectionModelValid.insert(0, {'name': 'test'})
         compare(listView.count, 1)
     }
 
