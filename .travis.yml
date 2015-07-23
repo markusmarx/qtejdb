@@ -25,13 +25,13 @@ install:
      - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 90
      - sudo update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-4.9 90
      # LCOV (Needed until Travis CI updates to Ubuntu 14.04+)
-     #- wget -O lcov.tar.gz http://downloads.sourceforge.net/ltp/lcov-1.11.tar.gz
-     #- mkdir lcov
-     #- tar -xzf lcov.tar.gz -C ./lcov --strip-components=1
-     #- cd lcov
-     #- sudo make install
-     #- cd ..
-     #- rm -Rf lcov lcov.tar.gz
+     - wget -O lcov.tar.gz http://downloads.sourceforge.net/ltp/lcov-1.11.tar.gz
+     - mkdir lcov
+     - tar -xzf lcov.tar.gz -C ./lcov --strip-components=1
+     - cd lcov
+     - sudo make install
+     - cd ..
+     - rm -Rf lcov lcov.tar.gz
      # Start display server to run qmltests.
      - "export DISPLAY=:99.0"
      - "sh -e /etc/init.d/xvfb start"
