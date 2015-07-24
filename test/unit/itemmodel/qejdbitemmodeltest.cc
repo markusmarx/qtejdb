@@ -55,7 +55,7 @@ TEST_F(QEjdbItemModelTest, TestMove)
                 new QEjdbArrayPropertySync(QEjdbDatabase::database(),
                                            COLL2, PROP, COLL, QEjdbItemModelTest::object)
                 );
-    itemModel->move(1, 0);
+    itemModel->move(0, 1);
     itemModel->reset();
     EXPECT_EQ(2, itemModel->data(itemModel->index(0), itemModel->roleNames().key(QString("marker").toLatin1())).toInt());
     EXPECT_EQ(1, itemModel->data(itemModel->index(1), itemModel->roleNames().key(QString("marker").toLatin1())).toInt());

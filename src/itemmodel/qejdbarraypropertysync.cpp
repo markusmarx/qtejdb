@@ -139,8 +139,8 @@ void QEjdbArrayPropertySync::setCollection(QString collection)
  */
 void QEjdbArrayPropertySync::setBsonObject(QBsonObject bsonObject, QString propertyName)
 {
-    m_parentObject = bsonObject;
-    m_arrayProperty = propertyName;
+    setParentObject(bsonObject);
+    setArrayProperty(propertyName);
 }
 
 void QEjdbArrayPropertySync::setParentObject(QBsonObject parentObject)
