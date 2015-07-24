@@ -275,12 +275,19 @@ void QEjdbClient::registerModel(BaseModel *baseModel)
 void QEjdbClient::connect()
 {
     Q_D(QEjdbClient);
+
+    if (d->m_isConnected) {
+        return;
+    }
+
     qWarning() << "connect QEjdb on" << d->m_uri
              << "and connectioName" << d->m_connectionName;
 
     QEjdbDatabase db;
     QString uri = d->m_uri;
     QString connectionName = d->m_connectionName;
+
+
 
     db = QEjdbDatabase::addDatabase(uri, connectionName);
     d->m_isConnected = true;

@@ -2,6 +2,7 @@
 #include "qbson/qbsonobject.h"
 #include "qbsonitemmodel_p.h"
 #include "qejdbcollectionsync.h"
+#include <QDebug>
 
 QEjdbItemModel::QEjdbItemModel(QEjdbAbstractSync *sync, QObject *parent)
     : m_sync(sync), m_bsonModel(sync->model())
@@ -16,7 +17,6 @@ QEjdbItemModel::QEjdbItemModel(QObject *parent)
 
 QEjdbItemModel::~QEjdbItemModel()
 {
-    QObject::disconnect(m_bsonModel, &QBsonItemModel::reset, this, &QEjdbItemModel::reset);
     delete m_sync;
 }
 
@@ -85,6 +85,7 @@ void QEjdbItemModel::insert(int row, const QBsonObject &bsonObject)
 {
     if (isValid()) {
         beginInsertRows(QModelIndex(), row, row);
+        qDebug() << "insert bson on row" << row;
         m_bsonModel->insert(bsonObject, row);
         endInsertRows();
     }
@@ -94,6 +95,7 @@ void QEjdbItemModel::remove(int row, int count)
 {
     if (isValid()) {
         beginRemoveRows(QModelIndex(), row, row);
+        qDebug() << "remove index row" << row;
         m_bsonModel->remove(row);
         endRemoveRows();
     }
@@ -101,6 +103,12 @@ void QEjdbItemModel::remove(int row, int count)
 
 void QEjdbItemModel::move(int sourceRow, int destinationRow, int count)
 {
+    if (sourceRow < destinationRow) {
+        int h = sourceRow;
+        sourceRow = destinationRow;
+        destinationRow = h;
+    }
+
     if (isValid()
             && beginMoveRows(QModelIndex(), sourceRow, sourceRow, QModelIndex(), destinationRow)) {
         m_bsonModel->move(sourceRow, destinationRow);

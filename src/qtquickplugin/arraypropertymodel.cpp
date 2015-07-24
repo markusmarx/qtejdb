@@ -1,6 +1,7 @@
 #include "arraypropertymodel.h"
 #include "itemmodel/qejdbarraypropertysync.h"
 #include <QJSValueIterator>
+#include <QDebug>
 
 ArrayPropertyModel::ArrayPropertyModel(QObject *parent)
     :BaseModel(parent), m_parentObject(QJSValue(QJSValue::NullValue))
@@ -32,13 +33,9 @@ bool ArrayPropertyModel::checkProperties()
     if (m_arrayProperty.isEmpty()) {
         error = true;
     }
-    if (m_propertyCollection.isEmpty()) {
-        error = true;
-    }
     if (m_parentObject.isNull()) {
         error = true;
     }
-
 
     return !error;
 }

@@ -48,6 +48,7 @@ private:
     QHash<QBsonId, StorageId> m_bsonId;
     QHash<StorageId, QBsonObject> m_bsonObjects;
     QHash<int, QByteArray> m_roles;
+    int m_idCounter;
 
     QString roleAsKey(int role);
 
@@ -70,7 +71,7 @@ private:
      */
     inline void internalInsert(const QBsonObject &bsonObject, uint row)
     {
-        StorageId storageId = bsonObject.hasOid()?bsonObject.oid().hash(): row;
+        StorageId storageId = bsonObject.hasOid()?bsonObject.oid().hash(): m_idCounter++;
         m_bsonList.insert(row, storageId);
         m_bsonId.insert(bsonObject.oid().toString(), storageId);
         m_bsonObjects.insert(storageId, bsonObject);

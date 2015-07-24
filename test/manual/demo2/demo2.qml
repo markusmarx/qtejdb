@@ -1,11 +1,55 @@
 import QtQuick 2.0
-
+import QEjdb 1.0 as QEjdb
 import "logic.js" as Logic
 
 Rectangle {
+    id: main
+
     width: 800;  height: 600
 
-    id: main
+    property variant d1
+    property variant d2
+
+    QEjdb.Client {
+        id: qtejdb
+        uri: "file:demo2.db"
+        Component.onCompleted: {
+            connect()
+            createCollection("testcollection")
+
+            var json1 = load("testcollection", "55b2311259e6b64f00000000")
+            var json2 = load("testcollection", "55b2311259e6b64f00000001")
+
+            if (!json1) {
+                json1 = {
+                    _id: '55b2311259e6b64f00000000',
+                    colors: [
+                        {colorCode:'red', name: '1'},
+                        {colorCode:'blue', name: '2'},
+                        {colorCode:'green', name: '3'},
+                    ]
+                }
+
+                json1 = save('testcollection', json1)
+            }
+            d1 = json1
+            if (!json2) {
+                json2 = {
+                    _id: '55b2311259e6b64f00000001',
+                    colors: [
+                        {colorCode:'red', name: '1'},
+                        {colorCode:'blue', name: '2'},
+                        {colorCode:'green', name: '3'},
+                    ]
+                }
+                json2 = save('testcollection', json2)
+            }
+            d2 = json2
+        }
+    }
+
+    Component.onDestruction: {
+    }
 
     Rectangle {
         anchors.fill: parent
@@ -21,11 +65,13 @@ Rectangle {
 
             currentIndex: -1
 
-            model: ListModel {
-                ListElement { colorCode: "red"; name: "1" }
-                ListElement { colorCode: "blue"; name: "2" }
-                ListElement { colorCode: "green"; name: "3" }
+            model: QEjdb.ArrayPropertyModel {
+                client: qtejdb
+                collection: 'testcollection'
+                arrayProperty: 'colors'
+                parentObject: d1
             }
+
             delegate: ListItem {
             }
         }
@@ -39,10 +85,11 @@ Rectangle {
 
             currentIndex: -1
 
-            model: ListModel {
-                ListElement { colorCode: "red"; name: "4" }
-                ListElement { colorCode: "blue"; name: "5" }
-                ListElement { colorCode: "green"; name: "6" }
+            model: QEjdb.ArrayPropertyModel {
+                client: qtejdb
+                collection: 'testcollection'
+                arrayProperty: 'colors'
+                parentObject: d2
             }
             delegate: ListItem {
             }
