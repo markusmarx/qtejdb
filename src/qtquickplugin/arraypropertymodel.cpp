@@ -1,6 +1,7 @@
 #include "arraypropertymodel.h"
 #include "itemmodel/qejdbarraypropertysync.h"
 #include <QJSValueIterator>
+#include <QDebug>
 
 ArrayPropertyModel::ArrayPropertyModel(QObject *parent)
     :BaseModel(parent), m_parentObject(QJSValue(QJSValue::NullValue))
@@ -32,13 +33,9 @@ bool ArrayPropertyModel::checkProperties()
     if (m_arrayProperty.isEmpty()) {
         error = true;
     }
-    if (m_propertyCollection.isEmpty()) {
-        error = true;
-    }
     if (m_parentObject.isNull()) {
         error = true;
     }
-
 
     return !error;
 }
@@ -69,7 +66,7 @@ void ArrayPropertyModel::connected()
 {
     if (m_client->isConnected() && checkProperties()) {
         QEjdbDatabase db = QEjdbDatabase::database(m_client->connectionName());
-        QBsonObject parentObject = m_client->convert(m_parentObject);
+        QBsonObject parentObject = m_client->convert(m_parentObject).toObject();
 
         QEjdbArrayPropertySync *arrPropSync
                 = new QEjdbArrayPropertySync(
@@ -129,7 +126,7 @@ void ArrayPropertyModel::setParentObject(QJSValue parentObject)
         return;
 
     m_parentObject = parentObject;
-    emit parentObjectChanged(m_client->convert(parentObject));
+    emit parentObjectChanged(m_client->convert(parentObject).toObject());
     tryInit();
 }
 

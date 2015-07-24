@@ -62,7 +62,7 @@ public:
     QBsonArray toArray() const;
     bool toBool() const;
     QBsonOid toId() const;
-    bool operator ==(const QBsonValue value) const;
+    bool operator ==(const QBsonValue &value) const;
     bool isObject() const;
     bool isArray() const;
     bool isValid() const;
@@ -78,6 +78,6 @@ private:
     bool isValid(QBsonValue::QBsonValueType type) const;
 };
 
-bool operator ==(const QVariant variant, const QBsonValue value);
+bool operator ==(const QVariant &variant, const QBsonValue &value);
 
 #endif // QBSONVALUE_H

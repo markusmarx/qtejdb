@@ -22,7 +22,7 @@
  */
 
 QBsonItemModel::QBsonItemModel(QObject *parent)
-    : QObject(parent)
+    : QObject(parent), m_idCounter(0)
 {
 
 }

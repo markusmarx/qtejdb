@@ -81,7 +81,7 @@ public:
      }
 
 
-     QBsonObject convert(const QJSValue &jsValue);
+     QBsonValue convert(const QJSValue &jsValue);
      QJSValue convert(const QBsonObject &bsonObject);
      QJSValue save(QString collectionName, const QJSValue &jsValue);
      QJSValue load(QString collectionName, QJSValue uid);

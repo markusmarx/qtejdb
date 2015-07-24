@@ -447,7 +447,7 @@ bool QBsonValue::isValid(QBsonValue::QBsonValueType type) const
     return isValid() && data->type == type;
 }
 
-bool QBsonValue::operator ==(const QBsonValue value) const
+bool QBsonValue::operator ==(const QBsonValue &value) const
 {
     return data->v == value.data->v;
 }
@@ -457,7 +457,7 @@ bool QBsonValue::operator ==(const QVariant value) const
     return data->v == value;
 }
 
-bool operator ==(const QVariant variant, const QBsonValue value)
+bool operator ==(const QVariant &variant, const QBsonValue &value)
 {
     return variant == value.toVariant();
 }

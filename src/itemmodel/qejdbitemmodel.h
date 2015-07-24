@@ -52,9 +52,10 @@ public:
 signals:
 
 public slots:
-     void insert(const QBsonObject &bsonObject, int row);
-     void remove(int row);
-     void move(int sourceRow, int destinationRow);
+     void insert(int row, const QBsonObject &bsonObject);
+     void remove(int row, int count = 1);
+     void move(int sourceRow, int destinationRow, int count = 1);
+     QBsonObject get(int row);
      void reset();
 
 private:

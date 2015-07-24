@@ -46,6 +46,19 @@ Window {
         anchors.right: parent.right
         anchors.bottom: parent.bottom
         model: model
-        delegate: Text {text: name}
+        delegate: Item{
+            property string itemName: name
+            height: textItem.height
+            width: listView.width
+            Text {
+                id: textItem
+                text: parent.itemName}
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    name = parent.itemName + '1'
+                }
+            }
+        }
     }
 }

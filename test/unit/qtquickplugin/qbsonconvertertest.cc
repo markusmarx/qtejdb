@@ -93,7 +93,7 @@ TEST(QBsonConverterTest, TestConvertQJsValueWithInt)
     conv->setJSEngine(jsEngine);
     QJSValue obj = jsEngine->newObject();
     obj.setProperty("number", 11);
-    QBsonObject bObj = conv->convert(obj);
+    QBsonObject bObj = conv->convert(obj).toObject();
     EXPECT_EQ(11, bObj.value("number").toInt());
     delete conv;
     delete jsEngine;
@@ -105,7 +105,7 @@ TEST(QBsonConverterTest, TestConvertQJsValueWithDouble)
     conv->setJSEngine(jsEngine);
     QJSValue obj = jsEngine->newObject();
     obj.setProperty("number", 11.11);
-    QBsonObject bObj = conv->convert(obj);
+    QBsonObject bObj = conv->convert(obj).toObject();
     EXPECT_EQ(11.11, bObj.value("number").toDouble());
     delete conv;
     delete jsEngine;
@@ -117,7 +117,7 @@ TEST(QBsonConverterTest, TestConvertQJsValueWithString)
     conv->setJSEngine(jsEngine);
     QJSValue obj = jsEngine->newObject();
     obj.setProperty("string", "test");
-    QBsonObject bObj = conv->convert(obj);
+    QBsonObject bObj = conv->convert(obj).toObject();
     EXPECT_EQ("test", bObj.value("string").toString());
     delete conv;
     delete jsEngine;
@@ -129,7 +129,7 @@ TEST(QBsonConverterTest, TestConvertQJsValueWithBool)
     conv->setJSEngine(jsEngine);
     QJSValue obj = jsEngine->newObject();
     obj.setProperty("bool", true);
-    QBsonObject bObj = conv->convert(obj);
+    QBsonObject bObj = conv->convert(obj).toObject();
     EXPECT_EQ(true, bObj.value("bool").toBool());
     delete conv;
     delete jsEngine;
@@ -142,7 +142,7 @@ TEST(QBsonConverterTest, TestConvertQJsValueWithDatetime)
     QJSValue obj = jsEngine->newObject();
     QDateTime now = QDateTime::currentDateTime();
     obj.setProperty("datetime", jsEngine->toScriptValue(now));
-    QBsonObject bObj = conv->convert(obj);
+    QBsonObject bObj = conv->convert(obj).toObject();
     EXPECT_EQ(now, bObj.value("datetime").toDateTime());
     delete conv;
     delete jsEngine;
@@ -156,7 +156,7 @@ TEST(QBsonConverterTest, TestConvertQJsValueWithSubObject)
     QJSValue subobj = jsEngine->newObject();
     subobj.setProperty("name", "subobj");
     obj.setProperty("subobj", subobj);
-    QBsonObject bObj = conv->convert(obj);
+    QBsonObject bObj = conv->convert(obj).toObject();
     EXPECT_EQ("subobj", bObj.value("subobj").toObject().value("name"));
     delete conv;
     delete jsEngine;
@@ -171,7 +171,7 @@ TEST(QBsonConverterTest, TestConvertQJsValueWithArray)
     array.setProperty(0, 1);
     array.setProperty(1, 2);
     obj.setProperty("array", array);
-    QBsonObject bObj = conv->convert(obj);
+    QBsonObject bObj = conv->convert(obj).toObject();
     EXPECT_EQ(1, bObj.value("array").toArray().value(0).toInt());
     EXPECT_EQ(2, bObj.value("array").toArray().value(1).toInt());
     delete conv;
@@ -185,7 +185,7 @@ TEST(QBsonConverterTest, TestConvertQJsValueWithId)
     QJSValue obj = jsEngine->newObject();
     QBsonOid oid = QBsonOid::generate();
     obj.setProperty("_id", oid.toString());
-    QBsonObject bObj = conv->convert(obj);
+    QBsonObject bObj = conv->convert(obj).toObject();
     EXPECT_EQ(oid, bObj.oid());
     delete conv;
     delete jsEngine;

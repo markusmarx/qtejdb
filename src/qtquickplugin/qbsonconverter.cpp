@@ -30,14 +30,14 @@ QJSValue QBsonConverter::convert(const QBsonObject &bsonObject)
  *
  * @param jsValue
  *
- * @return QBsonObject
+ * @return QBsonValue
  */
-QBsonObject QBsonConverter::convert(const QJSValue &jsValue)
+QBsonValue QBsonConverter::convert(const QJSValue &jsValue)
 {
     if (jsValue.isObject()) {
         return mapObject(jsValue);
     }
-    return QBsonObject();
+    return mapValue(jsValue);
 }
 
 void QBsonConverter::setJSEngine(QJSEngine *engine)

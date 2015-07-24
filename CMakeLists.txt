@@ -94,7 +94,9 @@ SETUP_TARGET_FOR_COVERAGE(test_coverage test coverage)
 #
 # ADD DEMO AND MANUAL TESTS
 #
+
 add_subdirectory(test/manual/demo1)
+add_subdirectory(test/manual/demo2)
 
 
 

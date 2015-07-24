@@ -34,7 +34,7 @@ bool QEjdbFileWorker::isOpen()
 
 bool QEjdbFileWorker::close()
 {
-    bool res;
+    bool res = true;
 
     if (!isOpen()) return false;
 
