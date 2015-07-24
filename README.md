@@ -6,6 +6,7 @@
   <img alt="Coverity Scan Build Status"
        src="https://scan.coverity.com/projects/5815/badge.svg"/>
 </a>
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/markusmarx/qtejdb?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 QtEjdb is a simple to use document store. It's based on Qt and ejdb.
 
