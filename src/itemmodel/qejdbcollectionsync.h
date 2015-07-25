@@ -4,7 +4,7 @@
 #include "qbson/qbsonobject.h"
 #include "qbsonitemmodelsync_p.h"
 
-class QEjdbCollectionSync: public QEjdbAbstractSync
+class Q_DECL_EXPORT QEjdbCollectionSync: public QEjdbAbstractSync
 {
     Q_OBJECT
 public:

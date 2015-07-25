@@ -11,39 +11,70 @@
 #include "qbson/qbsonvalue.h"
 #include <QtQml/qqml.h>
 
-/**
- * @class QEjdbClient
- * @ingroup QtQuick
- * @brief QEjdbClient handles all communication with the QEjdb database.
- *
- * @section mapping How Simple Properties are mapped from QtQuick
- *
- * The id property name is renamed to _id in the bson representation and
- * visa versa. Id value must be a 12 byte array QBsonOid .
- *
- *  QBsonValue   | QJsValue
- * ------------- | -------------
- * Id            | String
- * String        | String
- * Double        | Double
- * Integer       | Integer
- * Long          | Integer
- * Bool          | Bool
- * DateTime      | DateTime
- *
- *
- *
+/*!
+  \qmltype QEjdbClient
+  \since QtEjdb 1.0
+  \inqmlmodule QtEjdb
+  \ingroup qtejdb-qml
+  \target QEjdbClientQml
+  \brief Client interface to access ejdb service.
+    \snippet simple.qml import
+    QEjdbClient connects an ejdb.
+    It is used for all communication with the QtEjdb backend.
+    \snippet simple.qml client
+
+    An client can connect an ejdb with an \l uri or a connectionName. With a
+    connectionName you can connect an previous opened connection.
+    \code
+    // c++
+    QEjdbDatabase::addDatabase("file:test_db", "myconnection");
+    // qml
+    QEjdbClient {
+        id: client
+        connectionName: 'myconnection'
+    }
+    \endcode
+*/
+
+/*!
+  \qmlproperty QString QEjdbClient::uri
+
+  Open a database from uri.
+  \snippet simple.qml client
+
+ */
+/*!
+  \qmlproperty QString QEjdbClient::connectionName
+
+  Open a database from an already opened QEjdbDatabase.
  */
 
-/**
- * @brief QEjdbClientPrivate::save Saves a Json in database. If autoCreateCollection is true
- * colleciton will created.
- *
- * @param collectionName name of collection
- *
- * @param jsValue
- *
- * @return created Json with id parameter
+/*!
+  \qmlmethod QJsValue QEjdbClient::save(QString collectionName, QJSValue json)
+  Saves a bson in a given collection. The returned json have a _id property
+  with a generated bson id.
+  \snippet simple.qml save
+ */
+/*!
+ * \qmlmethod QJSValue QEjdbClient::load(QString collectionName, QJsValue uid)
+ * Loads a bson with his id. If no bson found an empty json is returned.
+ */
+/*!
+ * \qmlmethod void QEjdbClient::createCollection(QString collectionName);
+ * Creates a collection with name.
+ */
+/*!
+ * \qmlmethod void QEjdbClient::removeCollection(QString collectionName);
+ * Removes a collection with name.
+ */
+/*!
+ * \qmlmethod void QEjdbClient::remove(QString collectionName, QJsValue id);
+ * Removes a json with  from collection.
+ */
+/*!
+ * \qmlmethod void QEjdbClient::query(QString collectionName, QJsValue query, QJsValue hints);
+ * Get an array with json from collection. Desciption about building queries and hints
+ * see \l http://ejdb.org/doc/ql/ql.html
  */
 QJSValue QEjdbClientPrivate::save(QString collectionName, const QJSValue &jsValue)
 {
@@ -61,15 +92,6 @@ QJSValue QEjdbClientPrivate::save(QString collectionName, const QJSValue &jsValu
     return resultJs;
 }
 
-/**
- * @brief QEjdbClientPrivate::load load a Json from database stored in collection
- * identified by collectionName. If nothing found en empty Json is returned.
- *
- * @param collectionName name of collection
- * @param uid Bson uid
- *
- * @return Json Object or empty Json if noting found
- */
 QJSValue QEjdbClientPrivate::load(QString collectionName, QJSValue uid)
 {
     QEjdbDatabase db = database();
@@ -86,11 +108,6 @@ QJSValue QEjdbClientPrivate::load(QString collectionName, QJSValue uid)
     return QJSValue(QJSValue::NullValue);
 }
 
-/**
- * @brief QEjdbClientPrivate::remove remove a bson from database collection. Returns true
- * if remove succeed otherwise false.
- *
- */
 QJSValue QEjdbClientPrivate::remove(QString collectionName, QJSValue uid)
 {
     QEjdbDatabase db = database();
@@ -103,15 +120,6 @@ QJSValue QEjdbClientPrivate::remove(QString collectionName, QJSValue uid)
     return QJSValue(false);
 }
 
-/**
- * @brief QEjdbClientPrivate::query Returns a array with json from collection.
- *
- * @param collectionName collection name
- * @param query query see ejdb documentation
- * @param hints hints see ejdb documentation
- *
- * @return json array
- */
 QJSValue QEjdbClientPrivate::query(QString collectionName, QJSValue query, QJSValue hints)
 {
     QEjdbDatabase db = database();
@@ -122,55 +130,27 @@ QJSValue QEjdbClientPrivate::query(QString collectionName, QJSValue query, QJSVa
 }
 
 
-/**
- * @internal
- * @brief QEjdbClient::convert convert a QJsValue to QBsonObject. See @ref mapping
- * how to property types are mapped.
- *
- * @param jsValue a QJSValue instance
- *
- * @return QBsonObject converted instance
- */
 QBsonValue QEjdbClientPrivate::convert(const QJSValue &jsValue)
 {
     return m_bsonConverter.convert(jsValue);
 }
 
-/**
- * @internal
- * @brief QEjdbClient::convert convert a QBsonValue to QJsValue. See @ref mapping
- * how to property types are mapped.
- *
- * @param bsonObject a QBsonObject to convert
- *
- * @return QJSValue converted value
- */
 QJSValue QEjdbClientPrivate::convert(const QBsonObject &bsonObject)
 {
     return m_bsonConverter.convert(bsonObject);
 }
 
-/**
- * @brief QEjdbClient::QEjdbClient
- * @param parent
- */
 QEjdbClient::QEjdbClient(QObject *parent)
     : QObject(parent), d_ptr(new QEjdbClientPrivate(this))
 {
 
 }
 
-/**
- * @brief QEjdbClient::~QEjdbClient delete object
- */
 QEjdbClient::~QEjdbClient()
 {
     delete d_ptr;
 }
 
-/**
- * @brief QEjdbClient::classBegin
- */
 void QEjdbClient::classBegin()
 {
 
@@ -193,17 +173,9 @@ void QEjdbClient::componentComplete()
     }
 
     d->m_bsonConverter.setJSEngine(engine);
+    connect();
 }
 
-/**
- * @brief QEjdbClient::save save the json in the collection.
- *
- * @param collectionName
- *
- * @param jsValue QJSValue to save
- *
- * @return
- */
 QJSValue QEjdbClient::save(QString collectionName, const QJSValue &jsValue)
 {
     Q_D(QEjdbClient);
@@ -216,16 +188,6 @@ QJSValue QEjdbClient::remove(QString collectionName, QJSValue uid)
     return d->remove(collectionName, uid);
 }
 
-/**
- * @brief QEjdbClientPrivate::query Returns a array with json from collection with
- * query and hints.
- *
- * @param collectionName collection name
- * @param query query see ejdb documentation
- * @param hints hints see ejdb documentation
- *
- * @return json array
- */
 QJSValue QEjdbClient::query(QString collectionName, QJSValue query, QJSValue hints)
 {
     Q_D(QEjdbClient);
@@ -262,28 +224,17 @@ QString QEjdbClient::connectionName() const
     return d_ptr->m_connectionName;
 }
 
-/**
- * @brief QEjdbClient::autoCreateCollection If true a collection that not exist
- * is created automatically on load, save or query methods.
- *
- * @return value of autoCreateCollection
- */
 bool QEjdbClient::autoCreateCollection() const
 {
 
     return d_ptr->m_autoCreateCollection;
 }
 
-/**
- * @brief QEjdbClient::convert tranform QJSValue to QBsonObject.
- */
 QBsonValue QEjdbClient::convert(const QJSValue &jsValue)
 {
     return d_ptr->convert(jsValue);
 }
-/**
- * @brief QEjdbClient::convert tranform QBsonObject to QJSValue.
- */
+
 QJSValue QEjdbClient::convert(const QBsonObject &bsonObject)
 {
     return d_ptr->convert(bsonObject);
@@ -303,9 +254,6 @@ void QEjdbClient::registerModel(BaseModel *baseModel)
     QObject::connect(this, &QEjdbClient::disconnected, baseModel, &BaseModel::disconnected);
 }
 
-/**
- * @brief QEjdbClient::connect
- */
 void QEjdbClient::connect()
 {
     Q_D(QEjdbClient);
@@ -320,20 +268,15 @@ void QEjdbClient::connect()
     QEjdbDatabase db;
     QString uri = d->m_uri;
     QString connectionName = d->m_connectionName;
-
-
-
-    db = QEjdbDatabase::addDatabase(uri, connectionName);
+    if (!uri.isEmpty()) {
+        db = QEjdbDatabase::addDatabase(uri, connectionName);
+    } else {
+        db = QEjdbDatabase::database(connectionName);
+    }
     d->m_isConnected = true;
     emit connected();
 }
 
-/**
- * @brief QEjdbClient::disconnect close database connection and remove database
- * from dictionary.
- *
- * @see QEjdbDatabase::removeDatabase()
- */
 void QEjdbClient::disconnect()
 {
     QEjdbDatabase db = d_ptr->database();
@@ -341,16 +284,6 @@ void QEjdbClient::disconnect()
     QEjdbDatabase::removeDatabase(d_ptr->m_connectionName);
 }
 
-/**
- * @brief QEjdbClient::setConnectionName set connection name that is stored in
- * database connection dictionary
- *
- * @param connectionName name of connection
- *
- * @return void
- *
- * @see QEjdbDatabase::addDatabase()
- */
 void QEjdbClient::setConnectionName(QString connectionName)
 {
     Q_D(QEjdbClient);
@@ -361,15 +294,6 @@ void QEjdbClient::setConnectionName(QString connectionName)
     emit connectionNameChanged(connectionName);
 }
 
-/**
- * @brief QEjdbClient::setUri set uri to connect database.
- *
- * @param uri connection uri
- *
- * @return void
- *
- * @see QEjdbDatabase::addDatabase(QString,QString)
- */
 void QEjdbClient::setUri(QString uri)
 {
     Q_D(QEjdbClient);
@@ -380,16 +304,6 @@ void QEjdbClient::setUri(QString uri)
     emit uriChanged(uri);
 }
 
-/**
- * @brief QEjdbClient::setAutoCreateCollection If true a collection that not
- * exist is created automaticaly.
- *
- * @param autoCreateCollection true creates a collection or false not.
- *
- * @return void
- *
- * @see QEjdbClient::autoCreateCollection()
- */
 void QEjdbClient::setAutoCreateCollection(bool autoCreateCollection)
 {
     Q_D(QEjdbClient);

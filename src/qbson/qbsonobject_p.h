@@ -7,7 +7,7 @@
 
 QT_FORWARD_DECLARE_CLASS(QBsonObject)
 
-class QBsonObjectData  {
+class Q_DECL_EXPORT QBsonObjectData  {
 
 public:
     QBsonObjectData()

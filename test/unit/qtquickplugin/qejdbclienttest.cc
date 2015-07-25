@@ -52,7 +52,6 @@ TEST_F(QEjdbClientTest, TestConnectionWithExistdb)
 {
     QEjdbClient *client = new QEjdbClient;
     client->setConnectionName(CONN_NAME);
-    client->setUri(DBURL);
     client->componentComplete();
     client->connect();
     EXPECT_TRUE(QEjdbDatabase::database(CONN_NAME).isOpen());

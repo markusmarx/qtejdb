@@ -29,5 +29,14 @@ target_include_directories (
     ${PROJECT_SOURCE_DIR}/3rdparty/qtrcp2/lib
 )
 
-target_link_libraries(qtejdb_p Qt5::Core z ejdb_p)
-target_link_libraries(qtejdb Qt5::Core z ejdb_p)
+
+if (WIN32)
+    target_link_libraries(qtejdb Qt5::Core ejdb)
+    target_link_libraries(qtejdb_p Qt5::Core)
+        add_custom_command(TARGET qtejdb POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy ${ZLIB_LIB_PATH}/libzlib.dll ${LIBRARY_OUTPUT_PATH}
+        )
+else()
+    target_link_libraries(qtejdb Qt5::Core ejdb_p)
+    target_link_libraries(qtejdb_p Qt5::Core ejdb_p)
+endif()

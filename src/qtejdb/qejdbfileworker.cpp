@@ -60,6 +60,7 @@ bool QEjdbFileWorker::createCollection(const QString &collectionName)
     opts.compressed = true;
     opts.large = false;
     opts.records = 1000;
+    opts.cachedrecords = 100;
     EJCOLL *col = ejdbcreatecoll(m_db, collectionName.toLatin1(), &opts);
 
     return col!=0;

@@ -25,7 +25,7 @@ class QBsonOidData;
  * 12-byte array.
  * @see http://docs.mongodb.org/manual/reference/object-id/
  */
-class QBsonOid
+class Q_DECL_EXPORT QBsonOid
 {
 public:
     QBsonOid();

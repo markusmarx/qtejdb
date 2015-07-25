@@ -4,7 +4,7 @@
 #include <QException>
 #include <QDebug>
 
-class QEjdbException : public QException
+class Q_DECL_EXPORT QEjdbException : public QException
 {
 
 public:
@@ -34,6 +34,6 @@ private:
 };
 
 
-QDebug operator<<(QDebug dbg, const QEjdbException &ex);
+Q_DECL_EXPORT QDebug operator<<(QDebug dbg, const QEjdbException &ex);
 
 #endif // QEJDBEXCEPTION_H

@@ -12,7 +12,7 @@ typedef QHash<QString, QBsonValue> QBsonValueHash;
 class QBsonObjectData;
 class QBsonOid;
 
-class QBsonObject
+class Q_DECL_EXPORT QBsonObject
 {
 public:
 
@@ -53,13 +53,13 @@ protected:
 Q_DECLARE_METATYPE(QBsonObject)
 Q_DECLARE_METATYPE(QList<QBsonObject>)
 
-QDebug operator<<(QDebug dbg, const QBsonObject &c);
+QDebug Q_DECL_EXPORT operator<<(QDebug dbg, const QBsonObject &c);
 
-QDataStream& operator<<(QDataStream& d, const QBsonObject& object);
-QDataStream& operator>>(QDataStream& d, QBsonObject& object);
+Q_DECL_EXPORT QDataStream& operator<<(QDataStream& d, const QBsonObject& object);
+Q_DECL_EXPORT QDataStream& operator>>(QDataStream& d, QBsonObject& object);
 
-QDataStream& operator<<(QDataStream& d, const QList<QBsonObject>& objectList);
-QDataStream& operator>>(QDataStream& d, QList<QBsonObject>& objectList);
+Q_DECL_EXPORT QDataStream& operator<<(QDataStream& d, const QList<QBsonObject>& objectList);
+Q_DECL_EXPORT QDataStream& operator>>(QDataStream& d, QList<QBsonObject>& objectList);
 
 
 #endif // QBSONOBJECT_H

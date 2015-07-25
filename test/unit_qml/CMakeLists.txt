@@ -16,8 +16,22 @@ target_link_libraries(
     Qt5::QuickTest
 )
 
-add_custom_command(TARGET qtquicktest POST_BUILD
-  COMMAND cp -uv ${CMAKE_CURRENT_SOURCE_DIR}/*.qml ${CMAKE_CURRENT_BINARY_DIR}
-)
+if(WIN32)
+    add_custom_command(TARGET qtquicktest POST_BUILD
+      COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/tst_Client.qml ${CMAKE_CURRENT_BINARY_DIR}
+      COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/tst_ArrayPropertyModel.qml ${CMAKE_CURRENT_BINARY_DIR}
+      COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/tst_CollectionModel.qml ${CMAKE_CURRENT_BINARY_DIR}
+      COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_BINARY_DIR}/plugins ${CMAKE_CURRENT_BINARY_DIR}
+      COMMAND ${CMAKE_COMMAND} -E copy ${LIBRARY_OUTPUT_PATH}/libejdb.dll ${CMAKE_CURRENT_BINARY_DIR}
+      COMMAND ${CMAKE_COMMAND} -E copy ${LIBRARY_OUTPUT_PATH}/libqtejdb.dll ${CMAKE_CURRENT_BINARY_DIR}
+      COMMAND ${CMAKE_COMMAND} -E copy ${LIBRARY_OUTPUT_PATH}/libzlib.dll ${CMAKE_CURRENT_BINARY_DIR}
+    )
+else()
+    add_custom_command(TARGET qtquicktest POST_BUILD
+      COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/tst_Client.qml ${CMAKE_CURRENT_BINARY_DIR}
+      COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/tst_ArrayPropertyModel.qml ${CMAKE_CURRENT_BINARY_DIR}
+      COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/tst_CollectionModel.qml ${CMAKE_CURRENT_BINARY_DIR}
+    )
+endif()
 
 add_test(QQmlPluginUnitTest qtquicktest -txt -import ${CMAKE_BINARY_DIR}/plugins)

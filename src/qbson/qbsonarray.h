@@ -6,7 +6,7 @@
 
 class QBsonArrayData;
 
-class QBsonArray
+class Q_DECL_EXPORT QBsonArray
 {
 public:
     QBsonArray();

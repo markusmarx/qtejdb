@@ -4,6 +4,15 @@
 #include "qbson/qbsonvalue.h"
 #include <QDebug>
 
+/*!
+  \qmltype CollectionModel
+  \since QtEjdb 1.0
+  \inqmlmodule QtEjdb
+  \ingroup qtejdb-qml
+  \target QEjdbClientQml
+  \brief CollectionModel manages a collection in an itemmodel to use with
+  views. Part of QtEjdb Qml Plugin
+*/
 CollectionModel::CollectionModel(QObject *parent)
     :BaseModel(parent)
 {

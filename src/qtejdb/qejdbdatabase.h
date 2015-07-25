@@ -36,7 +36,7 @@ namespace QEJDB {
 
 class QEjdbDatabasePrivate;
 class QEjdbQuery;
-class QEjdbDatabase
+class Q_DECL_EXPORT QEjdbDatabase
 {
 
 public:

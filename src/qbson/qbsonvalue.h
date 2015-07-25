@@ -10,7 +10,7 @@ class QBsonObject;
 class QBsonArray;
 class QBsonOid;
 
-class QBsonValue
+class Q_DECL_EXPORT QBsonValue
 {
 public:
 
@@ -78,6 +78,6 @@ private:
     bool isValid(QBsonValue::QBsonValueType type) const;
 };
 
-bool operator ==(const QVariant &variant, const QBsonValue &value);
+bool Q_DECL_EXPORT operator ==(const QVariant &variant, const QBsonValue &value);
 
 #endif // QBSONVALUE_H

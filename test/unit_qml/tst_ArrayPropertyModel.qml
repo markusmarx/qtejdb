@@ -28,7 +28,7 @@ TestCase {
         }
     }
 
-    QEjdb.ArrayPropertyModel {
+   QEjdb.ArrayPropertyModel {
         id: modelInvalid
     }
 
