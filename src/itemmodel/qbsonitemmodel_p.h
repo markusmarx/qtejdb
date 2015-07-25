@@ -71,7 +71,7 @@ private:
      */
     inline void internalInsert(const QBsonObject &bsonObject, uint row)
     {
-        StorageId storageId = bsonObject.hasOid()?bsonObject.oid().hash(): m_idCounter++;
+        StorageId storageId = bsonObject.hasOid()?bsonObject.oid().hash():m_idCounter++;
         m_bsonList.insert(row, storageId);
         m_bsonId.insert(bsonObject.oid().toString(), storageId);
         m_bsonObjects.insert(storageId, bsonObject);
@@ -91,26 +91,26 @@ private:
     }
 
     /**
-     * @brief internalGet Returns the bson on row.
+     * @brief internalGetWWithRow Returns the bson on row.
      *
      * @param row row
      *
      * @return bson stored on row
      */
-    inline QBsonObject internalGet(int row)
+    inline QBsonObject internalGetWithRow(int row)
     {
         StorageId storageId = m_bsonList.value(row);
         return m_bsonObjects.value(storageId);
     }
 
     /**
-     * @brief internalGet Returns bson by bsonId.
+     * @brief internalGetWithOid Returns bson by bsonId.
      *
      * @param bsonId bsonid
      *
      * @return bson stored on id
      */
-    inline QBsonObject internalGet(QBsonId bsonId)
+    inline QBsonObject internalGetWithOid(QBsonId bsonId)
     {
         return m_bsonObjects.value(m_bsonId.value(bsonId));
     }

@@ -160,7 +160,7 @@ QHash<int, QByteArray> QBsonItemModel::roles()
 QBsonObject QBsonItemModel::row(int row)
 {
     if (isValidRow(row)) {
-        return internalGet(row);
+        return internalGetWithRow(row);
     }
     return QBsonObject();
 }
@@ -171,7 +171,7 @@ QBsonObject QBsonItemModel::row(int row)
 QBsonValue QBsonItemModel::data(int row, int role)
 {
     if (isValidRow(row)) {
-        return internalGet(row).value(roleAsKey(role));
+        return internalGetWithRow(row).value(roleAsKey(role));
     }
     return QBsonValue();
 }
@@ -183,7 +183,7 @@ void QBsonItemModel::setData(int row, int role, const QBsonValue &value)
 {
     QString key = roleAsKey(role);
     if (isValidRow(row) && !key.isEmpty()) {
-        internalGet(row).insert(roleAsKey(role), value);
+        internalGetWithRow(row).insert(roleAsKey(role), value);
         emit itemUpdated(key, value.toVariant(), row);
     }
 }
@@ -195,7 +195,7 @@ void QBsonItemModel::setData(int row, int role, const QBsonValue &value)
  */
 QBsonObject QBsonItemModel::byOid(QBsonItemModel::QBsonId bsonId)
 {
-    return internalGet(bsonId);
+    return internalGetWithOid(bsonId);
 }
 
 /**

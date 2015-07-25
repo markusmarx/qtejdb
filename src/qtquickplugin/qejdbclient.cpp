@@ -103,6 +103,24 @@ QJSValue QEjdbClientPrivate::remove(QString collectionName, QJSValue uid)
     return QJSValue(false);
 }
 
+/**
+ * @brief QEjdbClientPrivate::query Returns a array with json from collection.
+ *
+ * @param collectionName collection name
+ * @param query query see ejdb documentation
+ * @param hints hints see ejdb documentation
+ *
+ * @return json array
+ */
+QJSValue QEjdbClientPrivate::query(QString collectionName, QJSValue query, QJSValue hints)
+{
+    QEjdbDatabase db = database();
+    QBsonObject queryObj = convert(query).toObject();
+    QBsonObject hintsObj = convert(hints).toObject();
+    QEjdbResult res = db.query(collectionName, queryObj, hintsObj);
+    return m_bsonConverter.convert(res.values());
+}
+
 
 /**
  * @internal
@@ -196,6 +214,22 @@ QJSValue QEjdbClient::remove(QString collectionName, QJSValue uid)
 {
     Q_D(QEjdbClient);
     return d->remove(collectionName, uid);
+}
+
+/**
+ * @brief QEjdbClientPrivate::query Returns a array with json from collection with
+ * query and hints.
+ *
+ * @param collectionName collection name
+ * @param query query see ejdb documentation
+ * @param hints hints see ejdb documentation
+ *
+ * @return json array
+ */
+QJSValue QEjdbClient::query(QString collectionName, QJSValue query, QJSValue hints)
+{
+    Q_D(QEjdbClient);
+    return d->query(collectionName, query, hints);
 }
 
 void QEjdbClient::createCollection(QString collection)

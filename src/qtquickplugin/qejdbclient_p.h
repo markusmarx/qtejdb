@@ -86,6 +86,7 @@ public:
      QJSValue save(QString collectionName, const QJSValue &jsValue);
      QJSValue load(QString collectionName, QJSValue uid);
      QJSValue remove(QString collectionName, QJSValue uid);
+     QJSValue query(QString collectionName, QJSValue query, QJSValue hints);
 };
 
 #endif // QEJDBCLIENTPRIVATE_H

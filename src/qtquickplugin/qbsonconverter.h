@@ -14,6 +14,7 @@ public:
 
     QJSValue convert(const QBsonObject &bsonObject);
     QBsonValue convert(const QJSValue &jsValue);
+    QJSValue convert(const QList<QBsonObject> &bsonObjList);
     void setJSEngine(QJSEngine *engine);
 protected:
 
