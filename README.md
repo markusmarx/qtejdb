@@ -21,7 +21,7 @@ Dependencies:
 Test dependencies:
 
   - GoogleTest, GoogleMock (automaticly downloaded while building)
-  - boost
+  - boost (automaticly downloaded while building)
 
 ## Build and Test
 
