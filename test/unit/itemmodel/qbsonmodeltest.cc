@@ -258,3 +258,15 @@ TEST(QBsonItemModelTest, TestClear)
     model.clear();
     EXPECT_EQ(0, model.count());
 }
+TEST(QBsonItemModelTest, TestInsertTwice)
+{
+    QBsonItemModel model;
+    QBsonItemModelSignalSpy spy(&model);
+    EXPECT_CALL(spy, itemInserted(0)).Times(2);
+    EXPECT_CALL(spy, reset()).Times(1);
+    model.insert(createBsonObject(false, 0), 0);
+    model.insert(createBsonObject(false, 1), 0);
+    EXPECT_EQ(2, model.count());
+    EXPECT_EQ(1, MODEL_DATA(model, 0, "marker"));
+    EXPECT_EQ(0, MODEL_DATA(model, 1, "marker"));
+}
