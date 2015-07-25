@@ -25,7 +25,27 @@ set_target_properties(libgmock PROPERTIES
 include_directories("${source_dir}/include")
 include_directories("${source_dir}/gtest/include")
 
+##
+## Configure boost
+##
+message("boost libs not found! boost will be downloaded.")
+# Download and install Boost
+ExternalProject_Add(
+    boost
+    URL http://sourceforge.net/projects/boost/files/boost/1.58.0/boost_1_58_0.tar.gz
+    #SVN_REPOSITORY http://googlemock.googlecode.com/svn/trunk
+    PREFIX ${CMAKE_CURRENT_BINARY_DIR}/3rdparty/boost
+    # Disable install step
+    INSTALL_COMMAND ""
+    UPDATE_COMMAND ""
+    CONFIGURE_COMMAND ""
+    BUILD_COMMAND ""
+)
+include_directories("${CMAKE_CURRENT_BINARY_DIR}/3rdparty/boost/src/boost")
+
+
 set(MODULES qbson qtejdb itemmodel qtquickplugin)
+
 set(ALL_SRC)
 set(ALL_HDRS)
 set(PUB_HDRS)
