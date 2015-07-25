@@ -40,6 +40,17 @@ QBsonValue QBsonConverter::convert(const QJSValue &jsValue)
     return mapValue(jsValue);
 }
 
+QJSValue QBsonConverter::convert(const QList<QBsonObject> &bsonObjList)
+{
+    QList<QBsonObject>::const_iterator it;
+    QJSValue val = m_jsEngine->newArray(bsonObjList.size());
+    int i = 0;
+    for(it = bsonObjList.begin(); it != bsonObjList.end(); it++) {
+        val.setProperty(i++, convert(*it));
+    }
+    return val;
+}
+
 void QBsonConverter::setJSEngine(QJSEngine *engine)
 {
     m_jsEngine = engine;

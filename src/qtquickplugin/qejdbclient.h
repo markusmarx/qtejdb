@@ -52,6 +52,7 @@ public slots:
     QJSValue load(QString collectionName, QJSValue uid);
     QJSValue save(QString collectionName, const QJSValue &jsValue);
     QJSValue remove(QString collectionName, QJSValue uid);
+    QJSValue query(QString collection, QJSValue query, QJSValue hints);
     void createCollection(QString collection);
     void removeCollection(QString collection);
 private:
