@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.11)
 #cmake_policy(SET CMP0028 OLD)
 project(qtejdb)
 
@@ -6,13 +6,21 @@ option(BUILD_SHARED_LIBS "Build shared libraries (DLLs)." ON)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/")
 
-
 # Enable ExternalProject CMake module
 include(ExternalProject)
 include(CodeCoverage)
 
-SET(CMAKE_CXX_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage --coverage -fPIC")
-#	 SET(CMAKE_C_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
+##
+## set compiler flags. add converage flags for debug mode
+##
+SET(QTEJDB_CMAKE_CXX_FLAGS  "-fPIC")
+SET(QTEJDB_CMAKE_CXX_FLAGS_DEBUG  "${QTEJDB_CMAKE_CXX_FLAGS} -O0 -fprofile-arcs -ftest-coverage --coverage")
+
+SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} ${QTEJDB_CMAKE_CXX_FLAGS_DEBUG}")
+SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} ${QTEJDB_CMAKE_CXX_FLAGS}")
+##
+## end set compiler flags
+##
 
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
