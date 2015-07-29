@@ -8,11 +8,11 @@
 </a>
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/markusmarx/qtejdb?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
-QtEjdb is an ejdb based embedded bson and json document store/ database. QtEjdb is completely build uppon Qt. Mein features are store and query documents in and from collections. QtEjdb serves a qtquickplugin to access documents from qml.
+QtEjdb is an ejdb based embedded bson and json document store/ database. QtEjdb is completely build uppon Qt. Main features are store and query documents in and from collections. Visit http://ejdb.org/ for more informations. QtEjdb serves a qtquickplugin to access documents from qml.
 
 ## Status
 
-QtEjdb is highly (daily) in development phase. All features are well testet. Test it for your purpose. Version 1.0 will be the first stable release.
+QtEjdb is highly (daily) in development phase. All features are well testet with qmltest and gmock. Version 1.0 will be the first stable release.
 
 ## Requirements
 
