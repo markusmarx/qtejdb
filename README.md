@@ -24,7 +24,6 @@ Dependencies:
   - zlib
 
 Test dependencies (are downloaded while building):
-
   - GoogleTest, GoogleMock
   - boost
 
