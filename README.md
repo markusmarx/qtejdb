@@ -10,6 +10,10 @@
 
 QtEjdb is an ejdb based embedded bson and json document store/ database. QtEjdb is completely build uppon Qt. Mein features are store and query documents in and from collections. QtEjdb serves a qtquickplugin to access documents from qml.
 
+## Status
+
+QtEjdb is highly (daily) in development phase. All features are well testet. Test it for your purpose. Version 1.0 will be the first stable release.
+
 ## Requirements
 
 Dependencies:
@@ -17,22 +21,55 @@ Dependencies:
   - Qt (>= 5)
   - ejdb (included)
   - CMake (>= 2.8.11)
+  - zlib
 
-Test dependencies:
+Test dependencies (are downloaded while building):
 
-  - GoogleTest, GoogleMock (automaticly downloaded while building)
-  - boost (automaticly downloaded while building)
+  - GoogleTest, GoogleMock
+  - boost
 
 ## Build and Test
+
+### Linux (64bit, 32bit)
 
 ```
   git clone --recursive https://github.com/markusmarx/qtejdb.git
   cd qtejdb
-  mkdir build
+  mkdir build/release
   cd build
-  cmake .. -DCMAKE_BUILD_TYPE=Release
+  cmake ../.. -DCMAKE_BUILD_TYPE=Release
   cmake --build .
 ```
+
+### Mac OS X
+
+```
+  git clone --recursive https://github.com/markusmarx/qtejdb.git
+  cd qtejdb
+  mkdir build/release
+  cd build
+  cmake ../.. -DCMAKE_BUILD_TYPE=Release
+  cmake --build .
+```
+
+### Windows (mingw 32bit)
+
+```
+in process
+```
+
+### Android
+
+```
+in progress
+```
+
+### iOS
+
+```
+in progress
+```
+
 
 The unit tests can be executed with ctest:
 
