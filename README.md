@@ -8,7 +8,7 @@
 </a>
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/markusmarx/qtejdb?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
-QtEjdb ist based on ejdb. Ejdb is an embedded bson database. QtEjdb is completely build uppon Qt and ejdb. So you can store json or bson documents in collections and query them. QtEjdb serves a qtquickplugin to manage documents within qml.
+QtEjdb is an ejdb based embedded bson and json document store/ database. QtEjdb is completely build uppon Qt. Mein features are store and query documents in and from collections. QtEjdb serves a qtquickplugin to access documents from qml.
 
 ## Requirements
 
