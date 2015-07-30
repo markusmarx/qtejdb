@@ -43,7 +43,6 @@ ExternalProject_Add(
 )
 include_directories("${CMAKE_CURRENT_BINARY_DIR}/3rdparty/boost/src/boost")
 
-
 set(MODULES qbson qtejdb itemmodel qtquickplugin)
 
 set(ALL_SRC)
@@ -66,5 +65,19 @@ include_directories(
 )
 
 add_executable(qtejdbtest ${ALL_SRC})
-target_link_libraries (qtejdbtest Qt5::Core qejdbplugin libgmock)
+if(WIN32)
+    add_custom_command(
+        TARGET qtejdbtest POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy ${LIBRARY_OUTPUT_PATH}/libqejdbplugin.dll ${CMAKE_CURRENT_BINARY_DIR}
+        COMMAND ${CMAKE_COMMAND} -E copy ${LIBRARY_OUTPUT_PATH}/libejdb.dll ${CMAKE_CURRENT_BINARY_DIR}
+        COMMAND ${CMAKE_COMMAND} -E copy ${LIBRARY_OUTPUT_PATH}/libqtejdb.dll ${CMAKE_CURRENT_BINARY_DIR}
+        COMMAND ${CMAKE_COMMAND} -E copy ${LIBRARY_OUTPUT_PATH}/libzlib.dll ${CMAKE_CURRENT_BINARY_DIR}
+    )
+
+endif()
+if (NOT WIN32)
+    target_link_libraries (qtejdbtest Qt5::Core qejdbplugin ejdb_p libgmock pthread)
+else()
+    target_link_libraries (qtejdbtest Qt5::Core qejdbplugin libgmock)
+endif(NOT WIN32)
 add_test(QtEjdbUnitTest qtejdbtest)

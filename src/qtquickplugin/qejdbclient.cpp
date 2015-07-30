@@ -320,10 +320,11 @@ void QEjdbClient::connect()
     QEjdbDatabase db;
     QString uri = d->m_uri;
     QString connectionName = d->m_connectionName;
-
-
-
-    db = QEjdbDatabase::addDatabase(uri, connectionName);
+    if (!uri.isEmpty()) {
+        db = QEjdbDatabase::addDatabase(uri, connectionName);
+    } else {
+        db = QEjdbDatabase::database(connectionName);
+    }
     d->m_isConnected = true;
     emit connected();
 }

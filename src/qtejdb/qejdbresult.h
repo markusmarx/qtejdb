@@ -7,7 +7,7 @@ QT_FORWARD_DECLARE_CLASS(QEjdbFileWorker)
 QT_FORWARD_DECLARE_CLASS(QEjdbRpcWorker)
 QT_FORWARD_DECLARE_CLASS(QEjdbResultData)
 
-class QEjdbResult
+class Q_DECL_EXPORT QEjdbResult
 {
     friend class QEjdbFileWorker;
     friend class QEjdbRpcWorker;
@@ -41,8 +41,8 @@ private:
 
 Q_DECLARE_METATYPE(QEjdbResult)
 
-QDataStream& operator<<(QDataStream& d, const QEjdbResult& object);
-QDataStream& operator>>(QDataStream& d, QEjdbResult& object);
+Q_DECL_EXPORT QDataStream& operator<<(QDataStream& d, const QEjdbResult& object);
+Q_DECL_EXPORT QDataStream& operator>>(QDataStream& d, QEjdbResult& object);
 
 
 #endif // QEJDBRESULT_H

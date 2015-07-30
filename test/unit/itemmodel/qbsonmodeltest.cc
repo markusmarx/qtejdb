@@ -26,14 +26,15 @@ public:
     MOCK_SIGNAL0(reset,(void))
 };
 
-
 TEST(QBsonItemModelTest, TestSet)
 {
     QBsonItemModel model;
     QList<QBsonObject> objectList
             = createBsonObjects(10);
+#ifndef WIN32
     QBsonItemModelSignalSpy spy(&model);
     EXPECT_CALL(spy, reset()).Times(1);
+#endif
     EXPECT_EQ(0, objectList.at(0).value("marker").toInt());
     EXPECT_EQ(1, objectList.at(1).value("marker").toInt());
     model.set(objectList);
@@ -54,9 +55,11 @@ TEST(QBsonItemModelTest, TestRoles)
 TEST(QBsonItemModelTest, TestItemInsertWithValidRow)
 {
     QBsonItemModel model;
+#ifndef WIN32
     QBsonItemModelSignalSpy spy(&model);
     EXPECT_CALL(spy, itemInserted(0)).Times(1);
     EXPECT_CALL(spy, reset()).Times(1);
+#endif
     model.insert(createBsonObject(false), 0);
     EXPECT_EQ(1, model.count());
     EXPECT_EQ("test", MODEL_DATA(model, 0, "string"));
@@ -65,16 +68,20 @@ TEST(QBsonItemModelTest, TestItemInsertWithValidRow)
 TEST(QBsonItemModelTest, TestItemInsertWithNegativeRow)
 {
     QBsonItemModel model;
+#ifndef WIN32
     QBsonItemModelSignalSpy spy(&model);
     EXPECT_CALL(spy, itemInserted(-1)).Times(0);
+#endif
     model.insert(createBsonObject(false), -1);
     EXPECT_EQ(0, model.count());
 }
 TEST(QBsonItemModelTest, TestItemInsertWithInvalidRow)
 {
     QBsonItemModel model;
+#ifndef WIN32
     QBsonItemModelSignalSpy spy(&model);
     EXPECT_CALL(spy, itemInserted(1)).Times(0);
+#endif
     model.insert(createBsonObject(false), 1);
     EXPECT_EQ(0, model.count());
 }
@@ -82,8 +89,10 @@ TEST(QBsonItemModelTest, TestUpdateItem)
 {
     QBsonItemModel model;
     model.insert(createBsonObject(false), 0);
+#ifndef WIN32
     QBsonItemModelSignalSpy spy(&model);
     EXPECT_CALL(spy, itemUpdated(QString("string"), QVariant("neu"), 0)).Times(1);
+#endif
     model.update("string", "neu", 0);
     EXPECT_EQ("neu", MODEL_DATA(model, 0, "string"));
 }
@@ -91,33 +100,41 @@ TEST(QBsonItemModelTest, TestUpdateItemWithInvalidPropertyName)
 {
     QBsonItemModel model;
     model.insert(createBsonObject(false), 0);
+#ifndef WIN32
     QBsonItemModelSignalSpy spy(&model);
     EXPECT_CALL(spy, itemUpdated(QString("string_neu"), QVariant("neu"), 0)).Times(1);
+#endif
     model.update("string_neu", "neu", 0);
 }
 TEST(QBsonItemModelTest, TestUpdateItemWithNegativeRow)
 {
     QBsonItemModel model;
     model.insert(createBsonObject(false), 0);
+#ifndef WIN32
     QBsonItemModelSignalSpy spy(&model);
     EXPECT_CALL(spy, itemUpdated(QString("string_neu"), QVariant("neu"), -1)).Times(0);
+#endif
     model.update("string", "neu", -1);
 }
 TEST(QBsonItemModelTest, TestUpdateItemWithInvalidRow)
 {
     QBsonItemModel model;
     model.insert(createBsonObject(false), 0);
+#ifndef WIN32
     QBsonItemModelSignalSpy spy(&model);
     EXPECT_CALL(spy, itemUpdated(QString("string_neu"), QVariant("neu"), 1)).Times(0);
+#endif
     model.update("string", "neu", 1);
 }
 TEST(QBsonItemModelTest, TestAppendItem)
 {
     QBsonItemModel model;
+#ifndef WIN32
     QBsonItemModelSignalSpy spy(&model);
     EXPECT_CALL(spy, itemInserted(0)).Times(1);
     EXPECT_CALL(spy, reset()).Times(1);
     EXPECT_CALL(spy, itemInserted(1)).Times(1);
+#endif
     model.append(createBsonObject(false));
     model.append(createBsonObject(false));
 }
@@ -126,9 +143,11 @@ TEST(QBsonItemModelTest, TestMoveTwoItems)
     QBsonItemModel model;
     QList<QBsonObject> objectList = createBsonObjects(2);
     model.set(objectList);
+#ifndef WIN32
     QBsonItemModelSignalSpy spy(&model);
     EXPECT_CALL(spy, itemMoved(1, 0)).Times(1);
     EXPECT_CALL(spy, itemMoved(0, 1)).Times(1);
+#endif
     model.move(1, 0);
     EXPECT_EQ(2, model.count());
     EXPECT_EQ(1, MODEL_DATA(model, 0, "marker").toInt());
@@ -143,9 +162,11 @@ TEST(QBsonItemModelTest, TestMoveThreeItems)
     QBsonItemModel model;
     QList<QBsonObject> objectList = createBsonObjects(3);
     model.set(objectList);
+#ifndef WIN32
     QBsonItemModelSignalSpy spy(&model);
     EXPECT_CALL(spy, itemMoved(1, 0)).Times(1);
     EXPECT_CALL(spy, itemMoved(0, 1)).Times(1);
+#endif
     model.move(1, 0);
     EXPECT_EQ(3, model.count());
     EXPECT_EQ(1, MODEL_DATA(model, 0, "marker").toInt());
@@ -162,8 +183,10 @@ TEST(QBsonItemModelTest, TestMoveWithEqualSourceAndDestination)
     QBsonItemModel model;
     QList<QBsonObject> objectList = createBsonObjects(2);
     model.set(objectList);
+#ifndef WIN32
     QBsonItemModelSignalSpy spy(&model);
     EXPECT_CALL(spy, itemMoved(1, 0)).Times(0);
+#endif
     model.move(1, 1);
     EXPECT_EQ(2, model.count());
     EXPECT_EQ(0, MODEL_DATA(model, 0, "marker").toInt());
@@ -175,8 +198,10 @@ TEST(QBsonItemModelTest, TestRemoveWithValid)
     QList<QBsonObject> objectList = createBsonObjects(2);
     QBsonObject removedObject = objectList.at(0);
     model.set(objectList);
+#ifndef WIN32
     QBsonItemModelSignalSpy spy(&model);
     EXPECT_CALL(spy, itemRemoved(0, removedObject)).Times(1);
+#endif
     model.remove(0);
     EXPECT_EQ(1, model.count());
     EXPECT_EQ(1, MODEL_DATA(model, 0, "marker").toInt());
@@ -186,7 +211,9 @@ TEST(QBsonItemModelTest, TestRemoveWithInValid)
     QBsonItemModel model;
     QList<QBsonObject> objectList = createBsonObjects(2);
     model.set(objectList);
+#ifndef WIN32
     QBsonItemModelSignalSpy spy(&model);
+#endif
     model.remove(-1);
     EXPECT_EQ(2, model.count());
     EXPECT_EQ(0, MODEL_DATA(model, 0, "marker").toInt());
@@ -212,8 +239,10 @@ TEST(QBsonItemModelTest, TestSetDataWithValidRowIndex)
     QBsonItemModel model;
     QList<QBsonObject> objectList = createBsonObjects(2);
     model.set(objectList);
+#ifndef WIN32
     QBsonItemModelSignalSpy spy(&model);
     EXPECT_CALL(spy, itemUpdated(QString("string"), QVariant("neu"), 0)).Times(1);
+#endif
     model.setData(0, model.roles().key(QString("string").toLatin1()), QBsonValue("neu"));
     EXPECT_EQ("neu", MODEL_DATA(model, 0, "string"));
 }
@@ -222,8 +251,10 @@ TEST(QBsonItemModelTest, TestSetDataWithInValidRowIndex)
     QBsonItemModel model;
     QList<QBsonObject> objectList = createBsonObjects(2);
     model.set(objectList);
+#ifndef WIN32
     QBsonItemModelSignalSpy spy(&model);
     EXPECT_CALL(spy, itemUpdated(QString("string"), QVariant("neu"), 0)).Times(0);
+#endif
     model.setData(-1, model.roles().key(QString("string").toLatin1()), QBsonValue("neu"));
 }
 TEST(QBsonItemModelTest, TestRoleAsKeyWithInvalidRole)
@@ -231,8 +262,10 @@ TEST(QBsonItemModelTest, TestRoleAsKeyWithInvalidRole)
     QBsonItemModel model;
     QList<QBsonObject> objectList = createBsonObjects(2);
     model.set(objectList);
+#ifndef WIN32
     QBsonItemModelSignalSpy spy(&model);
     EXPECT_CALL(spy, itemUpdated(QString("string"), QVariant("neu"), 0)).Times(0);
+#endif
     model.setData(0, -1, QBsonValue("neu"));
 }
 TEST(QBsonItemModelTest, TestGetByOid)
@@ -261,9 +294,11 @@ TEST(QBsonItemModelTest, TestClear)
 TEST(QBsonItemModelTest, TestInsertTwice)
 {
     QBsonItemModel model;
+#ifndef WIN32
     QBsonItemModelSignalSpy spy(&model);
     EXPECT_CALL(spy, itemInserted(0)).Times(2);
     EXPECT_CALL(spy, reset()).Times(1);
+#endif
     model.insert(createBsonObject(false, 0), 0);
     model.insert(createBsonObject(false, 1), 0);
     EXPECT_EQ(2, model.count());

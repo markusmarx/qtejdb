@@ -6,7 +6,7 @@
 #include "qbson/qbsonobject.h"
 #include "qbson/qbsonarray.h"
 
-class QEjdbAbstractSync: public QObject
+class Q_DECL_EXPORT QEjdbAbstractSync: public QObject
 {
     Q_OBJECT
 

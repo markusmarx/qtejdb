@@ -6,7 +6,7 @@
 
 QT_FORWARD_DECLARE_CLASS(QEjdbClient)
 
-class CollectionModel: public BaseModel, public QQmlParserStatus
+class Q_DECL_EXPORT CollectionModel: public BaseModel, public QQmlParserStatus
 {
     Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)
