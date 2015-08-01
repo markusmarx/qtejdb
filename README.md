@@ -29,6 +29,9 @@ Test dependencies (are downloaded while building):
 
 ## Build and Test
 
+First check if the conditions are complied to build a Qt application with CMake 2.8.11. More informations at http://doc.qt.io/qt-5/cmake-manual.html.
+
+
 ### Linux (64bit, 32bit)
 
 ```
@@ -37,7 +40,7 @@ Test dependencies (are downloaded while building):
   mkdir build/release
   cd build
   cmake ../.. -DCMAKE_BUILD_TYPE=Release
-  cmake --build .
+  make
 ```
 
 ### Mac OS X
@@ -48,25 +51,26 @@ Test dependencies (are downloaded while building):
   mkdir build/release
   cd build
   cmake ../.. -DCMAKE_BUILD_TYPE=Release
-  cmake --build .
+  make
 ```
 
 ### Windows (mingw 32bit)
 
-```
-in process
-```
+- git clone --recursive https://github.com/markusmarx/qtejdb.git 
+- Open QtCreator
+- Open qtejdb project
+- call cmake with -DCMAKE_BUILD_TYPE=Release
 
 ### Android
 
 ```
-in progress
+pending. Ejdb dont work with android currently.
 ```
 
 ### iOS
 
 ```
-in progress
+pending
 ```
 
 
@@ -79,8 +83,18 @@ The unit tests can be executed with ctest:
 ## Examples
 
 The demo can be executed with
+Linux or OSX
+
 ```
   make demo1
+  make demo2
+```
+
+Windows with mingw32
+
+```
+  mingw32-make demo1
+  mingw32-make demo2
 ```
 
 ## Licence
