@@ -32,6 +32,8 @@ SET(QTEJDB_CMAKE_CXX_FLAGS_DEBUG  "${QTEJDB_CMAKE_CXX_FLAGS} -g -O0 --coverage -
 SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} ${QTEJDB_CMAKE_CXX_FLAGS_DEBUG}")
 SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} ${QTEJDB_CMAKE_CXX_FLAGS}")
 
+set(PROJECT_VERSION 0.5)
+
 ##
 ## end set compiler flags
 ##
@@ -174,7 +176,7 @@ add_subdirectory(src/qtquickplugin)
 if(BUILD_TESTS)
     add_subdirectory(test/unit)
     add_subdirectory(test/unit_qml)
-    SETUP_TARGET_FOR_COVERAGE(test_coverage test coverage)
+SETUP_TARGET_FOR_COVERAGE(test_coverage test coverage)
 endif(BUILD_TESTS)
 
 
