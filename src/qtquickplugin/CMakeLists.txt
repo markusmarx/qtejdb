@@ -49,3 +49,6 @@ foreach(file ${QEJDBQUICK_QML_SOURCES} )
     DEPENDS ${file})
   set(output_files ${output_files} ${qmldir}/${file})
 endforeach()
+
+install(TARGETS qejdbplugin DESTINATION qml/QEjdb COMPONENT qejdbplugin)
+install(FILES qmldir DESTINATION qml/QEjdb COMPONENT qejdbplugin)
