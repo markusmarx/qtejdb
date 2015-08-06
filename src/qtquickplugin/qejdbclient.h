@@ -10,7 +10,7 @@
 
 QT_FORWARD_DECLARE_CLASS(BaseModel)
 QT_FORWARD_DECLARE_CLASS(QEjdbClientPrivate)
-class QEjdbClient : public QObject, public QQmlParserStatus
+class Q_DECL_EXPORT QEjdbClient : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)
@@ -44,8 +44,6 @@ signals:
 
 public slots:
 
-    void connect();
-    void disconnect();
     void setConnectionName(QString arg);
     void setUri(QString arg);
     void setAutoCreateCollection(bool arg);
@@ -55,6 +53,8 @@ public slots:
     QJSValue query(QString collection, QJSValue query, QJSValue hints);
     void createCollection(QString collection);
     void removeCollection(QString collection);
+    void connect();
+    void disconnect();
 private:
 
 

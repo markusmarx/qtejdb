@@ -10,7 +10,7 @@
  * @internal
  * Stores bsonobjects in a model.
  */
-class QBsonItemModel : public QObject
+class Q_DECL_EXPORT QBsonItemModel : public QObject
 {
     Q_OBJECT
 public:

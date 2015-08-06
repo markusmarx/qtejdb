@@ -7,7 +7,7 @@ class QEjdbDatabase;
 class QBsonObject;
 class QEjdbResult;
 
-class QEjdbQuery
+class Q_DECL_EXPORT QEjdbQuery
 {
 public:
 

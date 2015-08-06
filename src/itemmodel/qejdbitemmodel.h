@@ -22,7 +22,7 @@
 #include "qbsonitemmodelsync_p.h"
 QT_FORWARD_DECLARE_CLASS(QBsonItemModel)
 
-class QEjdbItemModel : public QAbstractListModel
+class Q_DECL_EXPORT QEjdbItemModel : public QAbstractListModel
 {
     Q_OBJECT
     

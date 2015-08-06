@@ -3,6 +3,16 @@
 #include <QJSValueIterator>
 #include <QDebug>
 
+/*!
+  \qmltype ArrayPropertyModel
+  \since QtEjdb 1.0
+  \inqmlmodule QtEjdb
+  \ingroup qtejdb-qml
+  \target QEjdbClientQml
+  \brief ArrayPropertyModel manages a json array property in an itemmodel to use with
+  views. Part of QtEjdb Qml Plugin
+*/
+
 ArrayPropertyModel::ArrayPropertyModel(QObject *parent)
     :BaseModel(parent), m_parentObject(QJSValue(QJSValue::NullValue))
 {

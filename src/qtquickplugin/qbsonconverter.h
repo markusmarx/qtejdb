@@ -6,7 +6,7 @@
 #include "qbson/qbsonobject.h"
 #include "qbson/qbsonarray.h"
 
-class QBsonConverter
+class Q_DECL_EXPORT QBsonConverter
 {
 public:
     QBsonConverter();

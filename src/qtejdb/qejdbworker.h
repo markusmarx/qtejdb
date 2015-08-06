@@ -8,7 +8,7 @@
 #include "ejdb.h"
 #include "qejdbresult.h"
 
-class QEjdbWorker
+class Q_DECL_EXPORT QEjdbWorker
 {
 public:
     QEjdbWorker();
@@ -40,7 +40,7 @@ public:
 
 };
 
-class QEjdbFileWorker: public QEjdbWorker
+class Q_DECL_EXPORT QEjdbFileWorker: public QEjdbWorker
 {
 public:
     QEjdbFileWorker(const QUrl &url, int mode);

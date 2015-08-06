@@ -4,7 +4,7 @@
 #include "qtejdb/qejdbdatabase.h"
 #include "qbson/qbsonobject.h"
 
-class QEjdbArrayPropertySync: public QEjdbAbstractSync
+class Q_DECL_EXPORT QEjdbArrayPropertySync: public QEjdbAbstractSync
 {
     Q_OBJECT
 public:

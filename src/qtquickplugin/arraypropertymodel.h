@@ -3,7 +3,7 @@
 #include "basemodel.h"
 #include <QQmlParserStatus>
 
-class ArrayPropertyModel: public BaseModel, public QQmlParserStatus
+class Q_DECL_EXPORT ArrayPropertyModel: public BaseModel, public QQmlParserStatus
 {
     Q_OBJECT
     Q_INTERFACES(QQmlParserStatus)
