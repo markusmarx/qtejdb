@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- qtqquickplugin.qdoc -->
+  <title>QtEjdb QML Framework | qtejdb </title>
+  <link rel="stylesheet" type="text/css" href="http://markusmarx.github.io/qtejdb/stylesheets/styles.css" />
+  <link rel="stylesheet" type="text/css" href="http://markusmarx.github.io/qtejdb/stylesheets/github-light.css" />
+</head>
+<body>
+<div class="wrapper"> <header>     <h1>QtEjdb</h1>     <p>Qt/ Qml json database based on ejdb</p>     <p class="view">        <a href="qtejdb-qmlmodule.html">QtEjdb QtQuick API</a>     </p>     <p class="view"><a href="https://github.com/markusmarx/qtejdb">View the Project on GitHub <small>markusmarx/qtejdb</small></a></p>   </header>   <section><li>QtEjdb QML Framework</li>
+<div class="sidebar"><div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">QtEjdb QML Framework</h1>
+<span class="subtitle"></span>
+<!-- $$$QtEjdb-description -->
+<div class="descr"> <a name="details"></a>
+<p><a href="qtejdb-qmlmodule.html">QtEjdb</a> Plugin provide an interface to work with an ejdb service.</p>
+<p>With the plugin you can manage json in an ejdb data store.</p>
+<pre class="qml">import QtQuick 2.0
+import QtEjdb 1.0
+
+<span class="type">Rectangle</span> {
+    <span class="type"><a href="qml-qtejdb-qejdbclient.html">QEjdbClient</a></span> {
+        <span class="name">id</span>: <span class="name">client</span>
+        <span class="name">uri</span>: <span class="string">'file:test_db'</span>
+    }
+    <span class="keyword">function</span> <span class="name">saveBson</span>() {
+        <span class="name">client</span>.<span class="name">createCollection</span>(<span class="string">'person'</span>)
+        var <span class="name">json</span> = <span class="name">client</span>.<span class="name">save</span>(<span class="string">'person'</span>, {name: <span class="string">'Edgar Marx'</span>, age: <span class="number">5</span>})
+        <span class="name">console</span>.<span class="name">log</span>(<span class="name">json</span>.<span class="name">_id</span>)
+        var <span class="name">edgar</span> = <span class="name">client</span>.<span class="name">load</span>(<span class="string">'person'</span>, <span class="name">json</span>.<span class="name">_id</span>)
+    }
+}</pre>
+<p><a href="qtejdb-qmlmodule.html">QtEjdb</a> provides these <b>QML types</b>:</p>
+</div>
+<!-- @@@QtEjdb -->
+<div class="table"><table class="annotated">
+<tr class="odd topAlign"><td class="tblName"><p><a href="qml-qtejdb-arraypropertymodel.html">ArrayPropertyModel</a></p></td><td class="tblDescr"><p>Manages a json array property in an itemmodel to use with views. Part of QtEjdb Qml Plugin</p></td></tr>
+<tr class="even topAlign"><td class="tblName"><p><a href="qml-qtejdb-collectionmodel.html">CollectionModel</a></p></td><td class="tblDescr"><p>Manages a collection in an itemmodel to use with views. Part of QtEjdb Qml Plugin</p></td></tr>
+<tr class="odd topAlign"><td class="tblName"><p><a href="qml-qtejdb-qejdbclient.html">QEjdbClient</a></p></td><td class="tblDescr"><p>Client interface to access ejdb service</p></td></tr>
+</table></div>
+</section> </div>
+</div>
+</div>
+</div>
+</body>
+</html>

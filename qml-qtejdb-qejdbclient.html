@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- qejdbclient.cpp -->
+  <title>QEjdbClient QML Type | qtejdb </title>
+  <link rel="stylesheet" type="text/css" href="http://markusmarx.github.io/qtejdb/stylesheets/styles.css" />
+  <link rel="stylesheet" type="text/css" href="http://markusmarx.github.io/qtejdb/stylesheets/github-light.css" />
+</head>
+<body>
+<div class="wrapper"> <header>     <h1>QtEjdb</h1>     <p>Qt/ Qml json database based on ejdb</p>     <p class="view">        <a href="qtejdb-qmlmodule.html">QtEjdb QtQuick API</a>     </p>     <p class="view"><a href="https://github.com/markusmarx/qtejdb">View the Project on GitHub <small>markusmarx/qtejdb</small></a></p>   </header>   <section><div class="sidebar">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#properties">Properties</a></li>
+<li class="level1"><a href="#methods">Methods</a></li>
+<li class="level1"><a href="#details">Detailed Description</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">QEjdbClient QML Type</h1>
+<span class="subtitle"></span>
+<!-- $$$QEjdbClient-brief -->
+<p>Client interface to access ejdb service. <a href="#details">More...</a></p>
+<!-- @@@QEjdbClient -->
+<div class="table"><table class="alignedsummary">
+<tr><td class="memItemLeft rightAlign topAlign"> Import Statement:</td><td class="memItemRight bottomAlign"> import QtEjdb 1.0</td></tr><tr><td class="memItemLeft rightAlign topAlign"> Since:</td><td class="memItemRight bottomAlign">  QtEjdb 1.0</td></tr></table></div><ul>
+<li><a href="qml-qtejdb-qejdbclient-members.html">List of all members, including inherited members</a></li>
+</ul>
+<a name="properties"></a>
+<h2 id="properties">Properties</h2>
+<ul>
+<li class="fn"><b><b><a href="qml-qtejdb-qejdbclient.html#connectionName-prop">connectionName</a></b></b> : QString</li>
+<li class="fn"><b><b><a href="qml-qtejdb-qejdbclient.html#uri-prop">uri</a></b></b> : QString</li>
+</ul>
+<a name="methods"></a>
+<h2 id="methods">Methods</h2>
+<ul>
+<li class="fn">void <b><b><a href="qml-qtejdb-qejdbclient.html#createCollection-method">createCollection</a></b></b>(QString <i>collectionName</i>)</li>
+<li class="fn">QJSValue <b><b><a href="qml-qtejdb-qejdbclient.html#load-method">load</a></b></b>(QString <i>collectionName</i>, QJsValue <i>uid</i>)</li>
+<li class="fn">void <b><b><a href="qml-qtejdb-qejdbclient.html#query-method">query</a></b></b>(QString <i>collectionName</i>, QJsValue <i>query</i>, QJsValue <i>hints</i>)</li>
+<li class="fn">void <b><b><a href="qml-qtejdb-qejdbclient.html#remove-method">remove</a></b></b>(QString <i>collectionName</i>, QJsValue <i>id</i>)</li>
+<li class="fn">void <b><b><a href="qml-qtejdb-qejdbclient.html#removeCollection-method">removeCollection</a></b></b>(QString <i>collectionName</i>)</li>
+<li class="fn">QJsValue <b><b><a href="qml-qtejdb-qejdbclient.html#save-method">save</a></b></b>(QString <i>collectionName</i>, QJSValue <i>json</i>)</li>
+</ul>
+<!-- $$$QEjdbClient-description -->
+<a name="details"></a>
+<h2 id="details">Detailed Description</h2>
+<a name="qejdbclientqml"></a></p>
+<pre class="qml">import QtEjdb 1.0</pre>
+<p><a href="qml-qtejdb-qejdbclient.html">QEjdbClient</a> connects an ejdb. It is used for all communication with the <a href="qtejdb-qmlmodule.html">QtEjdb</a> backend.</p>
+<pre class="qml"><span class="type"><a href="qml-qtejdb-qejdbclient.html">QEjdbClient</a></span> {
+    <span class="name">id</span>: <span class="name">client</span>
+    <span class="name">uri</span>: <span class="string">'file:test_db'</span>
+}</pre>
+<p>An client can connect an ejdb with an <a href="qml-qtejdb-qejdbclient.html#uri-prop">uri</a> or a <a href="qml-qtejdb-qejdbclient.html#connectionName-prop">connectionName</a>. With a <a href="qml-qtejdb-qejdbclient.html#connectionName-prop">connectionName</a> you can connect an previous opened connection.</p>
+<pre class="cpp"><span class="comment">// c++</span>
+<span class="type">QEjdbDatabase</span><span class="operator">::</span>addDatabase(<span class="string">&quot;file:test_db&quot;</span><span class="operator">,</span> <span class="string">&quot;myconnection&quot;</span>);
+<span class="comment">// qml</span>
+<span class="type"><a href="qml-qtejdb-qejdbclient.html">QEjdbClient</a></span> {
+    id: client
+    connectionName: <span class="char">'myconnection'</span>
+}</pre>
+<!-- @@@QEjdbClient -->
+<h2>Property Documentation</h2>
+<!-- $$$connectionName -->
+<div class="qmlitem"><div class="qmlproto"><div class="table"><table class="qmlname"><tr valign="top" class="odd" id="connectionName-prop"><td class="tblQmlPropNode"><p><a name="connectionName-prop"></a><span class="name">connectionName</span> : <span class="type">QString</span></p></td></tr></table></div></div><div class="qmldoc"><p>Open a database from an already opened QEjdbDatabase.</p>
+</div></div><!-- @@@connectionName -->
+<br/>
+<!-- $$$uri -->
+<div class="qmlitem"><div class="qmlproto"><div class="table"><table class="qmlname"><tr valign="top" class="odd" id="uri-prop"><td class="tblQmlPropNode"><p><a name="uri-prop"></a><span class="name">uri</span> : <span class="type">QString</span></p></td></tr></table></div></div><div class="qmldoc"><p>Open a database from uri.</p>
+<pre class="qml"><span class="type"><a href="qml-qtejdb-qejdbclient.html">QEjdbClient</a></span> {
+    <span class="name">id</span>: <span class="name">client</span>
+    <span class="name">uri</span>: <span class="string">'file:test_db'</span>
+}</pre>
+</div></div><!-- @@@uri -->
+<br/>
+<h2>Method Documentation</h2>
+<!-- $$$createCollection -->
+<div class="qmlitem"><div class="qmlproto"><div class="table"><table class="qmlname"><tr valign="top" class="odd" id="createCollection-method"><td class="tblQmlFuncNode"><p><a name="createCollection-method"></a><span class="type">void</span> <span class="name">createCollection</span>(<span class="type">QString</span><i> collectionName</i>)</p></td></tr></table></div></div><div class="qmldoc"><p>Creates a collection with name.</p>
+</div></div><!-- @@@createCollection -->
+<br/>
+<!-- $$$load -->
+<div class="qmlitem"><div class="qmlproto"><div class="table"><table class="qmlname"><tr valign="top" class="odd" id="load-method"><td class="tblQmlFuncNode"><p><a name="load-method"></a><span class="type">QJSValue</span> <span class="name">load</span>(<span class="type">QString</span><i> collectionName</i>, <span class="type">QJsValue</span><i> uid</i>)</p></td></tr></table></div></div><div class="qmldoc"><p>Loads a bson with his id. If no bson found an empty json is returned.</p>
+</div></div><!-- @@@load -->
+<br/>
+<!-- $$$query -->
+<div class="qmlitem"><div class="qmlproto"><div class="table"><table class="qmlname"><tr valign="top" class="odd" id="query-method"><td class="tblQmlFuncNode"><p><a name="query-method"></a><span class="type">void</span> <span class="name">query</span>(<span class="type">QString</span><i> collectionName</i>, <span class="type">QJsValue</span><i> query</i>, <span class="type">QJsValue</span><i> hints</i>)</p></td></tr></table></div></div><div class="qmldoc"><p>Get an array with json from collection. Desciption about building queries and hints see <a href="http://ejdb.org/doc/ql/ql.html">http://ejdb.org/doc/ql/ql.html</a></p>
+</div></div><!-- @@@query -->
+<br/>
+<!-- $$$remove -->
+<div class="qmlitem"><div class="qmlproto"><div class="table"><table class="qmlname"><tr valign="top" class="odd" id="remove-method"><td class="tblQmlFuncNode"><p><a name="remove-method"></a><span class="type">void</span> <span class="name">remove</span>(<span class="type">QString</span><i> collectionName</i>, <span class="type">QJsValue</span><i> id</i>)</p></td></tr></table></div></div><div class="qmldoc"><p>Removes a json with from collection.</p>
+</div></div><!-- @@@remove -->
+<br/>
+<!-- $$$removeCollection -->
+<div class="qmlitem"><div class="qmlproto"><div class="table"><table class="qmlname"><tr valign="top" class="odd" id="removeCollection-method"><td class="tblQmlFuncNode"><p><a name="removeCollection-method"></a><span class="type">void</span> <span class="name">removeCollection</span>(<span class="type">QString</span><i> collectionName</i>)</p></td></tr></table></div></div><div class="qmldoc"><p>Removes a collection with name.</p>
+</div></div><!-- @@@removeCollection -->
+<br/>
+<!-- $$$save -->
+<div class="qmlitem"><div class="qmlproto"><div class="table"><table class="qmlname"><tr valign="top" class="odd" id="save-method"><td class="tblQmlFuncNode"><p><a name="save-method"></a><span class="type">QJsValue</span> <span class="name">save</span>(<span class="type">QString</span><i> collectionName</i>, <span class="type">QJSValue</span><i> json</i>)</p></td></tr></table></div></div><div class="qmldoc"><p>Saves a bson in a given collection. The returned json have a _id property with a generated bson id.</p>
+<pre class="qml"><span class="keyword">function</span> <span class="name">saveBson</span>() {
+    <span class="name">client</span>.<span class="name">createCollection</span>(<span class="string">'person'</span>)
+    var <span class="name">json</span> = <span class="name">client</span>.<span class="name">save</span>(<span class="string">'person'</span>, {name: <span class="string">'Edgar Marx'</span>, age: <span class="number">5</span>})
+    <span class="name">console</span>.<span class="name">log</span>(<span class="name">json</span>.<span class="name">_id</span>)
+    var <span class="name">edgar</span> = <span class="name">client</span>.<span class="name">load</span>(<span class="string">'person'</span>, <span class="name">json</span>.<span class="name">_id</span>)
+}</pre>
+</div></div><!-- @@@save -->
+<br/>
+</section> </div>
+</div>
+</div>
+</div>
+</body>
+</html>
