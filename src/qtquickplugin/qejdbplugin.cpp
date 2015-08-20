@@ -5,6 +5,11 @@
 #include "collectionmodel.h"
 #include "arraypropertymodel.h"
 
+/*!
+ \class QEjdbPlugin
+ \brief teset
+ */
+
 QEjdbPlugin::QEjdbPlugin(QObject *parent) :  QQmlExtensionPlugin(parent)
 {
 
@@ -15,10 +20,7 @@ QEjdbPlugin::~QEjdbPlugin()
 
 }
 
-/**
- * @brief QEjdbPlugin::registerTypes
- * @param uri
- */
+
 void QEjdbPlugin::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QLatin1String("QEjdb"));

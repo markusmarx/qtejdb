@@ -1,8 +1,5 @@
 #include "qejdbworker.h"
-#include "bson.h"
-#include "qbson/qbsonobject_p.h"
 #include "qejdbdatabase.h"
-#include <QDebug>
 
 QEjdbWorker::QEjdbWorker()
 {

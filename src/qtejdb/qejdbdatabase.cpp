@@ -1,18 +1,16 @@
 #include "qejdbdatabase.h"
-#include <QDebug>
-#include <QDir>
-#include <QFile>
-#include <QReadLocker>
-#include <QReadWriteLock>
-#include "qbson/qbsonobject.h"
+#include "qejdbdatabase_p.h"
+#include "qejdbcollection_p.h"
 #include "qejdbquery.h"
 
-#include "qatomic.h"
-#include "ejdb.h"
-#include "bson.h"
-#include "qejdbworker.h"
-#include "qbson/qbsonobject.h"
+/*!
+  \class QEjdbDatabase
+  \brief QEjdbDatabase connects a ejdb database and provides an api to modify
+  it.
 
+  \ingroup qtejdb-database
+  \inmodule qtejdb-database
+ */
 
 /**
  * Hash to store open connections. Copied from QSqlDatabase.
@@ -27,7 +25,7 @@ public:
         QReadLocker locker(&lock);
         return contains(key);
     }
-inline QStringList keys_ts() const
+    inline QStringList keys_ts() const
     {
         QReadLocker locker(&lock);
         return keys();
@@ -37,77 +35,6 @@ inline QStringList keys_ts() const
 };
 
 Q_GLOBAL_STATIC(QEjdbConnectionDict, ejdbDict)
-
-
-class QEjdbDatabasePrivate {
-public:
-    QAtomicInt ref;
-    QEjdbWorker *m_worker;
-    QEjdbDatabasePrivate(
-            QEjdbDatabase *d, const QUrl &url, int mode, const QString &connectionName
-    ):q(d), m_worker(QEjdbWorker::createFromUrl(url, mode))
-      ,m_connectionName(connectionName)
-    {
-        ref = 1;
-
-    }
-
-    ~QEjdbDatabasePrivate()
-    {
-        delete m_worker;
-    }
-
-
-    void open();
-    bool close();
-    bool isOpen() const;
-
-    bool createCollection(const QString &collectionName);
-    bool removeCollection(const QString &collectionName);
-    bool containsCollection(const QString &collectionName);
-
-    QString connectionName() const {
-        return m_connectionName;
-    }
-
-    static void removeDatabase(const QString &name);
-    static void addDatabase(const QEjdbDatabase &db, const QString &name);
-    static QEjdbDatabase database(const QString &name, bool open);
-private:
-
-    /**
-     * @brief q
-     */
-    QEjdbDatabase *q;
-
-    /**
-     * @brief m_dbPath contains the path to the db files.
-     */
-    QDir m_dbPath;
-
-    /**
-     * @brief m_dbName contains the db name.
-     */
-    QString m_dbName;
-
-    /**
-     * @brief m_mode database open mode
-     */
-    int m_mode;
-
-    /**
-     * @brief m_connectionName name of the connection stored in dictionary.
-     */
-    QString m_connectionName;
-
-    inline void checkConnection() const
-    {
-        if (!isOpen()) {
-            throw QEjdbException(QEjdbException::NOTCONNECTED, "database is not connected.");
-        }
-    }
-
-};
 
 void QEjdbDatabasePrivate::open()
 {
@@ -131,7 +58,6 @@ bool QEjdbDatabasePrivate::containsCollection(const QString &collectionName)
     checkConnection();
     return m_worker->containsCollection(collectionName);
 }
-
 
 bool QEjdbDatabasePrivate::createCollection(const QString &collectionName)
 {
@@ -196,10 +122,6 @@ QEjdbDatabase QEjdbDatabasePrivate::database(const QString& name, bool open)
 
 const char *QEjdbDatabase::defaultConnection = "qejdb_default_connection";
 
-/**
- * @class QEjdbDatabase
- * @brief QEjdbDatabase
- */
 
 QEjdbDatabase::QEjdbDatabase(
         QString url, int mode, const QString &connectionName
@@ -283,12 +205,8 @@ QEjdbDatabase::QEjdbDatabase(const QEjdbDatabase &other):d(other.d)
 
 QEjdbDatabase &QEjdbDatabase::operator=(const QEjdbDatabase &other)
 {
-    if (d) {
-        qAtomicAssign<QEjdbDatabasePrivate>(d, other.d);
-    } else {
-        d = other.d;
-        d->ref.ref();
-    }
+
+    d = other.d;
     return *this;
 }
 
@@ -335,10 +253,6 @@ QEjdbDatabase::QEjdbDatabase():d(0)
 
 QEjdbDatabase::~QEjdbDatabase()
 {
-    if (d && !d->ref.deref()) {
-        delete d;
-        d = 0;
-    }
 }
 
 void QEjdbDatabase::open()
@@ -357,6 +271,26 @@ bool QEjdbDatabase::isOpen()
 {
     Q_ASSERT(d);
     return d->isOpen();
+}
+
+QEjdbCollection QEjdbDatabase::collection(const QString &collection, bool create)
+{
+    Q_ASSERT(d);
+    QSharedPointer<QEjdbCollectionPrivate> col;
+    if (d->m_collections.contains(collection)) {
+        col = d->m_collections.value(collection);
+    } else {
+        col = QSharedPointer<QEjdbCollectionPrivate>(
+                    new QEjdbCollectionPrivate(collection, d)
+                    );
+        d->m_collections.insert(collection, col);
+    }
+
+    if (create && !col->exist()) {
+        col->create();
+    }
+
+    return QEjdbCollection(col);
 }
 
 bool QEjdbDatabase::containsCollection(const QString &collectionName)

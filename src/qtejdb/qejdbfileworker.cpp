@@ -1,7 +1,6 @@
 #include "qejdbworker.h"
 #include "qbson/qbsonobject_p.h"
 #include "qejdbexception.h"
-#include "qejdbresult.h"
 #include "qejdbresult_p.h"
 #include "qbson/qbsonfrombsonrec.h"
 #include "qbson/qbsontobsonrec.h"

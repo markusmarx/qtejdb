@@ -1,7 +1,5 @@
 #include "qejdbquery.h"
 #include "qejdbdatabase.h"
-#include "qatomic.h"
-#include "qbson/qbsonobject.h"
 
 class QEjdbQueryData {
 public:

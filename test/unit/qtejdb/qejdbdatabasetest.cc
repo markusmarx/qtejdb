@@ -29,32 +29,50 @@ TEST(QEjdbDatabaseTest, TestConnectionName)
     EXPECT_EQ("testconnection", db.connectionName());
     QEjdbDatabase::removeDatabase("testconnection");
 }
-TEST(QEjdbDatabaseTest, TestContainsCollection)
+TEST(QEjdbDatabaseTest, TestCollectionWithNonExist)
 {
     QEjdbDatabase db = QEjdbDatabase::addDatabase(DBURL, "testconnection");
-    EXPECT_FALSE(db.containsCollection(COLL));
+    EXPECT_FALSE(db.collection(QLatin1String(COLL)).exist());
     QEjdbDatabase::removeDatabase("testconnection");
+}
+TEST(QEjdbDatabaseTest, TestCollectionWithCreateAndDrop)
+{
+    QEjdbDatabase db = QEjdbDatabase::addDatabase(DBURL, "testconnection");
+    EXPECT_TRUE(db.collection(QLatin1String(COLL), true).exist());
+    db.collection(COLL).drop();
+    EXPECT_FALSE(db.collection(QLatin1String(COLL)).exist());
+    QEjdbDatabase::removeDatabase("testconnection");
+}
+TEST(QEjdbDatabaseTest, TestCollectionWithKilledDb)
+{
+    QEjdbDatabase db = QEjdbDatabase::addDatabase(DBURL, "testconnection");
+    QEjdbCollection col = db.collection(QLatin1String(COLL));
+    QEjdbDatabase::removeDatabase("testconnection");
+    EXPECT_FALSE(col.exist());
+    EXPECT_FALSE(col.create());
+    EXPECT_FALSE(col.drop());
 }
 TEST(QEjdbDatabaseTest, TestLoadBson)
 {
     QEjdbDatabase db = QEjdbDatabase::addDatabase(DBURL);
-    db.createCollection(COLL);
+    QEjdbCollection col = db.collection(COLL, true);
     QBsonObject obj, obj2;
     obj.append("name", 11);
-    db.save(COLL, obj);
-    obj2 = db.load(COLL, obj.oid());
+    col.save(obj);
+    obj2 = col.load(obj.oid());
     EXPECT_EQ(obj.oid(), obj2.oid());
+    col.drop();
     QEjdbDatabase::removeDatabase();
 }
 TEST(QEjdbDatabaseTest, TestRemoveBsonByOid)
 {
     QEjdbDatabase db = QEjdbDatabase::addDatabase(DBURL);
-    db.createCollection(COLL);
+    QEjdbCollection col = db.collection(COLL, true);
     QBsonObject obj;
     obj.append("name", 11);
     db.save(COLL, obj);
-    db.remove(COLL, obj.oid());
-    EXPECT_TRUE(db.load(COLL, obj.oid()).isEmpty());
+    col.remove(obj.oid());
+    EXPECT_TRUE(col.load(obj.oid()).isEmpty());
     QEjdbDatabase::removeDatabase();
 }
 TEST(QEjdbDatabaseTest, TestRemoveBsonByObject)
@@ -71,11 +89,12 @@ TEST(QEjdbDatabaseTest, TestRemoveBsonByObject)
 TEST(QEjdbDatabaseTest, TestQuery)
 {
     QEjdbDatabase db = QEjdbDatabase::addDatabase(DBURL, MODE);
-    db.createCollection(COLL);
+    QEjdbCollection col = db.collection(COLL, true);
     QBsonObject obj;
     obj.append("name", 11);
-    db.save(COLL, obj);
-    QEjdbResult result = db.query(COLL, QBsonObject("name", 11));
+    col.save(obj);
+    QEjdbResult result = col.query(QBsonObject("name", 11));
     EXPECT_EQ(1, result.count());
     EXPECT_EQ(11, result.first().value("name"));
+    QEjdbDatabase::removeDatabase();
 }

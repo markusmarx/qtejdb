@@ -1,10 +1,12 @@
-/*!
-    \qmlmodule QtEjdb 1.0
-    \title QtEjdb QML Framework
-    QtEjdb Plugin provide an interface to work with an ejdb service.
+/*!  
+  \qmlmodule QtEjdb 1.0
+  \inmodule qtejdb
     
-    With the plugin you can manage json in an ejdb data store.
-    \snippet simple.qml all
+  \title QtEjdb QML Framework
+  QtEjdb Plugin provide an interface to work with an ejdb service.
+    
+  With the plugin you can manage json in an ejdb data store.
+  \snippet simple.qml all
 
-    QtEjdb provides these \b{QML types}:
+  QtEjdb provides these \b{QML types}:
 */

@@ -4,9 +4,9 @@
 #include <QSharedPointer>
 #include <QDir>
 #include <QUrl>
-
 #include "qejdbexception.h"
 #include "qejdbresult.h"
+#include "qejdbcollection.h"
 
 namespace QEJDB {
 
@@ -34,8 +34,11 @@ namespace QEJDB {
 
 }
 
-class QEjdbDatabasePrivate;
-class QEjdbQuery;
+QT_FORWARD_DECLARE_CLASS(QEjdbDatabasePrivate)
+QT_FORWARD_DECLARE_CLASS(QEjdbCollectionPrivate)
+QT_FORWARD_DECLARE_CLASS(QEjdbQuery)
+
+
 class Q_DECL_EXPORT QEjdbDatabase
 {
 
@@ -47,27 +50,6 @@ public:
      * @brief ~QEJDBDatabase destructor
      */
     ~QEjdbDatabase();
-
-    /**
-     * @brief open Connect a database. If a connection already opened nothing happened.
-     * If a connection could not opened a QEjdbException is thrown.
-     *
-     * @throw QEjdbException
-     */
-    void open();
-
-    /**
-     * @brief closeDatabase close database.
-     * @return
-     */
-    bool close();
-
-    /**
-     * @brief isDatabaseOpened checks if the database is opened.
-     * @return
-     */
-    bool isOpen();
-
 
 
     /**
@@ -114,7 +96,11 @@ public:
 
     QEjdbResult query(const QString &collectionName, const QBsonObject &query, const QBsonObject& hints = QBsonObject());
     QString connectionName() const;
+    void open();
+    bool close();
+    bool isOpen();
 
+    QEjdbCollection collection(const QString &collection, bool create = false);
 protected:
     /**
      * @brief QEJDBDatabase constructor
@@ -123,15 +109,12 @@ protected:
      */
     QEjdbDatabase(QString url, int mode, const QString &connectionName);
 
-
-
 private:
 
     friend class QEjdbDatabasePrivate;
-    QEjdbDatabasePrivate *d;
+    QSharedPointer<QEjdbDatabasePrivate> d;
 
     static const char *defaultConnection;
-
 
     /**
      * @brief loadCollections when db is opened the collections are loaded.
@@ -140,5 +123,6 @@ private:
 
 
 };
+
 
 #endif // QEJDBDATABASE_H

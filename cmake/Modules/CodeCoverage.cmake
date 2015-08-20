@@ -73,8 +73,6 @@ FIND_PROGRAM( LCOV_PATH lcov )
 FIND_PROGRAM( GENHTML_PATH genhtml )
 FIND_PROGRAM( GCOVR_PATH gcovr PATHS ${CMAKE_SOURCE_DIR}/tests)
 
-SET(ENABLE_COVERAGE OFF PARENT_SCOPE)
-
 IF(NOT GCOV_PATH)
         MESSAGE(WARNING "gcov not found! Coverage not enabled.")
         return()
