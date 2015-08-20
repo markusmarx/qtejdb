@@ -9,7 +9,7 @@
   <link rel="stylesheet" type="text/css" href="http://markusmarx.github.io/qtejdb/stylesheets/github-light.css" />
 </head>
 <body>
-<div class="wrapper"> <header>     <h1>QtEjdb</h1>     <p>Qt/ Qml json database based on ejdb</p>     <p class="view">        <a href="qtejdb-qmlmodule.html">QtEjdb QtQuick API</a>     </p>     <p class="view"><a href="https://github.com/markusmarx/qtejdb">View the Project on GitHub <small>markusmarx/qtejdb</small></a></p>   </header>   <section><div class="sidebar">
+<div class="wrapper"> <header>     <h1>QtEjdb</h1>     <p>Qt/ Qml json database based on ejdb</p>     <p class="view">        <a href="qtejdb-database.html">QtEjdb Qt API</a> <br/>        <a href="qtejdb-qmlmodule.html">QtEjdb QtQuick API</a>     </p>     <p class="view"><a href="https://github.com/markusmarx/qtejdb">View the Project on GitHub <small>markusmarx/qtejdb</small></a></p>   </header>   <section><div class="sidebar">
 <div class="toc">
 <h3><a name="toc">Contents</a></h3>
 <ul>
@@ -56,7 +56,7 @@
 }</pre>
 <p>An client can connect an ejdb with an <a href="qml-qtejdb-qejdbclient.html#uri-prop">uri</a> or a <a href="qml-qtejdb-qejdbclient.html#connectionName-prop">connectionName</a>. With a <a href="qml-qtejdb-qejdbclient.html#connectionName-prop">connectionName</a> you can connect an previous opened connection.</p>
 <pre class="cpp"><span class="comment">// c++</span>
-<span class="type">QEjdbDatabase</span><span class="operator">::</span>addDatabase(<span class="string">&quot;file:test_db&quot;</span><span class="operator">,</span> <span class="string">&quot;myconnection&quot;</span>);
+<span class="type"><a href="qejdbdatabase.html">QEjdbDatabase</a></span><span class="operator">::</span>addDatabase(<span class="string">&quot;file:test_db&quot;</span><span class="operator">,</span> <span class="string">&quot;myconnection&quot;</span>);
 <span class="comment">// qml</span>
 <span class="type"><a href="qml-qtejdb-qejdbclient.html">QEjdbClient</a></span> {
     id: client
@@ -65,7 +65,7 @@
 <!-- @@@QEjdbClient -->
 <h2>Property Documentation</h2>
 <!-- $$$connectionName -->
-<div class="qmlitem"><div class="qmlproto"><div class="table"><table class="qmlname"><tr valign="top" class="odd" id="connectionName-prop"><td class="tblQmlPropNode"><p><a name="connectionName-prop"></a><span class="name">connectionName</span> : <span class="type">QString</span></p></td></tr></table></div></div><div class="qmldoc"><p>Open a database from an already opened QEjdbDatabase.</p>
+<div class="qmlitem"><div class="qmlproto"><div class="table"><table class="qmlname"><tr valign="top" class="odd" id="connectionName-prop"><td class="tblQmlPropNode"><p><a name="connectionName-prop"></a><span class="name">connectionName</span> : <span class="type">QString</span></p></td></tr></table></div></div><div class="qmldoc"><p>Open a database from an already opened <a href="qejdbdatabase.html">QEjdbDatabase</a>.</p>
 </div></div><!-- @@@connectionName -->
 <br/>
 <!-- $$$uri -->

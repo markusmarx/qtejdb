@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- qejdbdatabase.cpp -->
+  <title>QEjdbDatabase Class | qtejdb </title>
+  <link rel="stylesheet" type="text/css" href="http://markusmarx.github.io/qtejdb/stylesheets/styles.css" />
+  <link rel="stylesheet" type="text/css" href="http://markusmarx.github.io/qtejdb/stylesheets/github-light.css" />
+</head>
+<body>
+<div class="wrapper"> <header>     <h1>QtEjdb</h1>     <p>Qt/ Qml json database based on ejdb</p>     <p class="view">        <a href="qtejdb-database.html">QtEjdb Qt API</a> <br/>        <a href="qtejdb-qmlmodule.html">QtEjdb QtQuick API</a>     </p>     <p class="view"><a href="https://github.com/markusmarx/qtejdb">View the Project on GitHub <small>markusmarx/qtejdb</small></a></p>   </header>   <section><li>QEjdbDatabase</li>
+<div class="sidebar">
+<div class="toc">
+<h3><a name="toc">Contents</a></h3>
+<ul>
+<li class="level1"><a href="#public-functions">Public Functions</a></li>
+<li class="level1"><a href="#static-public-members">Static Public Members</a></li>
+<li class="level1"><a href="#protected-functions">Protected Functions</a></li>
+<li class="level1"><a href="#details">Detailed Description</a></li>
+</ul>
+</div>
+<div class="sidebar-content" id="sidebar-content"></div></div>
+<h1 class="title">QEjdbDatabase Class</h1>
+<!-- $$$QEjdbDatabase-brief -->
+<p><a href="qejdbdatabase.html">QEjdbDatabase</a> connects a ejdb database and provides an api to modify it. <a href="#details">More...</a></p>
+<!-- @@@QEjdbDatabase -->
+<div class="table"><table class="alignedsummary">
+<tr><td class="memItemLeft rightAlign topAlign"> Header:</td><td class="memItemRight bottomAlign"> <span class="preprocessor">#include &lt;QEjdbDatabase&gt;</span>
+</td></tr></table></div><ul>
+<li><a href="qejdbdatabase-members.html">List of all members, including inherited members</a></li>
+</ul>
+<a name="public-functions"></a>
+<h2 id="public-functions">Public Functions</h2>
+<div class="table"><table class="alignedsummary">
+<tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="qejdbdatabase.html#QEjdbDatabase">QEjdbDatabase</a></b>()</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="qejdbdatabase.html#QEjdbDatabase-2">QEjdbDatabase</a></b>(const QEjdbDatabase &amp;<i> other</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="qejdbdatabase.html#dtor.QEjdbDatabase">~QEjdbDatabase</a></b>()</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qejdbdatabase.html#close">close</a></b>()</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QEjdbCollection </td><td class="memItemRight bottomAlign"><b><a href="qejdbdatabase.html#collection">collection</a></b>(const QString &amp;<i> collection</i>, bool<i> create</i> = false)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QString </td><td class="memItemRight bottomAlign"><b><a href="qejdbdatabase.html#connectionName">connectionName</a></b>() const</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qejdbdatabase.html#containsCollection">containsCollection</a></b>(const QString &amp;<i> collectionName</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qejdbdatabase.html#createCollection">createCollection</a></b>(const QString &amp;<i> collectionName</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qejdbdatabase.html#isOpen">isOpen</a></b>()</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QBsonObject </td><td class="memItemRight bottomAlign"><b><a href="qejdbdatabase.html#load">load</a></b>(const QString &amp;<i> collectionName</i>, const QString &amp;<i> oid</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QEjdbResult </td><td class="memItemRight bottomAlign"><b><a href="qejdbdatabase.html#loadAll">loadAll</a></b>(const QString &amp;<i> collectionName</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="qejdbdatabase.html#open">open</a></b>()</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QEjdbResult </td><td class="memItemRight bottomAlign"><b><a href="qejdbdatabase.html#query">query</a></b>(const QString &amp;<i> collectionName</i>, const QBsonObject &amp;<i> query</i>, const QBsonObject &amp;<i> hints</i> = QBsonObject())</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qejdbdatabase.html#remove">remove</a></b>(const QString &amp;<i> collectionName</i>, const QString &amp;<i> oid</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qejdbdatabase.html#remove-2">remove</a></b>(const QString &amp;<i> collectionName</i>, QBsonObject<i> obj</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qejdbdatabase.html#removeCollection">removeCollection</a></b>(const QString &amp;<i> collectionName</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qejdbdatabase.html#save">save</a></b>(const QString &amp;<i> collectionName</i>, QBsonObject &amp;<i> bson</i>)</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QEjdbDatabase &amp; </td><td class="memItemRight bottomAlign"><b><a href="qejdbdatabase.html#operator-eq">operator=</a></b>(const QEjdbDatabase &amp;<i> other</i>)</td></tr>
+</table></div>
+<a name="static-public-members"></a>
+<h2 id="static-public-members">Static Public Members</h2>
+<div class="table"><table class="alignedsummary">
+<tr><td class="memItemLeft rightAlign topAlign"> QEjdbDatabase </td><td class="memItemRight bottomAlign"><b><a href="qejdbdatabase.html#addDatabase">addDatabase</a></b>(QString<i> url</i>, int<i> mode</i>, QString<i> connectionName</i> = QLatin1String( defaultConnection ))</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QEjdbDatabase </td><td class="memItemRight bottomAlign"><b><a href="qejdbdatabase.html#addDatabase-2">addDatabase</a></b>(QString<i> url</i>, QString<i> connectionName</i> = QLatin1String( defaultConnection ))</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> QEjdbDatabase </td><td class="memItemRight bottomAlign"><b><a href="qejdbdatabase.html#database">database</a></b>(const QString &amp;<i> connectionName</i> = QLatin1String( defaultConnection ))</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> void </td><td class="memItemRight bottomAlign"><b><a href="qejdbdatabase.html#removeDatabase">removeDatabase</a></b>(const QString &amp;<i> connectionName</i> = QLatin1String( defaultConnection ))</td></tr>
+<tr><td class="memItemLeft rightAlign topAlign"> bool </td><td class="memItemRight bottomAlign"><b><a href="qejdbdatabase.html#removeDatabaseFiles">removeDatabaseFiles</a></b>(const QString &amp;<i> path</i>, const QString &amp;<i> database</i>)</td></tr>
+</table></div>
+<a name="protected-functions"></a>
+<h2 id="protected-functions">Protected Functions</h2>
+<div class="table"><table class="alignedsummary">
+<tr><td class="memItemLeft rightAlign topAlign"> </td><td class="memItemRight bottomAlign"><b><a href="qejdbdatabase.html#QEjdbDatabase-3">QEjdbDatabase</a></b>(QString<i> url</i>, int<i> mode</i>, const QString &amp;<i> connectionName</i>)</td></tr>
+</table></div>
+<a name="details"></a>
+<!-- $$$QEjdbDatabase-description -->
+<div class="descr">
+<h2 id="details">Detailed Description</h2>
+<p><a href="qejdbdatabase.html">QEjdbDatabase</a> connects a ejdb database and provides an api to modify it.</p>
+</div>
+<!-- @@@QEjdbDatabase -->
+<div class="func">
+<h2>Member Function Documentation</h2>
+<!-- $$$QEjdbDatabase[overload1]$$$QEjdbDatabase -->
+<h3 class="fn" id="QEjdbDatabase"><a name="QEjdbDatabase"></a>QEjdbDatabase::<span class="name">QEjdbDatabase</span>()</h3>
+<!-- @@@QEjdbDatabase -->
+<!-- $$$QEjdbDatabase$$$QEjdbDatabaseconstQEjdbDatabase& -->
+<h3 class="fn" id="QEjdbDatabase-2"><a name="QEjdbDatabase-2"></a>QEjdbDatabase::<span class="name">QEjdbDatabase</span>(const <span class="type"><a href="qejdbdatabase.html#QEjdbDatabase">QEjdbDatabase</a></span> &amp;<i> other</i>)</h3>
+<!-- @@@QEjdbDatabase -->
+<!-- $$$QEjdbDatabase$$$QEjdbDatabaseQStringintconstQString& -->
+<h3 class="fn" id="QEjdbDatabase-3"><a name="QEjdbDatabase-3"></a><code>[protected] </code>QEjdbDatabase::<span class="name">QEjdbDatabase</span>(<span class="type">QString</span><i> url</i>, <span class="type">int</span><i> mode</i>, const <span class="type">QString</span> &amp;<i> connectionName</i>)</h3>
+<!-- @@@QEjdbDatabase -->
+<!-- $$$~QEjdbDatabase[overload1]$$$~QEjdbDatabase -->
+<h3 class="fn" id="dtor.QEjdbDatabase"><a name="dtor.QEjdbDatabase"></a>QEjdbDatabase::<span class="name">~QEjdbDatabase</span>()</h3>
+<!-- @@@~QEjdbDatabase -->
+<!-- $$$addDatabase[overload1]$$$addDatabaseQStringintQString -->
+<h3 class="fn" id="addDatabase"><a name="addDatabase"></a><code>[static] </code><span class="type"><a href="qejdbdatabase.html#QEjdbDatabase">QEjdbDatabase</a></span> QEjdbDatabase::<span class="name">addDatabase</span>(<span class="type">QString</span><i> url</i>, <span class="type">int</span><i> mode</i>, <span class="type">QString</span><i> connectionName</i> = QLatin1String( defaultConnection ))</h3>
+<!-- @@@addDatabase -->
+<!-- $$$addDatabase$$$addDatabaseQStringQString -->
+<h3 class="fn" id="addDatabase-2"><a name="addDatabase-2"></a><code>[static] </code><span class="type"><a href="qejdbdatabase.html#QEjdbDatabase">QEjdbDatabase</a></span> QEjdbDatabase::<span class="name">addDatabase</span>(<span class="type">QString</span><i> url</i>, <span class="type">QString</span><i> connectionName</i> = QLatin1String( defaultConnection ))</h3>
+<!-- @@@addDatabase -->
+<!-- $$$close[overload1]$$$close -->
+<h3 class="fn" id="close"><a name="close"></a><span class="type">bool</span> QEjdbDatabase::<span class="name">close</span>()</h3>
+<!-- @@@close -->
+<!-- $$$collection[overload1]$$$collectionconstQString&bool -->
+<h3 class="fn" id="collection"><a name="collection"></a><span class="type"><a href="qejdbcollection.html">QEjdbCollection</a></span> QEjdbDatabase::<span class="name">collection</span>(const <span class="type">QString</span> &amp;<i> collection</i>, <span class="type">bool</span><i> create</i> = false)</h3>
+<!-- @@@collection -->
+<!-- $$$connectionName[overload1]$$$connectionName -->
+<h3 class="fn" id="connectionName"><a name="connectionName"></a><span class="type">QString</span> QEjdbDatabase::<span class="name">connectionName</span>() const</h3>
+<!-- @@@connectionName -->
+<!-- $$$containsCollection[overload1]$$$containsCollectionconstQString& -->
+<h3 class="fn" id="containsCollection"><a name="containsCollection"></a><span class="type">bool</span> QEjdbDatabase::<span class="name">containsCollection</span>(const <span class="type">QString</span> &amp;<i> collectionName</i>)</h3>
+<!-- @@@containsCollection -->
+<!-- $$$createCollection[overload1]$$$createCollectionconstQString& -->
+<h3 class="fn" id="createCollection"><a name="createCollection"></a><span class="type">bool</span> QEjdbDatabase::<span class="name">createCollection</span>(const <span class="type">QString</span> &amp;<i> collectionName</i>)</h3>
+<!-- @@@createCollection -->
+<!-- $$$database[overload1]$$$databaseconstQString& -->
+<h3 class="fn" id="database"><a name="database"></a><code>[static] </code><span class="type"><a href="qejdbdatabase.html#QEjdbDatabase">QEjdbDatabase</a></span> QEjdbDatabase::<span class="name">database</span>(const <span class="type">QString</span> &amp;<i> connectionName</i> = QLatin1String( defaultConnection ))</h3>
+<!-- @@@database -->
+<!-- $$$isOpen[overload1]$$$isOpen -->
+<h3 class="fn" id="isOpen"><a name="isOpen"></a><span class="type">bool</span> QEjdbDatabase::<span class="name">isOpen</span>()</h3>
+<!-- @@@isOpen -->
+<!-- $$$load[overload1]$$$loadconstQString&constQString& -->
+<h3 class="fn" id="load"><a name="load"></a><span class="type">QBsonObject</span> QEjdbDatabase::<span class="name">load</span>(const <span class="type">QString</span> &amp;<i> collectionName</i>, const <span class="type">QString</span> &amp;<i> oid</i>)</h3>
+<!-- @@@load -->
+<!-- $$$loadAll[overload1]$$$loadAllconstQString& -->
+<h3 class="fn" id="loadAll"><a name="loadAll"></a><span class="type">QEjdbResult</span> QEjdbDatabase::<span class="name">loadAll</span>(const <span class="type">QString</span> &amp;<i> collectionName</i>)</h3>
+<!-- @@@loadAll -->
+<!-- $$$open[overload1]$$$open -->
+<h3 class="fn" id="open"><a name="open"></a><span class="type">void</span> QEjdbDatabase::<span class="name">open</span>()</h3>
+<!-- @@@open -->
+<!-- $$$query[overload1]$$$queryconstQString&constQBsonObject&constQBsonObject& -->
+<h3 class="fn" id="query"><a name="query"></a><span class="type">QEjdbResult</span> QEjdbDatabase::<span class="name">query</span>(const <span class="type">QString</span> &amp;<i> collectionName</i>, const <span class="type">QBsonObject</span> &amp;<i> query</i>, const <span class="type">QBsonObject</span> &amp;<i> hints</i> = QBsonObject())</h3>
+<!-- @@@query -->
+<!-- $$$remove[overload1]$$$removeconstQString&constQString& -->
+<h3 class="fn" id="remove"><a name="remove"></a><span class="type">bool</span> QEjdbDatabase::<span class="name">remove</span>(const <span class="type">QString</span> &amp;<i> collectionName</i>, const <span class="type">QString</span> &amp;<i> oid</i>)</h3>
+<!-- @@@remove -->
+<!-- $$$remove$$$removeconstQString&QBsonObject -->
+<h3 class="fn" id="remove-2"><a name="remove-2"></a><span class="type">bool</span> QEjdbDatabase::<span class="name">remove</span>(const <span class="type">QString</span> &amp;<i> collectionName</i>, <span class="type">QBsonObject</span><i> obj</i>)</h3>
+<!-- @@@remove -->
+<!-- $$$removeCollection[overload1]$$$removeCollectionconstQString& -->
+<h3 class="fn" id="removeCollection"><a name="removeCollection"></a><span class="type">bool</span> QEjdbDatabase::<span class="name">removeCollection</span>(const <span class="type">QString</span> &amp;<i> collectionName</i>)</h3>
+<!-- @@@removeCollection -->
+<!-- $$$removeDatabase[overload1]$$$removeDatabaseconstQString& -->
+<h3 class="fn" id="removeDatabase"><a name="removeDatabase"></a><code>[static] </code><span class="type">void</span> QEjdbDatabase::<span class="name">removeDatabase</span>(const <span class="type">QString</span> &amp;<i> connectionName</i> = QLatin1String( defaultConnection ))</h3>
+<!-- @@@removeDatabase -->
+<!-- $$$removeDatabaseFiles[overload1]$$$removeDatabaseFilesconstQString&constQString& -->
+<h3 class="fn" id="removeDatabaseFiles"><a name="removeDatabaseFiles"></a><code>[static] </code><span class="type">bool</span> QEjdbDatabase::<span class="name">removeDatabaseFiles</span>(const <span class="type">QString</span> &amp;<i> path</i>, const <span class="type">QString</span> &amp;<i> database</i>)</h3>
+<!-- @@@removeDatabaseFiles -->
+<!-- $$$save[overload1]$$$saveconstQString&QBsonObject& -->
+<h3 class="fn" id="save"><a name="save"></a><span class="type">bool</span> QEjdbDatabase::<span class="name">save</span>(const <span class="type">QString</span> &amp;<i> collectionName</i>, <span class="type">QBsonObject</span> &amp;<i> bson</i>)</h3>
+<!-- @@@save -->
+<!-- $$$operator=[overload1]$$$operator=constQEjdbDatabase& -->
+<h3 class="fn" id="operator-eq"><a name="operator-eq"></a><span class="type"><a href="qejdbdatabase.html#QEjdbDatabase">QEjdbDatabase</a></span> &amp; QEjdbDatabase::<span class="name">operator=</span>(const <span class="type"><a href="qejdbdatabase.html#QEjdbDatabase">QEjdbDatabase</a></span> &amp;<i> other</i>)</h3>
+<!-- @@@operator= -->
+</div>
+</section> </div>
+</div>
+</div>
+</div>
+</body>
+</html>
