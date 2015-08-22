@@ -3,20 +3,27 @@
 <html lang="en">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<!-- qtejdb.qdoc -->
-  <title>QtEjb Database Framework | qtejdb </title>
+<!-- qtejdb-qt.qdoc -->
+  <title>QtEjb Database Framework for Qt | qtejdb </title>
   <link rel="stylesheet" type="text/css" href="../style/styles.css" />
   <link rel="stylesheet" type="text/css" href="../style/github-light.css" />
 </head>
 <body>
-<div class="wrapper">   <section><li>QtEjb Database Framework</li>
+<div class="wrapper">   <section><li>QtEjb Database Framework for Qt</li>
 <div class="sidebar"><div class="sidebar-content" id="sidebar-content"></div></div>
-<h1 class="title">QtEjb Database Framework</h1>
+<h1 class="title">QtEjb Database Framework for Qt</h1>
 <span class="subtitle"></span>
 <!-- $$$qtejdb-database-description -->
 <div class="descr"> <a name="details"></a>
 <p>Database provide an interface to work with an ejdb service from qt.</p>
-<p>First create an database.</p>
+<p>1. Create a database:</p>
+<pre class="cpp"><span class="type"><a href="qejdbdatabase.html">QEjdbDatabase</a></span><span class="operator">::</span>database(<span class="string">&quot;file:test_db&quot;</span>);</pre>
+<p>2. Create a collection:</p>
+<pre class="cpp"><span class="type"><a href="qejdbcollection.html">QEjdbCollection</a></span> col <span class="operator">=</span> db<span class="operator">.</span>collection(QLatin1String(<span class="string">&quot;COLL&quot;</span>)<span class="operator">,</span> <span class="keyword">true</span>)</pre>
+<p>3. Save a bson:</p>
+<pre class="cpp"><span class="type">QBsonObject</span> obj(<span class="string">&quot;name&quot;</span><span class="operator">,</span> <span class="string">&quot;Alfred Kabuschke&quot;</span>)
+col<span class="operator">.</span>save(obj);</pre>
+<p>Classes are:</p>
 </div>
 <!-- @@@qtejdb-database -->
 <div class="table"><table class="annotated">

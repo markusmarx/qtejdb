@@ -67,8 +67,8 @@ body,html,#wrapper,#page-content-wrapper,.col-lg-12 {
 }
 
 .sidebar-nav li a {
-    display: block;
-    text-decoration: none;
+        display: block;
+        text-decoration: none;
     color: #777;
 }
 
