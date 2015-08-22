@@ -10,6 +10,39 @@
 
 QtEjdb is an ejdb based embedded bson and json document store/ database. QtEjdb is completely build uppon Qt. Main features are store and query documents in and from collections. Visit http://ejdb.org/ for more informations. QtEjdb serves a qtquickplugin to access documents from qml. API Documentaion at http://markusmarx.github.io/qtejdb/
 
+## Examples
+
+Qt
+```{c++}
+QEjdbDatabase::database("file:test_db");
+QEjdbCollection col = db.collection(QLatin1String("person"), true)
+QBsonObject obj;
+obj.append("name", "Edgar Marx")
+   .append(age, 5);
+col.save(obj);
+qDebug() << obj.oid();
+```
+
+Qml
+```{qml}
+import QtQuick 2.0
+import QtEjdb 1.0
+
+Rectangle {
+  QEjdbClient {
+    id: client
+    uri: 'file:test_db'
+  }
+
+  function saveBson() {
+      client.createCollection('person')
+      var json = client.save('person', {name: 'Edgar Marx', age: 5})
+      console.log(json._id)
+      var edgar = client.load('person', json._id)
+  }  
+}
+```
+
 ## Status
 
 QtEjdb is highly (daily) in development phase. All features are well testet with qmltest and gmock. Version 1.0 will be the first stable release.
