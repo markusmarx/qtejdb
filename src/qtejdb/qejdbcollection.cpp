@@ -5,7 +5,7 @@
 /*!
  * \class QEjdbCollection
  * \ingroup qtejdb-database
- * \inmodule qtejdb
+ * \inmodule qtejdb-database
  * \since 1.0
  * \brief QEjdbCollection provide a collection with methods to call database
  * funcitons.

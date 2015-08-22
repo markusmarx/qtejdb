@@ -1,0 +1,16 @@
+/*!
+  \inmodule qtejdb
+  \group qtejdb-database
+  \title QtEjb Database Framework for Qt
+  Database provide an interface to work with an ejdb service from qt.
+
+  1. Create a database:
+  \snippet simple.cpp create
+  2. Create a collection:
+  \snippet simple.cpp createcol
+  3. Save a bson:
+  \snippet simple.cpp save
+
+  Classes are:
+
+  */

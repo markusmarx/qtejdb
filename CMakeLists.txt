@@ -107,7 +107,7 @@ endif(WIN32)
 ## generate doc
 ##
 add_custom_target(api-doc
-    qdoc --outputdir ${CMAKE_SOURCE_DIR}/build/gh-pages ${CMAKE_SOURCE_DIR}/doc/conf.qdocconf --log-progress
+    qdoc --outputdir ${CMAKE_SOURCE_DIR}/build/gh-pages/api-doc ${CMAKE_SOURCE_DIR}/doc/conf.qdocconf --log-progress
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/doc
 )
 ##

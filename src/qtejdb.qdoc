@@ -1,0 +1,7 @@
+/*!
+  \module qtejdb
+  \title QtEjb Database Framework
+  Database provide an interface to work with an ejdb service from qt an qml.
+
+  \l [qtejdb-qt]
+  */
