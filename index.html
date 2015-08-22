@@ -1,31 +1,84 @@
-<?xml version="1.0" encoding="UTF-8"?>
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<!-- qtejdb.qdoc -->
-  <title>QtEjb Database Framework | qtejdb </title>
-  <link rel="stylesheet" type="text/css" href="http://markusmarx.github.io/qtejdb/stylesheets/styles.css" />
-  <link rel="stylesheet" type="text/css" href="http://markusmarx.github.io/qtejdb/stylesheets/github-light.css" />
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Api documentation for Qt / Qml Json database.">
+    <meta name="author" content="Markus Marx">
+
+    <title>QtEjdb - Qt / Qml Json database</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="style/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="style/simple-sidebar.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
 </head>
+
 <body>
-<div class="wrapper"> <header>     <h1>QtEjdb</h1>     <p>Qt/ Qml json database based on ejdb</p>     <p class="view">        <a href="qtejdb-database.html">QtEjdb Qt API</a> <br/>        <a href="qtejdb-qmlmodule.html">QtEjdb QtQuick API</a>     </p>     <p class="view"><a href="https://github.com/markusmarx/qtejdb">View the Project on GitHub <small>markusmarx/qtejdb</small></a></p>   </header>   <section><li>QtEjb Database Framework</li>
-<div class="sidebar"><div class="sidebar-content" id="sidebar-content"></div></div>
-<h1 class="title">QtEjb Database Framework</h1>
-<span class="subtitle"></span>
-<!-- $$$qtejdb-database-description -->
-<div class="descr"> <a name="details"></a>
-<p>Database provide an interface to work with an ejdb service from qt.</p>
-<p>First create an database.</p>
-</div>
-<!-- @@@qtejdb-database -->
-<div class="table"><table class="annotated">
-<tr class="odd topAlign"><td class="tblName"><p><a href="qejdbcollection.html">QEjdbCollection</a></p></td><td class="tblDescr"><p>Provide a collection with methods to call database funcitons</p></td></tr>
-<tr class="even topAlign"><td class="tblName"><p><a href="qejdbdatabase.html">QEjdbDatabase</a></p></td><td class="tblDescr"><p>Connects a ejdb database and provides an api to modify it</p></td></tr>
-</table></div>
-</section> </div>
-</div>
-</div>
-</div>
+
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <ul class="sidebar-nav">
+                <li class="sidebar-brand">
+                    
+                    QtEjdb
+                    <small>Api Documentation</small>
+                    
+                </li>
+                <li>
+                    <a href="api-doc/qtejdb-database.html" target="content">Qt Api</a>
+                </li>
+                <li>
+                    <a href="api-doc/qtejdb-qmlmodule.html" target="content">QtQuick Api</a>
+                </li>
+            </ul>
+        </div>
+        <!-- /#sidebar-wrapper -->
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            
+                    <div class="col-lg-12">
+                        <iframe name="content" src="api-doc/qejdbdatabase.html" class="iframe" seamless="" frameborder="0" height="100%" width="100%">
+                        </iframe>
+                    </div>
+                
+            
+        </div>
+        <!-- /#page-content-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- jQuery -->
+    <script src="javascript/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="javascript/bootstrap.min.js"></script>
+
+    <!-- Menu Toggle Script -->
+    <script>
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
+    </script>
+
 </body>
+
 </html>
