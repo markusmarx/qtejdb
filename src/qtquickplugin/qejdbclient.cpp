@@ -203,7 +203,7 @@ void QEjdbClient::createCollection(QString collection)
 void QEjdbClient::removeCollection(QString collection)
 {
     Q_D(QEjdbClient);
-    d->database().removeCollection(collection);
+    d->database().dropCollection(collection);
 }
 
 QJSValue QEjdbClient::load(QString collectionName, QJSValue uid)

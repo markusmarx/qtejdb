@@ -41,8 +41,8 @@ class QBsonModelArrayPropertySyncTest : public ::testing::Test
 
         static void TearDownTestCase()
         {
-            QEjdbDatabase::database().removeCollection(COLL);
-            QEjdbDatabase::database().removeCollection(COLL2);
+            QEjdbDatabase::database().dropCollection(COLL);
+            QEjdbDatabase::database().dropCollection(COLL2);
             QEjdbDatabase::removeDatabase();
         }
     public:

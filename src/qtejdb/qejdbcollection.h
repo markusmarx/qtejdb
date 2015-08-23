@@ -1,5 +1,5 @@
-
-
+#ifndef QEJDBCOLLECTION_H
+#define QEJDBCOLLECTION_H
 #include <QObject>
 #include <QWeakPointer>
 #include "qbson/qbsonobject.h"
@@ -7,7 +7,6 @@
 
 QT_FORWARD_DECLARE_CLASS(QEjdbDatabase)
 QT_FORWARD_DECLARE_CLASS(QEjdbCollectionPrivate)
-
 
 class Q_DECL_EXPORT QEjdbCollection
 {
@@ -37,3 +36,4 @@ protected:
     QSharedPointer<QEjdbCollectionPrivate> d;
 
 };
+#endif

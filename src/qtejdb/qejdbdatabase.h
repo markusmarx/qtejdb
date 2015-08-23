@@ -92,7 +92,7 @@ public:
     QEjdbResult loadAll(const QString &collectionName);
     bool remove(const QString &collectionName, const QString &oid);
     bool remove(const QString &collectionName, QBsonObject obj);
-    bool removeCollection(const QString &collectionName);
+    bool dropCollection(const QString &collectionName);
 
     QEjdbResult query(const QString &collectionName, const QBsonObject &query, const QBsonObject& hints = QBsonObject());
     QString connectionName() const;

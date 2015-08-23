@@ -33,7 +33,7 @@ class QEjdbQueryTest : public ::testing::Test
 
         static void TearDownTestCase()
         {
-            QEjdbDatabase::database().removeCollection(COLL);
+            QEjdbDatabase::database().dropCollection(COLL);
             QEjdbDatabase::removeDatabase();
         }
 

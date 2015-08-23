@@ -306,7 +306,7 @@ bool QEjdbDatabase::createCollection(const QString &collectionName)
     return d->createCollection(collectionName);
 }
 
-bool QEjdbDatabase::removeCollection(const QString& collectionName )
+bool QEjdbDatabase::dropCollection(const QString& collectionName )
 {
     Q_ASSERT(d);
     return d->removeCollection(collectionName);

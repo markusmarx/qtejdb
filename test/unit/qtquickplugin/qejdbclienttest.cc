@@ -36,8 +36,8 @@ class QEjdbClientTest : public ::testing::Test
 
         static void TearDownTestCase()
         {
-            QEjdbDatabase::database(CONN_NAME).removeCollection(COLL);
-            QEjdbDatabase::database(CONN_NAME).removeCollection(COLL2);
+            QEjdbDatabase::database(CONN_NAME).dropCollection(COLL);
+            QEjdbDatabase::database(CONN_NAME).dropCollection(COLL2);
             QEjdbDatabase::removeDatabase(CONN_NAME);
         }
 
