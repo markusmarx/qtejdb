@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 2.8.11)
 project(qtejdb)
 
 option(BUILD_SHARED_LIBS "Build shared libraries (DLLs)." OFF)
+option(BUILD_TESTS "Build test cases" OFF)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/")
 
@@ -181,20 +182,23 @@ add_subdirectory(src)
 #
 add_subdirectory(src/qtquickplugin)
 
-#
-# ADD UNIT-TESTS
-#
-add_subdirectory(test/unit)
-add_subdirectory(test/unit_qml)
-
-SETUP_TARGET_FOR_COVERAGE(test_coverage test coverage)
 
 #
-# ADD DEMO AND MANUAL TESTS
+# Build Tests
 #
+if (BUILD_TESTS)
+    #
+    # ADD UNIT-TESTS
+    #
+    add_subdirectory(test/unit)
+    add_subdirectory(test/unit_qml)
 
-add_subdirectory(test/manual/demo1)
-add_subdirectory(test/manual/demo2)
+    SETUP_TARGET_FOR_COVERAGE(test_coverage test coverage "-R;.*QtEjdb.*")
 
+    #
+    # ADD DEMO AND MANUAL TESTS
+    #
 
-
+    add_subdirectory(test/manual/demo1)
+    add_subdirectory(test/manual/demo2)
+endif()

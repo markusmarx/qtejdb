@@ -34,4 +34,4 @@ else()
     )
 endif()
 
-add_test(QQmlPluginUnitTest qtquicktest -txt -import ${CMAKE_BINARY_DIR}/plugins)
+add_test(QtEjdbPluginUnitTest qtquicktest -txt -import ${CMAKE_BINARY_DIR}/plugins)
