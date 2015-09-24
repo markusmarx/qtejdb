@@ -1,5 +1,5 @@
 import QtQuick 2.0
-import QEjdb 1.0 as QEjdb
+import QtEjdb 1.0 as QtEjdb
 import QtTest 1.0
 
 TestCase {
@@ -9,7 +9,7 @@ TestCase {
         qejdbClient.removeCollection('testcollection3')
     }
 
-    QEjdb.Client {
+    QtEjdb.Client {
         id: qejdbClient
         uri: 'file:tst_qejdplugincollectionmodel.db'
         autoCreateCollection: true
@@ -19,7 +19,7 @@ TestCase {
         }
     }
 
-    QEjdb.CollectionModel {
+    QtEjdb.CollectionModel {
         id: collectionModelValid
         client: qejdbClient
         query: {'name': {'$begin': 'test'}}
@@ -27,7 +27,7 @@ TestCase {
         collection: 'testcollection3'
     }
 
-    QEjdb.CollectionModel {
+    QtEjdb.CollectionModel {
         id: collectionModelInValid
         client: qejdbClient
     }

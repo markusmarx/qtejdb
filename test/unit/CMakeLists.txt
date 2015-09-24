@@ -68,7 +68,7 @@ add_executable(qtejdbtest ${ALL_SRC})
 if(WIN32)
     add_custom_command(
         TARGET qtejdbtest POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy ${LIBRARY_OUTPUT_PATH}/libqejdbplugin.dll ${CMAKE_CURRENT_BINARY_DIR}
+        COMMAND ${CMAKE_COMMAND} -E copy ${LIBRARY_OUTPUT_PATH}/libqtejdbplugin.dll ${CMAKE_CURRENT_BINARY_DIR}
         COMMAND ${CMAKE_COMMAND} -E copy ${LIBRARY_OUTPUT_PATH}/libejdb.dll ${CMAKE_CURRENT_BINARY_DIR}
         COMMAND ${CMAKE_COMMAND} -E copy ${LIBRARY_OUTPUT_PATH}/libqtejdb.dll ${CMAKE_CURRENT_BINARY_DIR}
         COMMAND ${CMAKE_COMMAND} -E copy ${LIBRARY_OUTPUT_PATH}/libzlib.dll ${CMAKE_CURRENT_BINARY_DIR}
@@ -76,8 +76,8 @@ if(WIN32)
 
 endif()
 if (NOT WIN32)
-    target_link_libraries (qtejdbtest Qt5::Core qejdbplugin ejdb_p libgmock pthread)
+    target_link_libraries (qtejdbtest Qt5::Core qtejdbplugin ejdb_p libgmock pthread)
 else()
-    target_link_libraries (qtejdbtest Qt5::Core qejdbplugin libgmock)
+    target_link_libraries (qtejdbtest Qt5::Core qtejdbplugin libgmock)
 endif(NOT WIN32)
 add_test(QtEjdbUnitTest qtejdbtest)

@@ -23,7 +23,7 @@ QEjdbPlugin::~QEjdbPlugin()
 
 void QEjdbPlugin::registerTypes(const char *uri)
 {
-    Q_ASSERT(uri == QLatin1String("QEjdb"));
+    Q_ASSERT(uri == QLatin1String("QtEjdb"));
     qmlRegisterType<QEjdbClient>(uri, 1, 0, "Client");
     qmlRegisterType<CollectionModel>(uri, 1, 0, "CollectionModel");
     qmlRegisterType<ArrayPropertyModel>(uri, 1, 0, "ArrayPropertyModel");

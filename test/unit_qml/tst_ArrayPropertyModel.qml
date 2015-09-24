@@ -1,5 +1,5 @@
 import QtQuick 2.0
-import QEjdb 1.0 as QEjdb
+import QtEjdb 1.0 as QtEjdb
 import QtTest 1.0
 
 TestCase {
@@ -7,7 +7,7 @@ TestCase {
     name: "QEjdbPlugin ArrayPropertyModel Test"
     property variant parentObject
 
-    QEjdb.Client {
+    QtEjdb.Client {
         id: qejdbClient
         uri: 'file:tst_qejdpluginarraymodel.db'
         autoCreateCollection: true
@@ -28,11 +28,11 @@ TestCase {
         }
     }
 
-   QEjdb.ArrayPropertyModel {
+   QtEjdb.ArrayPropertyModel {
         id: modelInvalid
     }
 
-    QEjdb.ArrayPropertyModel {
+    QtEjdb.ArrayPropertyModel {
         id: modelValid
         collection: 'testcollection'
         propertyCollection: 'testcollection2'

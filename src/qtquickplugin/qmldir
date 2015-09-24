@@ -1,4 +1,4 @@
-module QEjdb
-plugin qejdbplugin
+module QtEjdb
+plugin qtejdbplugin
 
 QEjdbModel 1.0 QEjdbModel.qml

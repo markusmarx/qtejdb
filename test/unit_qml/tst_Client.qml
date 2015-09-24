@@ -1,11 +1,11 @@
 import QtQuick 2.0
-import QEjdb 1.0 as QEjdb
+import QtEjdb 1.0 as QtEjdb
 import QtTest 1.0
 
 TestCase {
     name: "QEjdb Test"
 
-    QEjdb.Client {
+    QtEjdb.Client {
         id: qejdbClient
         uri: 'file:tst_qejdbmodel.db'
         autoCreateCollection: true
@@ -76,7 +76,5 @@ TestCase {
         json2 = qejdbClient.load('testcollection', json._id);
         compare(null, json2)
     }
-
-
 
 }
