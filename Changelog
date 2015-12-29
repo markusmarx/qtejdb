@@ -1,3 +1,5 @@
+  #83 test connection before create a new one
+
   add BUILD_TESTS option to CMake
   #77 rename qtquick plugin to QtEjdb
   #78 rename removeCollection to dropCollection

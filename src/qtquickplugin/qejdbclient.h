@@ -31,7 +31,7 @@ public:
     bool autoCreateCollection() const;
     QBsonValue convert(const QJSValue &jsValue);
     QJSValue convert(const QBsonObject &bsonObject);
-    bool isConnected();
+    Q_INVOKABLE bool isConnected();
     void registerModel(BaseModel *baseModel);
 
 signals:
