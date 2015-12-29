@@ -269,7 +269,11 @@ void QEjdbClient::connect()
     QString uri = d->m_uri;
     QString connectionName = d->m_connectionName;
     if (!uri.isEmpty()) {
-        db = QEjdbDatabase::addDatabase(uri, connectionName);
+        try {
+            db = QEjdbDatabase::database(connectionName);
+        } catch(QEjdbException e) {
+            db = QEjdbDatabase::addDatabase(uri, connectionName);
+        }
     } else {
         db = QEjdbDatabase::database(connectionName);
     }
