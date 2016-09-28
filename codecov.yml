@@ -1,0 +1,17 @@
+coverage:
+  fixes:
+  - media/sd1/opt/development/qt.apps/qtejdb/src::qtejdb
+  - qtejdb/qbson::qbson
+  - qtejdb/qtejdb::qtejdb
+  - qtejdb/itemmodel::itemmodel
+  - qtejdb/qtquickplugin::qtquickplugin
+  - src/qbson::qbson
+  - src/qtejdb::qtejdb
+  - src/itemmodel::itemmodel
+  - src/qtquickplugin::qtquickplugin
+  ignore:
+  - test/unit
+  - .*/Qt/.*
+  - usr/.*
+  - .*/moc_.*
+  - build/test/.*
