@@ -1,4 +1,11 @@
+codecov:
+  branch: develop
+  bot: null
+
 coverage:
+  precision: 2
+  round: down
+  range: "70...100"
   fixes:
   - media/sd1/opt/development/qt.apps/qtejdb/src::qtejdb
   - qtejdb/qbson::qbson
