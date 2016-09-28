@@ -1,5 +1,7 @@
 language: cpp
-
+sudo: required
+dist: trusty
+cache: apt
 env:
   global:
    # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
@@ -12,7 +14,7 @@ before_install:
      # cmake 2.8.11
      - sudo add-apt-repository --yes ppa:kalakris/cmake
      # repository for qt5
-     - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
+     # sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
      - sudo apt-get update -qq
 install:     
      - sudo apt-get install -qq qtbase5-dev qtdeclarative5-dev qtdeclarative5-test-plugin libqt5quick5 libqt5qml5 qtdeclarative5-qtquick2-plugin qt5-default qttools5-dev-tools
