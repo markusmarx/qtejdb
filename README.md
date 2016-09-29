@@ -1,7 +1,7 @@
 # Qt/Qml JSON database
 
 [![Build Status](https://travis-ci.org/markusmarx/qtejdb.svg?branch=master)](https://travis-ci.org/markusmarx/qtejdb)
-[![codecov.io](http://codecov.io/github/markusmarx/qtejdb/coverage.svg?branch=master)](http://codecov.io/github/markusmarx/qtejdb?branch=master)
+[![codecov](https://codecov.io/gh/markusmarx/qtejdb/branch/develop/graph/badge.svg)](https://codecov.io/gh/markusmarx/qtejdb)(http://codecov.io/github/markusmarx/qtejdb?branch=master)
 <a href="https://scan.coverity.com/projects/5815">
   <img alt="Coverity Scan Build Status"
        src="https://scan.coverity.com/projects/5815/badge.svg"/>
